@@ -65,6 +65,10 @@ public type Connection object {
             log:printError("Error stopping connection", err);
         }
     }
+
+    function getJmsConnection() returns handle {
+        return self.jmsConnection;
+    }
 };
 
 # Configurations related to a JMS connection

@@ -12,13 +12,12 @@ import java.util.UUID;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-import javax.management.remote.JMXServiceURL;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 public class JmsConnectionUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JmsUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JmsConnectionUtils.class);
 
     private JmsConnectionUtils() {
     }

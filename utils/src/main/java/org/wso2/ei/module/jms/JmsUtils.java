@@ -46,39 +46,6 @@ public class JmsUtils {
     private JmsUtils() {
     }
 
-    //    public static Session createSession(Connection connection, MapValue sessionConfig) {
-//
-//        int sessionAckMode;
-//        boolean transactedSession = false;
-//
-//        String ackModeString = sessionConfig.getStringValue(JmsConstants.ALIAS_ACK_MODE);
-//
-//        switch (ackModeString) {
-//            case JmsConstants.CLIENT_ACKNOWLEDGE_MODE:
-//                sessionAckMode = Session.CLIENT_ACKNOWLEDGE;
-//                break;
-//            case JmsConstants.SESSION_TRANSACTED_MODE:
-//                sessionAckMode = Session.SESSION_TRANSACTED;
-//                transactedSession = true;
-//                break;
-//            case JmsConstants.DUPS_OK_ACKNOWLEDGE_MODE:
-//                sessionAckMode = Session.DUPS_OK_ACKNOWLEDGE;
-//                break;
-//            case JmsConstants.AUTO_ACKNOWLEDGE_MODE:
-//                sessionAckMode = Session.AUTO_ACKNOWLEDGE;
-//                break;
-//            default:
-//                throw new BallerinaException("Unknown acknowledgment mode: " + ackModeString);
-//        }
-//
-//        try {
-//            return connection.createSession(transactedSession, sessionAckMode);
-//        } catch (JMSException e) {
-//            String message = "Error while creating session.";
-//            LOGGER.error(message, e);
-//            throw new BallerinaException(message + " " + e.getMessage(), e);
-//        }
-//    }
 //
     public static boolean isNullOrEmptyAfterTrim(String str) {
         return str == null || str.trim().isEmpty();
@@ -119,22 +86,7 @@ public class JmsUtils {
 //        return Arrays.copyOf(bytesArray.getBytes(), bytesArray.size());
 //    }
 //
-//    public static ObjectValue populateAndGetDestinationObj(Destination destination) throws JMSException {
-//        ObjectValue destObj;
-//        if (destination instanceof Queue) {
-//            destObj = BallerinaValues.createObjectValue(JmsConstants.PROTOCOL_INTERNAL_PACKAGE_JMS,
-//                                                        JmsConstants.JMS_DESTINATION_OBJ_NAME,
-//                                                        ((Queue) destination).getQueueName(),
-//                                                        JmsConstants.DESTINATION_TYPE_QUEUE);
-//        } else {
-//            destObj = BallerinaValues.createObjectValue(JmsConstants.PROTOCOL_INTERNAL_PACKAGE_JMS,
-//                                                        JmsConstants.JMS_DESTINATION_OBJ_NAME,
-//                                                        ((Topic) destination).getTopicName(),
-//                                                        JmsConstants.DESTINATION_TYPE_TOPIC);
-//        }
-//        destObj.addNativeData(JmsConstants.JMS_DESTINATION_OBJECT, destination);
-//        return destObj;
-//    }
+
 //
 //    public static ObjectValue createAndPopulateMessageObject(Message jmsMessage, ObjectValue sessionObj) {
 //        String msgType;
