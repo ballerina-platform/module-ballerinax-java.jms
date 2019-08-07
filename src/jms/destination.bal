@@ -14,6 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerinax/java;
+
 # Defines the possible values for the destination type in JMS `Destination`.
 #
 # `queue`: Destination type queue
@@ -39,6 +41,7 @@ public const TEMP_TOPIC = "temporaryTopic";
 public type Destination object {
     private string destinationName;
     private string destinationType;
+    private handle jmsDestination = java:createNull();
 
     // This object is constructed as package private as it needs to be created using the session.
     function __init(string destName, string destType) {
@@ -52,5 +55,9 @@ public type Destination object {
 
     public function getType() returns string {
         return self.destinationType;
+    }
+
+    function getJmsDestination() returns handle {
+        return self.jmsDestination;
     }
 };

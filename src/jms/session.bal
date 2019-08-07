@@ -113,6 +113,10 @@ public type Session object {
             return val;
         }
     }
+
+    function getJmsSession() returns handle {
+        return self.jmsSession;
+    }
 };
 
 # The Configurations that are related to a JMS session.
