@@ -1,0 +1,15 @@
+[project]
+org-name= "wso2"
+version= "0.6.0"
+
+[dependencies]
+
+[platform]
+target = "java8"
+
+  [[platform.libraries]]
+  module = "jms"
+  path = "./utils/target/jms-utils-0.6.0.jar"
+  artafactId = "jms-utils"
+  version = "0.6.0"
+  groupId = "org.wso2.ei"

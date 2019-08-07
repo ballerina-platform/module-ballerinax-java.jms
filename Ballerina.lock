@@ -1,0 +1,7 @@
+[project]
+name = "wso2"
+version = "0.6.0"
+lockfileversion = "1"
+ballerinaversion = "unknown"
+modules = []
+
