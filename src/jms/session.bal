@@ -114,9 +114,39 @@ public type Session client object {
         }
     }
 
+    # Get the reference to the java session object.
+    #
+    # + return - Returns jms session java reference.
     function getJmsSession() returns handle {
         return self.jmsSession;
     }
+
+    # Creates a JMS message.
+    #
+    # + return - Returns the JMS message or an error if it fails.
+    public function createMessage() returns Message|error {
+        handle|error val = createJmsMessage(self.jmsSession);
+        if (val is handle) {
+            Message message = new(val);
+            return message;
+        } else {
+            return val;
+        }
+    }
+
+    # Creates a JMS text message.
+    #
+    # + return - Returns the JMS text message or an error if it fails.
+    public function createTextMessage() returns TextMessage|error {
+        handle|error val = createJmsTextMessage(self.jmsSession);
+        if (val is handle) {
+            TextMessage textMessage = new(val);
+            return textMessage;
+        } else {
+            return val;
+        }
+    }
+
 };
 
 # The Configurations that are related to a JMS session.
@@ -126,3 +156,11 @@ public type Session client object {
 public type SessionConfiguration record {|
     string acknowledgementMode = "AUTO_ACKNOWLEDGE";
 |};
+
+public function createJmsMessage(handle session) returns handle | error = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsMessageUtils"
+} external;
+
+public function createJmsTextMessage(handle session) returns handle | error = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsTextMessageUtils"
+} external;
