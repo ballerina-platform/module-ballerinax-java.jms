@@ -17,7 +17,7 @@ function testConnectionCreation () {
 function testConnectionStart() {
     
     Connection conn = new ({});
-    conn.start();
+    conn->start();
     io:println("Connection started!");
     test:assertTrue(true , msg = "Failed!");
 }

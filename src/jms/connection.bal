@@ -20,7 +20,7 @@ import ballerina/log;
 # Represents JMS Connection
 #
 # + config - Used to store configurations related to a JMS Connection
-public type Connection object {
+public type Connection client object {
 
     public ConnectionConfiguration config = {};
     private handle jmsConnection = java:createNull();
@@ -49,7 +49,7 @@ public type Connection object {
 
     # Starts (or restarts) a connection's delivery of incoming messages.
     # A call to start on a connection that has already been started is ignored.
-    public function start() {
+    public remote function start() {
         error? err = startJmsConnection(self.jmsConnection);
         if (err is error) {
             log:printError("Error starting connection", err);
@@ -59,7 +59,7 @@ public type Connection object {
     
     # Temporarily stops a connection's delivery of incoming messages.
     # Delivery can be restarted using the connection's start method.
-    public function stop() {
+    public remote function stop() {
         error? err = stopJmsConnection(self.jmsConnection);
         if (err is error) {
             log:printError("Error stopping connection", err);

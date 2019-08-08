@@ -17,13 +17,15 @@
 import ballerina/log;
 import ballerinax/java;
 
+
 # JMS QueueSender Endpoint
 #
 # + session - Session of the queue sender
 public type QueueSender client object {
 
     public Session session;
-    private handle jmsProducer;
+    private handle jmsProducer = java:createNull();
+    private handle JAVA_NULL = java:createNull();
 
     # Initialize the QueueSender endpoint
     #
@@ -44,12 +46,14 @@ public type QueueSender client object {
                 });
         }
         if (queue is Destination) {
-            self.initQueueSender(self.session, queue);
+            self.initQueueSender(self.session, queue.getJmsDestination());
+        } else {
+            self.initQueueSender(self.session, self.JAVA_NULL);
         }
     }
 
-    function initQueueSender(Session session, Destination dest) {
-        handle|error val = createJmsProducer(session.getJmsSession(), dest.getJmsDestination());
+    function initQueueSender(Session session, handle jmsDestination) {
+        handle|error val = createJmsProducer(session.getJmsSession(), jmsDestination);
         if (val is handle) {
             self.jmsProducer = val;
         } else {

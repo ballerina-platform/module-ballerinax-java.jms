@@ -17,7 +17,7 @@
 # Represents the JMS session.
 #
 # + config - Stores the configurations related to a JMS session.
-public type Session object {
+public type Session client object {
 
     private SessionConfiguration config;
     private handle jmsSession = java:createNull();
@@ -43,14 +43,14 @@ public type Session object {
     #
     # + subscriptionId - The name, which is used to identify the subscription.
     # + return - Cancels the subscription.
-    public function unsubscribe(string subscriptionId) returns error? {
+    public remote function unsubscribe(string subscriptionId) returns error? {
         return unsubscribeJmsSubscription(self.jmsSession, java:fromString(subscriptionId));
     }
 
     # Creates a JMS Queue, which can be used as temporary response destination.
     #
     # + return - Returns the JMS destination for a temporary queue or an error if it fails.
-    public function createTemporaryQueue() returns Destination|JmsError {
+    public remote function createTemporaryQueue() returns Destination|JmsError {
         handle|error val = createTemporaryJmsQueue(self.jmsSession);
         if (val is handle) {
             string? queueVal = java:toString(val);
