@@ -49,6 +49,9 @@ public type TextMessage client object {
         }
     }
 
+    # Get the JMS text message
+    #
+    # + return - Returns the java reference to the jms text message
     function getJmsMessage() returns handle {
         return self.jmsTextMessage;
     }
@@ -61,5 +64,6 @@ public function setJmsText(handle textMessage, handle data) returns error? = @ja
 } external;
 
 public function getJmsText(handle textMessage) returns handle | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsTextMessageUtils"
+    name: "getText",
+    class: "javax.jms.TextMessage"
 } external;

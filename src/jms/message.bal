@@ -51,10 +51,12 @@ public type Message client object {
 };
 
 public function acknowledgeMessage(handle message) returns error? = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsMessageUtils"
+    name: "acknowledge",
+    class: "javax.jms.Message"
 } external;
 
 public function clearMessageBody(handle message) returns error? = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsMessageUtils"
+    name: "clearBody",
+    class: "javax.jms.Message"
 } external;
 

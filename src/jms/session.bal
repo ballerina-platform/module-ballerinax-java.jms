@@ -163,11 +163,13 @@ public type SessionConfiguration record {|
 |};
 
 public function createJmsMessage(handle session) returns handle | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsMessageUtils"
+    name: "createMessage",
+    class: "javax.jms.Session"
 } external;
 
 public function createJmsTextMessage(handle session) returns handle | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsTextMessageUtils"
+    name: "createTextMessage",
+    class: "javax.jms.Session"
 } external;
 
 public function createJmsQueue(handle session, handle queueName) returns handle | error = @java:Method {
