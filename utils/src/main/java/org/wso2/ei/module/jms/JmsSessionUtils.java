@@ -49,22 +49,6 @@ public class JmsSessionUtils {
         }
     }
 
-    public static Queue createJmsQueue(Session session, String queueName) throws BallerinaJmsException {
-        try {
-            return session.createQueue(queueName);
-        } catch (JMSException e) {
-            throw new BallerinaJmsException("Error creating queue.", e);
-        }
-    }
-
-    public static Topic createJmsTopic(Session session, String topicName) throws BallerinaJmsException {
-        try {
-            return session.createTopic(topicName);
-        } catch (JMSException e) {
-            throw new BallerinaJmsException("Error creating topic.", e);
-        }
-    }
-
     public static String createTemporaryJmsQueue(Session session) throws BallerinaJmsException {
         try {
             TemporaryQueue temporaryQueue = session.createTemporaryQueue();
@@ -83,12 +67,4 @@ public class JmsSessionUtils {
         }
     }
 
-    public static void unsubscribeJmsSubscription(Session session, String subscriptionId) throws BallerinaJmsException {
-        try {
-            session.unsubscribe(subscriptionId);
-        } catch (JMSException e) {
-            throw new BallerinaJmsException("Error occurred while un-subscribing for subscription id "
-                                            + subscriptionId, e);
-        }
-    }
 }

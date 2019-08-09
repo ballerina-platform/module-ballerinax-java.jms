@@ -49,10 +49,15 @@ public type TextMessage client object {
         }
     }
 
+    function getJmsMessage() returns handle {
+        return self.jmsTextMessage;
+    }
+
 };
 
 public function setJmsText(handle textMessage, handle data) returns error? = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsTextMessageUtils"
+    name: "setText",
+    class: "javax.jms.TextMessage"
 } external;
 
 public function getJmsText(handle textMessage) returns handle | error = @java:Method {

@@ -21,7 +21,7 @@
 # application data being sent.
 public type Message client object {
 
-    private handle jmsMessage = java:createNull();
+    handle jmsMessage = java:createNull();
 
     # Initialized a `Message` object.
     # 
@@ -45,6 +45,9 @@ public type Message client object {
         return clearMessageBody(self.jmsMessage);
     }
 
+    function getJmsMessage() returns handle {
+        return self.jmsMessage;
+    }
 };
 
 public function acknowledgeMessage(handle message) returns error? = @java:Method {

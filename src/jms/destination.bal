@@ -44,9 +44,10 @@ public type Destination object {
     private handle jmsDestination = java:createNull();
 
     // This object is constructed as package private as it needs to be created using the session.
-    function __init(string destName, string destType) {
+    function __init(string destName, string destType, handle destination) {
         self.destinationName = destName;
         self.destinationType = destType;
+        self.jmsDestination = destination;
     }
 
     public function getName() returns string {

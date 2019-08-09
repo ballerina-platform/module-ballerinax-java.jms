@@ -87,3 +87,14 @@ public type ConnectionConfiguration record {|
     string? password = ();
     map<string> properties = {};
 |};
+
+public function startJmsConnection(handle jmsConnection) returns error? = @java:Method {
+    name: "start",
+    class: "javax.jms.Connection"
+} external;
+
+
+public function stopJmsConnection(handle jmsConnection) returns error? = @java:Method {
+    name: "stop",
+    class: "javax.jms.Connection"
+} external;

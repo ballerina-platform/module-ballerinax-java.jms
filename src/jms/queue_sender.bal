@@ -47,8 +47,10 @@ public type QueueSender client object {
         }
         if (queue is Destination) {
             self.initQueueSender(self.session, queue.getJmsDestination());
+            log:printInfo("With Destination");
         } else {
             self.initQueueSender(self.session, self.JAVA_NULL);
+            log:printInfo("Without Destination");
         }
     }
 
@@ -61,28 +63,35 @@ public type QueueSender client object {
         }
     }
 
-    // # Sends a message to the JMS provider
-    // #
-    // # + message - Message to be sent to the JMS provider
-    // # + return - Error if unable to send the message to the queue
-    // public remote function send(Message message) returns error? {
+    # Sends a message to the JMS provider
+    #
+    # + message - Message to be sent to the JMS provider
+    # + return - Error if unable to send the message to the queue
+    public remote function send(TextMessage message) returns error? {
+        return send(self.jmsProducer, message.getJmsMessage());
+    }
 
-    //     return ();
-    // }
-
-    // # Sends a message to a given destination of the JMS provider
-    // #
-    // # + destination - Destination used for the message sender
-    // # + message - Message to be sent to the JMS provider
-    // # + return - Error if sending to the given destination fails
-    // public remote function sendTo(Destination destination, Message message) returns error? {
-    //     validateQueue(destination);
-    //     self.initQueueSender(self.session, destination);
-    //     return self->send(message);
-    // }
+    # Sends a message to a given destination of the JMS provider
+    #
+    # + destination - Destination used for the message sender
+    # + message - Message to be sent to the JMS provider
+    # + return - Error if sending to the given destination fails
+    public remote function sendTo(Destination destination, TextMessage message) returns error? {
+        return sendToDestination(self.jmsProducer, destination.getJmsDestination(), message.getJmsMessage());
+    }
 };
 
-public function createJmsProducer(handle session, handle destination) returns handle = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsProducerUtils"
+public function createJmsProducer(handle session, handle destination) returns handle|error = @java:Method {
+    name: "createProducer",
+    class: "javax.jms.Session"
 } external;
 
+public function send(handle messageProducer, handle message) returns error? = @java:Method {
+    name: "send",
+    class: "javax.jms.MessageProducer"
+} external;
+
+public function sendToDestination(handle messageProducer, handle destination, handle message) returns error? = @java:Method {
+    name: "send",
+    class: "javax.jms.MessageProducer"
+} external;

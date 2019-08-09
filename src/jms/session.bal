@@ -55,7 +55,7 @@ public type Session client object {
         if (val is handle) {
             string? queueVal = java:toString(val);
             if (queueVal is string) {
-                Destination destination = new(queueVal, TEMP_QUEUE);
+                Destination destination = new(queueVal, TEMP_QUEUE, java:createNull());
                 return destination;
             } else {
                 JmsError err = error("empty queue name");
@@ -74,7 +74,7 @@ public type Session client object {
         if (val is handle) {
             string? topicVal = java:toString(val);
             if (topicVal is string) {
-                Destination destination = new(topicVal, TEMP_QUEUE);
+                Destination destination = new(topicVal, TEMP_QUEUE, java:createNull());
                 return destination;
             } else {
                 JmsError err = error("empty topic name");
@@ -93,7 +93,7 @@ public type Session client object {
         
         handle|error val = createJmsQueue(self.jmsSession, java:fromString(queueName));
         if (val is handle) {
-            Destination destination = new(queueName, QUEUE);
+            Destination destination = new(queueName, QUEUE, val);
             return destination;
         } else {
             return val;
@@ -107,7 +107,7 @@ public type Session client object {
     public function createTopic(string topicName) returns Destination|error {
         handle|error val = createJmsTopic(self.jmsSession, java:fromString(topicName));
         if (val is handle) {
-            Destination destination = new(topicName, TOPIC);
+            Destination destination = new(topicName, TOPIC, val);
             return destination;
         } else {
             return val;
@@ -147,6 +147,11 @@ public type Session client object {
         }
     }
 
+    // public function createQueueReceiver() returns QueueRecevier|error {
+        
+
+    // }
+
 };
 
 # The Configurations that are related to a JMS session.
@@ -163,4 +168,14 @@ public function createJmsMessage(handle session) returns handle | error = @java:
 
 public function createJmsTextMessage(handle session) returns handle | error = @java:Method {
     class: "org.wso2.ei.module.jms.JmsTextMessageUtils"
+} external;
+
+public function createJmsQueue(handle session, handle queueName) returns handle | error = @java:Method {
+    name: "createQueue",
+    class: "javax.jms.Session"
+} external;
+
+public function createJmsTopic(handle session, handle topicName) returns handle | error = @java:Method {
+    name: "createTopic",
+    class: "javax.jms.Session"
 } external;
