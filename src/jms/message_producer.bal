@@ -21,7 +21,7 @@ import ballerinax/java;
 # JMS QueueSender Endpoint
 #
 # + session - Session of the queue sender
-public type QueueSender client object {
+public type MessageProducer client object {
 
     public Session session;
     private handle jmsProducer = java:createNull();
@@ -46,15 +46,15 @@ public type QueueSender client object {
                 });
         }
         if (queue is Destination) {
-            self.initQueueSender(self.session, queue.getJmsDestination());
+            self.initMessageProducer(self.session, queue.getJmsDestination());
             log:printInfo("With Destination");
         } else {
-            self.initQueueSender(self.session, self.JAVA_NULL);
+            self.initMessageProducer(self.session, self.JAVA_NULL);
             log:printInfo("Without Destination");
         }
     }
 
-    function initQueueSender(Session session, handle jmsDestination) {
+    function initMessageProducer(Session session, handle jmsDestination) {
         handle|error val = createJmsProducer(session.getJmsSession(), jmsDestination);
         if (val is handle) {
             self.jmsProducer = val;

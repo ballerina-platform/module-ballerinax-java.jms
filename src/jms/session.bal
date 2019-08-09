@@ -147,10 +147,15 @@ public type Session client object {
         }
     }
 
-    // public function createQueueReceiver() returns QueueRecevier|error {
-        
-
-    // }
+    public remote function createConsumer(Destination destination) returns MessageConsumer|error {
+        var val = createJmsConsumer(self.jmsSession, destination.getJmsDestination());
+        if (val is handle) {
+            MessageConsumer consumer = new(val);
+            return consumer;
+        } else {
+            return val;
+        }
+    }
 
 };
 
@@ -179,5 +184,10 @@ public function createJmsQueue(handle session, handle queueName) returns handle 
 
 public function createJmsTopic(handle session, handle topicName) returns handle | error = @java:Method {
     name: "createTopic",
+    class: "javax.jms.Session"
+} external;
+
+public function createJmsConsumer(handle jmsSession, handle jmsDestination) returns handle|error = @java:Method {
+    name: "createConsumer",
     class: "javax.jms.Session"
 } external;
