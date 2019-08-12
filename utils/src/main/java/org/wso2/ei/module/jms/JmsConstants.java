@@ -105,6 +105,8 @@ public class JmsConstants {
     // Destination types
     public static final String DESTINATION_TYPE_QUEUE = "queue";
     public static final String DESTINATION_TYPE_TOPIC = "topic";
+    public static final String DESTINATION_TYPE_TEMP_QUEUE = "temporaryQueue";
+    public static final String DESTINATION_TYPE_TEMP_TOPIC = "temporaryTopic";
 
 
     // The data types for Stream or Byte message types

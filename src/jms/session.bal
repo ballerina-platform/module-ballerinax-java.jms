@@ -137,13 +137,23 @@ public type Session client object {
     # Creates a JMS text message.
     #
     # + return - Returns the JMS text message or an error if it fails.
-    public function createTextMessage() returns TextMessage|error {
-        handle|error val = createJmsTextMessage(self.jmsSession);
-        if (val is handle) {
-            TextMessage textMessage = new(val);
-            return textMessage;
+    public function createTextMessage(string text = "") returns TextMessage|error {
+        if (text == "") {
+            handle|error val = createJmsTextMessage(self.jmsSession);
+            if (val is handle) {
+                TextMessage textMessage = new(val);
+                return textMessage;
+            } else {
+                return val;
+            }
         } else {
-            return val;
+            handle|error val = createJmsTextMessageWithText(self.jmsSession, java:fromString(text));
+            if (val is handle) {
+                TextMessage textMessage = new(val);
+                return textMessage;
+            } else {
+                return val;
+            }
         }
     }
 
@@ -174,6 +184,12 @@ public function createJmsMessage(handle session) returns handle | error = @java:
 
 public function createJmsTextMessage(handle session) returns handle | error = @java:Method {
     name: "createTextMessage",
+    class: "javax.jms.Session"
+} external;
+
+public function createJmsTextMessageWithText(handle session, handle text) returns handle | error = @java:Method {
+    name: "createTextMessage",
+    paramTypes: ["java.lang.String"],
     class: "javax.jms.Session"
 } external;
 

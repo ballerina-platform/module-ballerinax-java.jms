@@ -5,7 +5,8 @@ import ballerina/io;
 function testConnectionCreation () {
     
     Connection conn = new ({
-
+        initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+        providerUrl: "tcp://localhost:61616"
     });
     io:println("Connection created!");
     test:assertTrue(true , msg = "Failed!");

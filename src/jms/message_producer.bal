@@ -88,10 +88,12 @@ public function createJmsProducer(handle session, handle destination) returns ha
 
 public function send(handle messageProducer, handle message) returns error? = @java:Method {
     name: "send",
+    paramTypes: ["javax.jms.Message"],
     class: "javax.jms.MessageProducer"
 } external;
 
 public function sendToDestination(handle messageProducer, handle destination, handle message) returns error? = @java:Method {
     name: "send",
+    paramTypes: ["javax.jms.Destination", "javax.jms.Message"],
     class: "javax.jms.MessageProducer"
 } external;
