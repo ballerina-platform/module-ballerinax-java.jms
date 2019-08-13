@@ -9,7 +9,6 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TemporaryQueue;
 import javax.jms.TemporaryTopic;
-import javax.jms.Topic;
 
 public class JmsSessionUtils {
 
@@ -21,6 +20,9 @@ public class JmsSessionUtils {
 
         int sessionAckMode;
         boolean transactedSession = false;
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Session ack mode string: {}", ackModeString);
+        }
 
         switch (ackModeString) {
             case JmsConstants.CLIENT_ACKNOWLEDGE_MODE:
@@ -43,14 +45,13 @@ public class JmsSessionUtils {
         try {
             return connection.createSession(transactedSession, sessionAckMode);
         } catch (JMSException e) {
-            String message = "Error while creating session.";
-            LOGGER.error(message, e);
-            throw new BallerinaJmsException(message + " " + e.getMessage(), e);
+            throw new BallerinaJmsException("Error while creating session." + e.getMessage(), e);
         }
     }
 
     public static String createTemporaryJmsQueue(Session session) throws BallerinaJmsException {
         try {
+
             TemporaryQueue temporaryQueue = session.createTemporaryQueue();
             return temporaryQueue.getQueueName();
         } catch (JMSException e) {

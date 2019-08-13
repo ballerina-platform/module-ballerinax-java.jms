@@ -9,7 +9,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jms-utils</artifactId>
-
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -24,7 +23,6 @@
             <artifactId>javax.jms-api</artifactId>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -61,5 +59,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

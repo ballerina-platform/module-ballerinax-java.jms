@@ -29,7 +29,7 @@ public type Message client object {
     # Initialized a `Message` object.
     # 
     # + handle - The java reference to the jms message.
-    function __init(handle message) {
+    public function __init(handle message) {
         self.jmsMessage = message;
     }
 

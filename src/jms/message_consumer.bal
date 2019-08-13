@@ -17,10 +17,11 @@
 import ballerina/log;
 import ballerinax/java;
 
-
 public type MessageConsumer client object {
 
     private handle jmsConsumer = java:createNull();
+
+    private MessageListener? messageListener = ();
 
     function __init(handle jmsMessageConsumer) {
         self.jmsConsumer = jmsMessageConsumer;
@@ -47,6 +48,26 @@ public type MessageConsumer client object {
             return new Message(jmsMessage);
         }
     }
+
+    public function setMessageListener(MessageListener messageListener) returns error? {
+        self.messageListener = messageListener;
+        return setJmsMessageListener(self.jmsConsumer, self);
+    }
+
+    private function onMessage(handle message) returns () {
+        var val = self.messageListener;
+        if (val is MessageListener) {
+            if (isTextMessage(message)) {
+                TextMessage textMessage = new (message);
+                val.onMessage(textMessage);
+            } else if (isMessage(message)) {
+                Message m = new(message);
+                val.onMessage(m);
+            }
+        } else {
+            log:printDebug("Message listener not set");
+        }
+    }
 };
 
 function receiveJmsMessage(handle jmsMessageConsumer) returns handle|error = @java:Method {
@@ -61,4 +82,9 @@ function isTextMessage(handle jmsMessage) returns boolean = @java:Method {
 function closeJmsConsumer(handle jmsConsumer) returns error? = @java:Method {
     name: "close",
     class: "javax.jms.MessageConsumer"
+} external;
+
+function setJmsMessageListener(handle jmsConsumer, MessageConsumer messageConsumer) returns error? = @java:Method {
+    name: "setMessageListener",
+    class: "org.wso2.ei.module.jms.JmsQueueReceiverUtils"
 } external;

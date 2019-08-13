@@ -19,19 +19,8 @@
 
 package org.wso2.ei.module.jms;
 
-import org.ballerinalang.jvm.values.MapValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 /**
  * Utility class for JMS related common operations.
