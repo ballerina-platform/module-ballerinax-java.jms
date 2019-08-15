@@ -1,11 +1,8 @@
 package org.wso2.ei.module.jms;
 
-import org.ballerinalang.jvm.scheduling.Scheduler;
-import org.ballerinalang.jvm.scheduling.Strand;
+import org.ballerinalang.jvm.BRuntime;
 import org.ballerinalang.jvm.values.ObjectValue;
 
-import java.io.File;
-import java.util.function.Consumer;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -16,37 +13,29 @@ public class JmsQueueReceiverUtils {
     private JmsQueueReceiverUtils() {
     }
 
-//    private static Scheduler scheduler = new Scheduler(1, false);
-
-//    static {
-//        scheduler.start();
-//    }
-
     public static void setMessageListener(MessageConsumer consumer, ObjectValue balObject) throws BallerinaJmsException {
+        BRuntime runtime = BRuntime.getCurrentRuntime();
         try {
-            consumer.setMessageListener(new ListenerImpl(balObject));
+            consumer.setMessageListener(new ListenerImpl(balObject, runtime));
         } catch (JMSException e) {
             throw new BallerinaJmsException("Error occurred while setting the ");
         }
     }
+
     private static class ListenerImpl implements MessageListener {
 
         private final ObjectValue ballerinaObject;
+        private final BRuntime runtime;
 
-        ListenerImpl(ObjectValue ballerinaObject) {
+        ListenerImpl(ObjectValue ballerinaObject, BRuntime runtime) {
             this.ballerinaObject = ballerinaObject;
+            this.runtime = runtime;
         }
 
         @Override
         public void onMessage(Message message) {
-            Consumer func = o -> {
-                Object[] objects = new Object[2];
-                objects[0] = message;
-                objects[1] = true;
-                ballerinaObject.call((Strand) ((Object[]) o)[0], "onMessage", objects);
-            };
-            Object[] params = new Object[1];
-//            scheduler.schedule(params, func, null);
+            Object[] args = {message, true};
+            runtime.invokeMethod(ballerinaObject, "onMessage", args);
         }
     }
 

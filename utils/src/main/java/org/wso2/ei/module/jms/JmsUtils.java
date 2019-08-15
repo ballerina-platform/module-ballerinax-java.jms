@@ -36,64 +36,8 @@ public class JmsUtils {
     }
 
 //
-    public static boolean isNullOrEmptyAfterTrim(String str) {
-        return str == null || str.trim().isEmpty();
+    static boolean notNullOrEmptyAfterTrim(String str) {
+        return !(str == null || str.trim().isEmpty());
     }
-//
-//    /**
-//     * Extract JMS Message from the struct.
-//     *
-//     * @param msgObj the Bllerina Message object
-//     * @return {@link Message} instance located in struct.
-//     */
-//    public static Message getJMSMessage(ObjectValue msgObj) {
-//        return (Message) msgObj.getNativeData(JmsConstants.JMS_MESSAGE_OBJECT);
-//    }
-//
-//    public static Topic getTopic(Session session, String topicPattern) throws JMSException {
-//        return session.createTopic(topicPattern);
-//    }
-//
-//    /**
-//     * Extract JMS Destination from the Destination struct.
-//     *
-//     * @param destinationBObject Destination struct.
-//     * @return JMS Destination object or null.
-//     */
-//    public static Destination getDestination(ObjectValue destinationBObject) {
-//        Destination destination = null;
-//        if (destinationBObject != null) {
-//            Object destObj = destinationBObject.getNativeData(JmsConstants.JMS_DESTINATION_OBJECT);
-//            if (destObj instanceof Destination) {
-//                destination = (Destination) destObj;
-//            }
-//        }
-//        return destination;
-//    }
-//
-//    public static byte[] getBytesData(ArrayValue bytesArray) {
-//        return Arrays.copyOf(bytesArray.getBytes(), bytesArray.size());
-//    }
-//
-
-//
-//    public static ObjectValue createAndPopulateMessageObject(Message jmsMessage, ObjectValue sessionObj) {
-//        String msgType;
-//        if (jmsMessage instanceof TextMessage) {
-//            msgType = JmsConstants.TEXT_MESSAGE;
-//        } else if (jmsMessage instanceof BytesMessage) {
-//            msgType = JmsConstants.BYTES_MESSAGE;
-//        } else if (jmsMessage instanceof StreamMessage) {
-//            msgType = JmsConstants.STREAM_MESSAGE;
-//        } else if (jmsMessage instanceof MapMessage) {
-//            msgType = JmsConstants.MAP_MESSAGE;
-//        } else {
-//            msgType = JmsConstants.MESSAGE;
-//        }
-//        ObjectValue messageObj = BallerinaValues.createObjectValue(JmsConstants.PROTOCOL_INTERNAL_PACKAGE_JMS,
-//                                                                   JmsConstants.MESSAGE_OBJ_NAME, sessionObj,
-//                                                                   msgType);
-//        messageObj.addNativeData(JmsConstants.JMS_MESSAGE_OBJECT, jmsMessage);
-//        return messageObj;
-//    }
 }
+

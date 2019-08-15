@@ -101,7 +101,7 @@ public class JmsConnectionUtils {
             String username = optionalConfigs.getStringValue(JmsConstants.ALIAS_USERNAME);
             String password = optionalConfigs.getStringValue(JmsConstants.ALIAS_PASSWORD);
 
-            if (!JmsUtils.isNullOrEmptyAfterTrim(username) && password != null) {
+            if (JmsUtils.notNullOrEmptyAfterTrim(username) && password != null) {
                 return connectionFactory.createConnection(username, password);
             } else {
                 return connectionFactory.createConnection();
@@ -124,7 +124,7 @@ public class JmsConnectionUtils {
             String connectionFactoryName = configParams.get(JmsConstants.ALIAS_CONNECTION_FACTORY_NAME);
             if (configParams.get(JmsConstants.ALIAS_PROVIDER_URL) != null) {
                 System.setProperty("qpid.dest_syntax", "BURL");
-                if (!JmsUtils.isNullOrEmptyAfterTrim(connectionFactoryName)) {
+                if (JmsUtils.notNullOrEmptyAfterTrim(connectionFactoryName)) {
                     configParams.put(JmsConstants.MB_CF_NAME_PREFIX + connectionFactoryName,
                                      configParams.get(JmsConstants.ALIAS_PROVIDER_URL));
                     configParams.remove(JmsConstants.ALIAS_PROVIDER_URL);

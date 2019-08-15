@@ -30,8 +30,8 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.StreamMessage;
 import javax.jms.TextMessage;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class JmsMessageUtils {
 
@@ -54,13 +54,12 @@ public class JmsMessageUtils {
     }
 
     public static boolean isObjectMessage(Message message) {
-
         return message instanceof ObjectMessage;
     }
 
     public static ArrayValue getPropertyNames(Message message) throws BallerinaJmsException {
         try {
-            ArrayList propertyNames = Collections.list(message.getPropertyNames());
+            List<String> propertyNames = Collections.list(message.getPropertyNames());
             return new ArrayValue(propertyNames.toArray(), new BArrayType(BTypes.typeString));
 
         } catch (JMSException e) {
