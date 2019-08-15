@@ -36,7 +36,7 @@ public type MessageConsumer client object {
         }
     }
 
-    public remote function receiveNoWait() returns Message|TextMessage|()|error {
+    public remote function receiveNoWait() returns Message|TextMessage|MapMessage|BytesMessage|StreamMessage|()|error {
         handle|error response = receiveNoWaitJmsMessage(self.jmsConsumer);
         if (response is handle) {
             if (java:isNull(response)) {
@@ -57,6 +57,12 @@ public type MessageConsumer client object {
         
         if (isTextMessage(jmsMessage)) {
             return new TextMessage(jmsMessage);
+        } else if (isMapMessage(jmsMessage)) {
+            return new MapMessage(jmsMessage);
+        } else if (isBytesMessage(jmsMessage)) {
+            return new BytesMessage(jmsMessage);
+        } else if (isStreamMessage(jmsMessage)) {
+            return new StreamMessage(jmsMessage);
         } else {
             return new Message(jmsMessage);
         }
@@ -84,7 +90,7 @@ public type MessageConsumer client object {
 
 function receiveJmsMessage(handle jmsMessageConsumer, int timeout) returns handle|error = @java:Method {
     name: "receive",
-    paramTypes: ["int"],
+    paramTypes: ["long"],
     class: "javax.jms.MessageConsumer"
 } external;
 
@@ -94,6 +100,18 @@ function receiveNoWaitJmsMessage(handle jmsMessageConsumer) returns handle|error
 } external;
 
 function isTextMessage(handle jmsMessage) returns boolean = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsMessageUtils"
+} external;
+
+function isMapMessage(handle jmsMessage) returns boolean = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsMessageUtils"
+} external;
+
+function isBytesMessage(handle jmsMessage) returns boolean = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsMessageUtils"
+} external;
+
+function isStreamMessage(handle jmsMessage) returns boolean = @java:Method {
     class: "org.wso2.ei.module.jms.JmsMessageUtils"
 } external;
 

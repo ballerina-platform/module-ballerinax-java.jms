@@ -19,13 +19,24 @@
 
 package org.wso2.ei.module.jms;
 
-public class BallerinaJmsException extends Exception {
+import org.ballerinalang.jvm.types.BArrayType;
+import org.ballerinalang.jvm.types.BTypes;
+import org.ballerinalang.jvm.values.ArrayValue;
 
-    BallerinaJmsException(String message) {
-        super(message);
-    }
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import java.util.ArrayList;
+import java.util.Collections;
 
-    public BallerinaJmsException(String message, Throwable cause) {
-        super(message, cause);
+public class JmsMapMessageUtils {
+
+    public static ArrayValue getMapNames(MapMessage message) throws BallerinaJmsException {
+        try {
+            ArrayList propertyNames = Collections.list(message.getMapNames());
+            return new ArrayValue(propertyNames.toArray(), new BArrayType(BTypes.typeString));
+
+        } catch (JMSException e) {
+            throw new BallerinaJmsException("Error occurred while getting property names.", e);
+        }
     }
 }

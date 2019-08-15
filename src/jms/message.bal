@@ -1,4 +1,4 @@
-// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Represent the JMS message used to send and receive content from the a JMS provider.
+# Represent the 'Message' used to send and receive content from the a JMS provider.
 #
 # Most message-oriented middleware (MOM) products treat messages as lightweight entities that consist of a header
 # and a body. The header contains fields used for message routing and identification; the body contains the
