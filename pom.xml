@@ -45,7 +45,7 @@
             <dependency>
                 <groupId>org.ballerinalang</groupId>
                 <artifactId>ballerina-runtime</artifactId>
-                <version>1.0.0-alpha</version>
+                <version>1.0.0-beta-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>javax.jms</groupId>
