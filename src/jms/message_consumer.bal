@@ -27,10 +27,23 @@ public type MessageConsumer client object {
         self.jmsConsumer = jmsMessageConsumer;
     }
 
-    public remote function receive() returns Message|TextMessage|error {
-        var response = receiveJmsMessage(self.jmsConsumer);
+    public remote function receive(int timeoutMillis = 0) returns Message|TextMessage|error {
+        var response = receiveJmsMessage(self.jmsConsumer, timeoutMillis);
         if (response is handle) {
             return self.getBallerinaMessage(response);
+        } else {
+            return response;
+        }
+    }
+
+    public remote function receiveNoWait() returns Message|TextMessage|()|error {
+        handle|error response = receiveNoWaitJmsMessage(self.jmsConsumer);
+        if (response is handle) {
+            if (java:isNull(response)) {
+                return ();
+            } else {
+                return self.getBallerinaMessage(response);
+            }
         } else {
             return response;
         }
@@ -55,14 +68,13 @@ public type MessageConsumer client object {
     }
 
     private function onMessage(handle message) returns () {
-        var val = self.messageListener;
-        if (val is MessageListener) {
-            if (isTextMessage(message)) {
-                TextMessage textMessage = new (message);
-                val.onMessage(textMessage);
-            } else if (isMessage(message)) {
-                Message m = new(message);
-                val.onMessage(m);
+        var listenerInstance = self.messageListener;
+        if (listenerInstance is MessageListener) {
+            var msg = self.getBallerinaMessage(message);
+            if (msg is error) {
+                log:printDebug("Unknown message type");
+            } else {
+                listenerInstance.onMessage(msg);
             }
         } else {
             log:printDebug("Message listener not set");
@@ -70,8 +82,14 @@ public type MessageConsumer client object {
     }
 };
 
-function receiveJmsMessage(handle jmsMessageConsumer) returns handle|error = @java:Method {
+function receiveJmsMessage(handle jmsMessageConsumer, int timeout) returns handle|error = @java:Method {
     name: "receive",
+    paramTypes: ["int"],
+    class: "javax.jms.MessageConsumer"
+} external;
+
+function receiveNoWaitJmsMessage(handle jmsMessageConsumer) returns handle|error = @java:Method {
+    name: "receiveNoWait",
     class: "javax.jms.MessageConsumer"
 } external;
 

@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
-import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TemporaryQueue;
 import javax.jms.TemporaryTopic;
@@ -51,7 +50,6 @@ public class JmsSessionUtils {
 
     public static String createTemporaryJmsQueue(Session session) throws BallerinaJmsException {
         try {
-
             TemporaryQueue temporaryQueue = session.createTemporaryQueue();
             return temporaryQueue.getQueueName();
         } catch (JMSException e) {

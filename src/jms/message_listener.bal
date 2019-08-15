@@ -16,5 +16,5 @@
 
 public type MessageListener abstract object {
 
-    public function onMessage(TextMessage message) returns ();
+    public function onMessage(Message|TextMessage message) returns ();
 };

@@ -30,6 +30,7 @@ public class JmsMessageUtils {
     }
 
     public static boolean isObjectMessage(Message message) {
+
         return message instanceof ObjectMessage;
     }
 
