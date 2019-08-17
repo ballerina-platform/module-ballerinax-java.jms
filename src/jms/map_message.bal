@@ -299,7 +299,7 @@ public type MapMessage client object {
         handle|error val = getJMSDestination(self.jmsMessage);
         if (val is handle) {
             [string, string] [destinationName, destinationType] = check toDestination(val);
-            Destination destination = new(destinationName, destinationType, val);
+            Destination destination = new(val, destinationName, check getDestinationType(destinationType));
             return destination;
         } else {
             return val;
@@ -346,7 +346,7 @@ public type MapMessage client object {
         handle|error val = getJMSReplyTo(self.jmsMessage);
         if (val is handle) {
             [string, string] [destinationName, destinationType] = check toDestination(val);
-            Destination destination = new(destinationName, destinationType, val);
+            Destination destination = new(val, destinationName, check getDestinationType(destinationType));
             return destination;
         } else {
             return val;

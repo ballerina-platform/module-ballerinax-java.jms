@@ -45,7 +45,14 @@
             <dependency>
                 <groupId>org.ballerinalang</groupId>
                 <artifactId>ballerina-runtime</artifactId>
-                <version>1.0.0-beta-SNAPSHOT</version>
+                <version>${ballerina.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.ballerinalang</groupId>
+                <artifactId>ballerina-lang</artifactId>
+                <version>${ballerina.version}</version>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>javax.jms</groupId>
@@ -68,6 +75,7 @@
     <properties>
         <project-home>${project.basedir}</project-home>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <ballerina.version>1.0.0-beta-SNAPSHOT</ballerina.version>
         <maven.checkstyleplugin.excludes>**/generated/**</maven.checkstyleplugin.excludes>
         <maven.spotbugsplugin.exclude.file>spotbugs-exclude.xml</maven.spotbugsplugin.exclude.file>
         <slf4j.version>1.7.21</slf4j.version>

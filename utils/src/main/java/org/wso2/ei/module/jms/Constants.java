@@ -24,12 +24,20 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.naming.Context;
 
+import static org.ballerinalang.jvm.util.BLangConstants.ORG_NAME_SEPARATOR;
+import static org.ballerinalang.jvm.util.BLangConstants.VERSION_SEPARATOR;
+
 /**
  * Constants for jms.
  *
  * @since 0.8.0
  */
-public class JmsConstants {
+public class Constants {
+
+    static final String PACKAGE_NAME = "wso2/jms";
+    public static final String VERSION = "0.6.0";
+
+    public static final String PACKAGE_NAME_WITH_VERSION = PACKAGE_NAME + VERSION_SEPARATOR + VERSION;
 
     // Destination types
     public static final String DESTINATION_TYPE_QUEUE = "queue";
@@ -76,13 +84,12 @@ public class JmsConstants {
 
     private static Map<String, String> mappingParameters;
 
-    public static final String PARAM_CONNECTION_FACTORY_JNDI_NAME = "transport.jms.ConnectionFactoryJNDIName";
+    static final String PARAM_CONNECTION_FACTORY_JNDI_NAME = "transport.jms.ConnectionFactoryJNDIName";
     public static final String PARAM_CONNECTION_FACTORY_TYPE = "transport.jms.ConnectionFactoryType";
     public static final String PARAM_DESTINATION_NAME = "transport.jms.Destination";
     public static final String PARAM_ACK_MODE = "transport.jms.SessionAcknowledgement";
     public static final String PARAM_DURABLE_SUB_ID = "transport.jms.DurableSubscriberName";
     public static final String PARAM_CLIENT_ID = "transport.jms.DurableSubscriberClientId";
-
     static {
         mappingParameters = new HashMap<>();
         mappingParameters.put(ALIAS_INITIAL_CONTEXT_FACTORY, Context.INITIAL_CONTEXT_FACTORY);
@@ -95,17 +102,27 @@ public class JmsConstants {
         mappingParameters.put(ALIAS_DURABLE_SUBSCRIBER_ID, PARAM_DURABLE_SUB_ID);
     }
 
-    public static final Map<String, String> MAPPING_PARAMETERS = Collections.unmodifiableMap(mappingParameters);
+
+    static final Map<String, String> MAPPING_PARAMETERS = Collections.unmodifiableMap(mappingParameters);
 
     /**
      * Acknowledge Modes.
      */
-    public static final String AUTO_ACKNOWLEDGE_MODE = "AUTO_ACKNOWLEDGE";
+    static final String AUTO_ACKNOWLEDGE_MODE = "AUTO_ACKNOWLEDGE";
 
-    public static final String CLIENT_ACKNOWLEDGE_MODE = "CLIENT_ACKNOWLEDGE";
-    public static final String DUPS_OK_ACKNOWLEDGE_MODE = "DUPS_OK_ACKNOWLEDGE";
-    public static final String SESSION_TRANSACTED_MODE = "SESSION_TRANSACTED";
+    static final String CLIENT_ACKNOWLEDGE_MODE = "CLIENT_ACKNOWLEDGE";
+    static final String DUPS_OK_ACKNOWLEDGE_MODE = "DUPS_OK_ACKNOWLEDGE";
+    static final String SESSION_TRANSACTED_MODE = "SESSION_TRANSACTED";
 
-    private JmsConstants() {
+    static final String TEXT_MESSAGE_BAL_OBJECT_NAME = "TextMessage";
+    static final String MESSAGE_BAL_OBJECT_NAME = "Message";
+    static final String MAP_MESSAGE_BAL_OBJECT_NAME = "MapMessage";
+    static final String BYTE_MESSAGE_BAL_OBJECT_NAME = "BytesMessage";
+    static final String STREAM_MESSAGE_BAL_OBJECT_NAME = "StreamMessage";
+    static final String MESSAGE_BAL_OBJECT_FULL_NAME = PACKAGE_NAME_WITH_VERSION + ":" + MESSAGE_BAL_OBJECT_NAME;
+
+    static final String SERVICE_RESOURCE_NAME = "onMessage";
+
+    private Constants() {
     }
 }

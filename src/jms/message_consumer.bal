@@ -16,18 +16,53 @@
 
 import ballerina/log;
 import ballerinax/java;
+import ballerina/'lang\.object as lang;
 
 public type MessageConsumer client object {
 
+    *lang:AbstractListener;
     private handle jmsConsumer = java:createNull();
-
-    private MessageListener? messageListener = ();
 
     function __init(handle jmsMessageConsumer) {
         self.jmsConsumer = jmsMessageConsumer;
     }
 
-    public remote function receive(int timeoutMillis = 0) returns Message|TextMessage|error {
+    # Binds the queue receiver endpoint to a service.
+    #
+    # + s - The service instance.
+    # + name - Name of the service.
+    # + return - Returns nil or an error upon failure to register the listener.
+    public function __attach(service s, string? name = ()) returns error? {
+        return setMessageListener(self.jmsConsumer, s);
+    }
+
+    # Starts the endpoint.
+    #
+    # + return - Returns nil or an error upon failure to start.
+    public function __start() returns error? {
+        return;
+    }
+
+    public function __gracefulStop() returns error? {
+        return self.closeConsumer();
+    }
+
+    public function __immediateStop() returns error? {
+
+    }
+
+    # Stops consuming messages through the QueueListener.
+    #
+    # + return - Returns nil or an error upon failure to close the queue receiver.
+    public function __stop() returns error? {
+        return self.closeConsumer();
+    }
+
+    private function closeConsumer() returns error? {
+        return self->close();
+    }
+
+    public remote function receive(int timeoutMillis = 0) returns Message|error {
         var response = receiveJmsMessage(self.jmsConsumer, timeoutMillis);
         if (response is handle) {
             return self.getBallerinaMessage(response);
@@ -36,7 +71,7 @@ public type MessageConsumer client object {
         }
     }
 
-    public remote function receiveNoWait() returns Message|TextMessage|MapMessage|BytesMessage|StreamMessage|()|error {
+    public remote function receiveNoWait() returns Message|()|error {
         handle|error response = receiveNoWaitJmsMessage(self.jmsConsumer);
         if (response is handle) {
             if (java:isNull(response)) {
@@ -53,7 +88,7 @@ public type MessageConsumer client object {
         return closeJmsConsumer(self.jmsConsumer);
     }
 
-    private function getBallerinaMessage(handle jmsMessage) returns Message|TextMessage|error {
+    private function getBallerinaMessage(handle jmsMessage) returns Message|error {
         
         if (isTextMessage(jmsMessage)) {
             return new TextMessage(jmsMessage);
@@ -68,23 +103,8 @@ public type MessageConsumer client object {
         }
     }
 
-    public function setMessageListener(MessageListener messageListener) returns error? {
-        self.messageListener = messageListener;
-        return setJmsMessageListener(self.jmsConsumer, self);
-    }
-
-    private function onMessage(handle message) returns () {
-        var listenerInstance = self.messageListener;
-        if (listenerInstance is MessageListener) {
-            var msg = self.getBallerinaMessage(message);
-            if (msg is error) {
-                log:printDebug("Unknown message type");
-            } else {
-                listenerInstance.onMessage(msg);
-            }
-        } else {
-            log:printDebug("Message listener not set");
-        }
+    function getJmsConsumer() returns handle {
+        return self.jmsConsumer;
     }
 };
 
@@ -120,7 +140,6 @@ function closeJmsConsumer(handle jmsConsumer) returns error? = @java:Method {
     class: "javax.jms.MessageConsumer"
 } external;
 
-function setJmsMessageListener(handle jmsConsumer, MessageConsumer messageConsumer) returns error? = @java:Method {
-    name: "setMessageListener",
-    class: "org.wso2.ei.module.jms.JmsQueueReceiverUtils"
+function setMessageListener(handle jmsConsumer, any a) returns error? = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsMessageListenerUtils"
 } external;

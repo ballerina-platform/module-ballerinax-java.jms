@@ -81,11 +81,11 @@ public class JmsConnectionUtils {
                                               MapValue<String, String> optionalConfigs) throws BallerinaJmsException{
         Map<String, String> configParams = new HashMap<>();
 
-        configParams.put(JmsConstants.ALIAS_INITIAL_CONTEXT_FACTORY, initialContextFactory);
+        configParams.put(Constants.ALIAS_INITIAL_CONTEXT_FACTORY, initialContextFactory);
 
-        configParams.put(JmsConstants.ALIAS_PROVIDER_URL, providerUrl);
+        configParams.put(Constants.ALIAS_PROVIDER_URL, providerUrl);
 
-        configParams.put(JmsConstants.ALIAS_CONNECTION_FACTORY_NAME, connectionFactoryName);
+        configParams.put(Constants.ALIAS_CONNECTION_FACTORY_NAME, connectionFactoryName);
 
         preProcessIfWso2MB(configParams);
         updateMappedParameters(configParams);
@@ -98,8 +98,8 @@ public class JmsConnectionUtils {
         try {
             InitialContext initialContext = new InitialContext(properties);
             ConnectionFactory connectionFactory = (ConnectionFactory) initialContext.lookup(connectionFactoryName);
-            String username = optionalConfigs.getStringValue(JmsConstants.ALIAS_USERNAME);
-            String password = optionalConfigs.getStringValue(JmsConstants.ALIAS_PASSWORD);
+            String username = optionalConfigs.getStringValue(Constants.ALIAS_USERNAME);
+            String password = optionalConfigs.getStringValue(Constants.ALIAS_PASSWORD);
 
             if (JmsUtils.notNullOrEmptyAfterTrim(username) && password != null) {
                 return connectionFactory.createConnection(username, password);
@@ -116,25 +116,25 @@ public class JmsConnectionUtils {
 
     //
     private static void preProcessIfWso2MB(Map<String, String> configParams) throws BallerinaJmsException {
-        String initialConnectionFactoryName = configParams.get(JmsConstants.ALIAS_INITIAL_CONTEXT_FACTORY);
-        if (JmsConstants.BMB_ICF_ALIAS.equalsIgnoreCase(initialConnectionFactoryName)
-            || JmsConstants.MB_ICF_ALIAS.equalsIgnoreCase(initialConnectionFactoryName)) {
+        String initialConnectionFactoryName = configParams.get(Constants.ALIAS_INITIAL_CONTEXT_FACTORY);
+        if (Constants.BMB_ICF_ALIAS.equalsIgnoreCase(initialConnectionFactoryName)
+            || Constants.MB_ICF_ALIAS.equalsIgnoreCase(initialConnectionFactoryName)) {
 
-            configParams.put(JmsConstants.ALIAS_INITIAL_CONTEXT_FACTORY, JmsConstants.MB_ICF_NAME);
-            String connectionFactoryName = configParams.get(JmsConstants.ALIAS_CONNECTION_FACTORY_NAME);
-            if (configParams.get(JmsConstants.ALIAS_PROVIDER_URL) != null) {
+            configParams.put(Constants.ALIAS_INITIAL_CONTEXT_FACTORY, Constants.MB_ICF_NAME);
+            String connectionFactoryName = configParams.get(Constants.ALIAS_CONNECTION_FACTORY_NAME);
+            if (configParams.get(Constants.ALIAS_PROVIDER_URL) != null) {
                 System.setProperty("qpid.dest_syntax", "BURL");
                 if (JmsUtils.notNullOrEmptyAfterTrim(connectionFactoryName)) {
-                    configParams.put(JmsConstants.MB_CF_NAME_PREFIX + connectionFactoryName,
-                                     configParams.get(JmsConstants.ALIAS_PROVIDER_URL));
-                    configParams.remove(JmsConstants.ALIAS_PROVIDER_URL);
+                    configParams.put(Constants.MB_CF_NAME_PREFIX + connectionFactoryName,
+                                     configParams.get(Constants.ALIAS_PROVIDER_URL));
+                    configParams.remove(Constants.ALIAS_PROVIDER_URL);
                 } else {
                     throw new BallerinaJmsException(
-                            JmsConstants.ALIAS_CONNECTION_FACTORY_NAME + " property should be set");
+                            Constants.ALIAS_CONNECTION_FACTORY_NAME + " property should be set");
                 }
-            } else if (configParams.get(JmsConstants.CONFIG_FILE_PATH) != null) {
-                configParams.put(JmsConstants.ALIAS_PROVIDER_URL, configParams.get(JmsConstants.CONFIG_FILE_PATH));
-                configParams.remove(JmsConstants.CONFIG_FILE_PATH);
+            } else if (configParams.get(Constants.CONFIG_FILE_PATH) != null) {
+                configParams.put(Constants.ALIAS_PROVIDER_URL, configParams.get(Constants.CONFIG_FILE_PATH));
+                configParams.remove(Constants.CONFIG_FILE_PATH);
             }
         }
     }
@@ -144,7 +144,7 @@ public class JmsConnectionUtils {
         Map<String, String> tempMap = new HashMap<>();
         while (iterator.hasNext()) {
             Map.Entry<String, String> entry = iterator.next();
-            String mappedParam = JmsConstants.MAPPING_PARAMETERS.get(entry.getKey());
+            String mappedParam = Constants.MAPPING_PARAMETERS.get(entry.getKey());
             if (mappedParam != null) {
                 tempMap.put(mappedParam, entry.getValue());
                 iterator.remove();

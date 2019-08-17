@@ -51,67 +51,30 @@ public type Session client object {
     #
     # + return - Returns the JMS destination for a temporary queue or an error if it fails.
     public remote function createTemporaryQueue() returns Destination|JmsError {
-        handle|error val = createTemporaryJmsQueue(self.jmsSession);
-        if (val is handle) {
-            string? queueVal = java:toString(val);
-            if (queueVal is string) {
-                Destination destination = new(queueVal, TEMP_QUEUE, java:createNull());
-                return destination;
-            } else {
-                JmsError err = error("empty queue name");
-                return err;
-            }
-        } else {
-            return val;
-        }
+        return new Destination(self, "", TEMP_TOPIC);
     }
 
     # Creates a JMS Topic, which can be used as a temporary response destination.
     #
     # + return - Returns the JMS destination for a temporary topic or an error if it fails.
     public function createTemporaryTopic() returns Destination|JmsError {
-        handle|error val = createTemporaryJmsTopic(self.jmsSession);
-        if (val is handle) {
-            string? topicVal = java:toString(val);
-            if (topicVal is string) {
-                Destination destination = new(topicVal, TEMP_QUEUE, java:createNull());
-                return destination;
-            } else {
-                JmsError err = error("empty topic name");
-                return err;
-            }
-        } else {
-            return val;
-        }
+        return new Destination(self, "", TEMP_TOPIC);
     }
 
     # Creates a JMS Queue, which can be used with a message producer.
     #
     # + queueName - The name of the Queue.
     # + return - Returns the JMS destination for a queue or an error if it fails.
-    public function createQueue(string queueName) returns Destination|error {
-        
-        handle|error val = createJmsQueue(self.jmsSession, java:fromString(queueName));
-        if (val is handle) {
-            Destination destination = new(queueName, QUEUE, val);
-            return destination;
-        } else {
-            return val;
-        }
+    public remote function createQueue(string queueName) returns Destination|error {
+        return new Destination(self, queueName, QUEUE);
     }
 
     # Creates a JMS Topic, which can be used with a message producer.
     #
     # + topicName - The name of the Topic.
     # + return - Returns the JMS destination for a topic or an error if it fails.
-    public function createTopic(string topicName) returns Destination|error {
-        handle|error val = createJmsTopic(self.jmsSession, java:fromString(topicName));
-        if (val is handle) {
-            Destination destination = new(topicName, TOPIC, val);
-            return destination;
-        } else {
-            return val;
-        }
+    public remote function createTopic(string topicName) returns Destination|error {
+        return new Destination(self, topicName, TOPIC);
     }
 
     # Get the reference to the java session object.
@@ -157,8 +120,10 @@ public type Session client object {
         }
     }
 
-    public remote function createConsumer(Destination destination) returns MessageConsumer|error {
-        var val = createJmsConsumer(self.jmsSession, destination.getJmsDestination());
+    public remote function createConsumer(Destination destination, string messageSelector = "",
+                                          boolean noLocal = false) returns MessageConsumer|error {
+        var val = createJmsConsumer(self.jmsSession, destination.getJmsDestination(),
+                                    java:fromString(messageSelector), noLocal);
         if (val is handle) {
             MessageConsumer consumer = new(val);
             return consumer;
@@ -193,17 +158,10 @@ public function createJmsTextMessageWithText(handle session, handle text) return
     class: "javax.jms.Session"
 } external;
 
-public function createJmsQueue(handle session, handle queueName) returns handle | error = @java:Method {
-    name: "createQueue",
-    class: "javax.jms.Session"
-} external;
 
-public function createJmsTopic(handle session, handle topicName) returns handle | error = @java:Method {
-    name: "createTopic",
-    class: "javax.jms.Session"
-} external;
-
-public function createJmsConsumer(handle jmsSession, handle jmsDestination) returns handle|error = @java:Method {
+public function createJmsConsumer(handle jmsSession, handle jmsDestination,
+                                  handle selectorString, boolean noLocal) returns handle|error = @java:Method {
     name: "createConsumer",
+    paramTypes: ["javax.jms.Destination", "java.lang.String", "boolean"],
     class: "javax.jms.Session"
 } external;

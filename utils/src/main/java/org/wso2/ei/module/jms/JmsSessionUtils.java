@@ -43,17 +43,17 @@ public class JmsSessionUtils {
         }
 
         switch (ackModeString) {
-            case JmsConstants.CLIENT_ACKNOWLEDGE_MODE:
+            case Constants.CLIENT_ACKNOWLEDGE_MODE:
                 sessionAckMode = Session.CLIENT_ACKNOWLEDGE;
                 break;
-            case JmsConstants.SESSION_TRANSACTED_MODE:
+            case Constants.SESSION_TRANSACTED_MODE:
                 sessionAckMode = Session.SESSION_TRANSACTED;
                 transactedSession = true;
                 break;
-            case JmsConstants.DUPS_OK_ACKNOWLEDGE_MODE:
+            case Constants.DUPS_OK_ACKNOWLEDGE_MODE:
                 sessionAckMode = Session.DUPS_OK_ACKNOWLEDGE;
                 break;
-            case JmsConstants.AUTO_ACKNOWLEDGE_MODE:
+            case Constants.AUTO_ACKNOWLEDGE_MODE:
                 sessionAckMode = Session.AUTO_ACKNOWLEDGE;
                 break;
             default:

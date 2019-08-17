@@ -40,14 +40,35 @@ public const TEMP_TOPIC = "temporaryTopic";
 # + destinationType - Type of the destination (either queue or topic)
 public type Destination object {
     private string destinationName;
-    private string destinationType;
+    private DestinationType destinationType;
     private handle jmsDestination = java:createNull();
 
     // This object is constructed as package private as it needs to be created using the session.
-    function __init(string destName, string destType, handle destination) {
+    public function __init(Session|handle d, string destName, DestinationType destType) {
         self.destinationName = destName;
         self.destinationType = destType;
-        self.jmsDestination = destination;
+
+        if (d is Session) {
+            handle|error jmsDest = self.createDestination(d, destName, destType);
+            if (jmsDest is handle) {
+                self.jmsDestination = jmsDest;
+            } else {
+                log:printError("Error occurred while creating destination ");
+            }
+        } else {
+            self.jmsDestination = d;
+        }
+    }
+
+    public function createDestination(Session session, string destName, DestinationType destType) returns handle|error {
+        handle|error d = java:createNull();
+        match destType {
+            QUEUE => d = createJmsQueue(session.getJmsSession(), java:fromString(destName));
+            TOPIC => d = createJmsTopic(session.getJmsSession(), java:fromString(destName));
+            TEMP_QUEUE => d = createTemporaryJmsTopic(session.getJmsSession());
+            TEMP_TOPIC => d = createTemporaryJmsQueue(session.getJmsSession());
+        }
+        return d;
     }
 
     public function getName() returns string {
@@ -62,3 +83,36 @@ public type Destination object {
         return self.jmsDestination;
     }
 };
+
+function getDestinationType(string typeString) returns DestinationType|error {
+    match typeString {
+        "queue" => return QUEUE;
+        "topic" => return TOPIC;
+        "temporaryQueue" => return TEMP_QUEUE;
+        "temporaryTopic" => return TEMP_TOPIC;
+    }
+    return error("Unknown destination type " + typeString);
+}
+
+function toDestination(handle destination) returns [string, string] | error = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsDestinationUtils"
+} external;
+
+function createJmsQueue(handle session, handle queueName) returns handle | error = @java:Method {
+    name: "createQueue",
+    class: "javax.jms.Session"
+} external;
+
+function createJmsTopic(handle session, handle topicName) returns handle | error = @java:Method {
+    name: "createTopic",
+    class: "javax.jms.Session"
+} external;
+
+function createTemporaryJmsQueue(handle session) returns handle | error = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsSessionUtils"
+} external;
+
+function createTemporaryJmsTopic(handle session) returns handle | error = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsSessionUtils"
+
+} external;

@@ -26,7 +26,6 @@ import org.ballerinalang.jvm.values.ArrayValue;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.TemporaryQueue;
 import javax.jms.TemporaryTopic;
@@ -41,16 +40,16 @@ public class JmsDestinationUtils {
         try {
             if (destination instanceof TemporaryQueue) {
                 name = ((TemporaryQueue) destination).getQueueName();
-                type = JmsConstants.DESTINATION_TYPE_TEMP_QUEUE;
+                type = Constants.DESTINATION_TYPE_TEMP_QUEUE;
             } else if (destination instanceof TemporaryTopic) {
                 name = ((TemporaryTopic) destination).getTopicName();
-                type = JmsConstants.DESTINATION_TYPE_TEMP_TOPIC;
+                type = Constants.DESTINATION_TYPE_TEMP_TOPIC;
             } else if (destination instanceof Queue) {
                 name = ((Queue) destination).getQueueName();
-                type = JmsConstants.DESTINATION_TYPE_QUEUE;
+                type = Constants.DESTINATION_TYPE_QUEUE;
             } else if (destination instanceof Topic) {
                 name = ((Topic) destination).getTopicName();
-                type = JmsConstants.DESTINATION_TYPE_TOPIC;
+                type = Constants.DESTINATION_TYPE_TOPIC;
             }
 
             return new ArrayValue(new String[] {name, type}, new BTupleType(new ArrayList<BType>(){

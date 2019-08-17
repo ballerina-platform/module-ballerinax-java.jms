@@ -130,7 +130,7 @@ public type Message client object {
         handle|error val = getJMSDestination(self.jmsMessage);
         if (val is handle) {
             [string, string] [destinationName, destinationType] = check toDestination(val);
-            Destination destination = new(destinationName, destinationType, val);
+            Destination destination = new(val, destinationName, check getDestinationType(destinationType));
             return destination;
         } else {
             return val;
@@ -177,7 +177,7 @@ public type Message client object {
         handle|error val = getJMSReplyTo(self.jmsMessage);
         if (val is handle) {
             [string, string] [destinationName, destinationType] = check toDestination(val);
-            Destination destination = new(destinationName, destinationType, val);
+            Destination destination = new(val, destinationName, check getDestinationType(destinationType));
             return destination;
         } else {
             return val;
@@ -371,10 +371,6 @@ public function getJMSDeliveryTime(handle message) returns int | error = @java:M
 
 public function getJMSDestination(handle message) returns handle | error = @java:Method {
     class: "javax.jms.Message"
-} external;
-
-public function toDestination(handle destination) returns [string, string] | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsDestinationUtils"
 } external;
 
 public function getJMSExpiration(handle message) returns int | error = @java:Method {

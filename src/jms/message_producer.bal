@@ -47,10 +47,8 @@ public type MessageProducer client object {
         }
         if (queue is Destination) {
             self.initMessageProducer(self.session, queue.getJmsDestination());
-            log:printInfo("With Destination");
         } else {
             self.initMessageProducer(self.session, self.JAVA_NULL);
-            log:printInfo("Without Destination");
         }
     }
 
