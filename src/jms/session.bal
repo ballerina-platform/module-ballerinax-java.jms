@@ -23,17 +23,14 @@ public type Session client object {
     private handle jmsSession = java:createNull();
 
     # The default constructor of the JMS session.
-    public function __init(handle connection, SessionConfiguration sessionConfig) {
+    public function __init(handle connection, SessionConfiguration sessionConfig) returns error? {
         self.config = sessionConfig;
-        self.createSession(connection);
+        return self.createSession(connection);
     }
 
-    private function createSession(handle jmsConnection) {
+    private function createSession(handle jmsConnection) returns error? {
         handle ackModeJString = java:fromString(self.config.acknowledgementMode);
-        handle|error val = createJmsSession(jmsConnection, ackModeJString);
-        if (val is handle) {
-            self.jmsSession = val;
-        }
+        self.jmsSession = check createJmsSession(jmsConnection, ackModeJString);
     }
 
     # Unsubscribe a durable subscription that has been created by a client.
@@ -216,5 +213,14 @@ function createJmsConsumer(handle jmsSession, handle jmsDestination,
                                   handle selectorString, boolean noLocal) returns handle|error = @java:Method {
     name: "createConsumer",
     paramTypes: ["javax.jms.Destination", "java.lang.String", "boolean"],
+    class: "javax.jms.Session"
+} external;
+
+function createJmsSession(handle connection, handle acknowledgmentMode) returns handle | error = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsSessionUtils"
+} external;
+
+function unsubscribeJmsSubscription(handle session, handle subscriptionId) returns error? = @java:Method {
+    name: "unsubscribe",
     class: "javax.jms.Session"
 } external;

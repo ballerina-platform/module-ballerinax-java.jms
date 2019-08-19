@@ -31,7 +31,7 @@ public type MessageProducer client object {
     #
     # + c - The JMS Session object or Configurations related to the receiver
     # + queueName - Name of the target queue
-    public function __init(Session|SenderEndpointConfiguration c, Destination? queue = ()) {
+    public function __init(Session|SenderEndpointConfiguration c, Destination? queue = ()) returns error? {
         if (c is Session) {
             self.session = c;
         } else {
@@ -41,7 +41,7 @@ public type MessageProducer client object {
                     connectionFactoryName: c.connectionFactoryName,
                     properties: c.properties
                 });
-            self.session = conn->createSession({
+            self.session = check conn->createSession({
                     acknowledgementMode: c.acknowledgementMode
                 });
         }
@@ -79,18 +79,18 @@ public type MessageProducer client object {
     }
 };
 
-public function createJmsProducer(handle session, handle destination) returns handle|error = @java:Method {
+function createJmsProducer(handle session, handle destination) returns handle|error = @java:Method {
     name: "createProducer",
     class: "javax.jms.Session"
 } external;
 
-public function send(handle messageProducer, handle message) returns error? = @java:Method {
+function send(handle messageProducer, handle message) returns error? = @java:Method {
     name: "send",
     paramTypes: ["javax.jms.Message"],
     class: "javax.jms.MessageProducer"
 } external;
 
-public function sendToDestination(handle messageProducer, handle destination, handle message) returns error? = @java:Method {
+function sendToDestination(handle messageProducer, handle destination, handle message) returns error? = @java:Method {
     name: "send",
     paramTypes: ["javax.jms.Destination", "javax.jms.Message"],
     class: "javax.jms.MessageProducer"

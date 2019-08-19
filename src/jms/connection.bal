@@ -33,9 +33,7 @@ public type Connection client object {
 
     # Creates a connection with the broker reading the connection configurations.
     function createConnection() {
-        
         handle icf = java:fromString(self.config.initialContextFactory);
-
         handle providerUrl = java:fromString(self.config.providerUrl);
         handle factoryName = java:fromString(self.config.connectionFactoryName);
 
@@ -51,9 +49,8 @@ public type Connection client object {
     # Create a Session object, specifying transacted and acknowledgeMode
     #
     # + return - Returns the Session or an error if it fails.
-    public remote function createSession(SessionConfiguration sessionConfig) returns Session {
-        Session session = new(self.jmsConnection, sessionConfig);
-        return session;
+    public remote function createSession(SessionConfiguration sessionConfig) returns Session | error {
+        return new(self.jmsConnection, sessionConfig);
     }
 
     # Starts (or restarts) a connection's delivery of incoming messages.
@@ -96,6 +93,11 @@ public type ConnectionConfiguration record {|
     string? password = ();
     map<string> properties = {};
 |};
+
+function createJmsConnection(handle initialContextFactory, handle providerUrl,
+                                    handle connectionFactoryName, map<string> otherPropeties) returns handle | error = @java:Method {
+                                            class: "org.wso2.ei.module.jms.JmsConnectionUtils"
+                                        } external;
 
 function startJmsConnection(handle jmsConnection) returns error? = @java:Method {
     name: "start",
