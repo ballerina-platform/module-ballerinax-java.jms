@@ -1,214 +1,90 @@
 ## Module overview
 
-The `ballerina/jms` module provides an API to connect to an external JMS provider like Ballerina Message Broker or
-ActiveMQ.
+The `wso2/jms` module provides an API to connect to an external JMS provider like ActiveMQ from Ballerina.
 
-The module provides consumer and producer endpoint types for queues and topics. Following are the endpoint types
-supported by this module:
-
-- QueueListener
-- TopicListener
-- DurableTopicListener
-- QueueSender
-- TopicPublisher
-
-The endpoints prefixed with `Simple` will automatically create a JMS connection and a JMS session when the endpoint is
-initialized. For other endpoints, the developer must explicitly provide a properly initialized JMS Session.
+This module is created with minimal deviation from the JMS API to make it easy for the developers who are used to working 
+ with the JMS API. This module is written to support both JMS 2.0 and JMS 1.0 API. 
+ 
+ Currently, following JMS API Classes are supported through this module
+ 
+ - Connection
+ - Session
+ - Destination (Queue, Topic, TemporaryQueue, TemporaryTopic)
+ - Message (TextMessage, MapMessage, BytesMessage, StreamMessage)
+ - MessageConsumer
+ - MessageProducer
 
 ## Samples
 
-### JMS Simple Queue Consumer
+### JMS Message Producer and Consumer example
 
-Following is a simple listener program that consumes messages from a Ballerina Message Broker queue named `MyQueue`.
+Following is a simple Ballerina program that sends and receives a message from a queue named *MyQueue*.
 
 ```ballerina
-import wso2/jms;
 import ballerina/log;
+import wso2/jms;
 
-// Create a simple queue receiver.
-listener jms:QueueListener consumerEP = new({
-    initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
-    providerUrl: "tcp://localhost:61616",
-    acknowledgementMode: "AUTO_ACKNOWLEDGE"
-    }, queueName = "MyQueue");
+public function main() returns error? {
 
-// Bind the created consumer to the listener service.
-service jmsListener on consumerEP {
+        jms:Connection connection = new({
+                          initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
+                          providerUrl: "tcp://localhost:61616"
+                        });
+        jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+        jms:Destination queue = check session->createQueue("MyQueue");
+        jms:MessageProducer producer = check session.createProducer(queue);
+        jms:MessageConsumer consumer = check session->createConsumer(queue);
 
-    // The `OnMessage` resource gets invoked when a message is received.
-    resource function onMessage(jms:QueueReceiverCaller consumer, jms:Message message) {
-        var msg = message.getTextMessageContent();
-        if (msg is string) {
-            log:printInfo("Message : " + msg);
+        jms:TextMessage msg = check session.createTextMessage("Hello Ballerina!");
+
+        check producer->send(msg);
+
+        jms:Message response = check consumer->receive(3000);
+        if (response is jms:TextMessage) {
+            var val = response.getText();
+            if (val is string) {
+                log:printInfo("Message received: " + val);
+            } else {
+                log:printInfo("Message received without text");
+            }
         } else {
-            log:printError("Error occurred while reading message", err = msg);
+            log:printInfo("Message received.");
         }
-    }
-}
-```
-### JMS Simple Topic publisher.
-
-Following is a simple topic publisher program that sends messages to a Ballerina Message Broker topic named `MyTopic`.
-
-```ballerina
-import wso2/jms;
-import ballerina/log;
-
-// Create a topic publisher.
-jms:TopicPublisher topicPublisher = new({
-    initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
-    providerUrl: "tcp://localhost:61616",
-    acknowledgementMode: "AUTO_ACKNOWLEDGE"
-    }, topicPattern = "MyTopic");
-
-public function main(string... args) {
-    // Create a text message.
-    var msg = topicPublisher.session.createTextMessage("Hello from Ballerina");
-    if (msg is jms:Message) {
-        var result = topicPublisher->send(msg);
-        if (result is error) {
-            log:printError("Error occurred while sending message", err = result);
-        }
-    } else {
-        log:printError("Error occurred while creating message", err = msg);       
-    }
 }
 ```
 
-### JMS Queue Message Receiver
+### Asynchronous message consumer
 
-Following is a listener program that explicitly initializes a JMS session to be used in the consumer.
-
-```ballerina
-import wso2/jms;
-import ballerina/log;
-
-// Initialize a JMS connection with the provider.
-jms:Connection conn = new({
-    initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
-    providerUrl: "tcp://localhost:61616"
-});
-
-// Initialize a JMS session on top of the created connection.
-jms:Session jmsSession = new(conn, {
-    // An optional property that defaults to `AUTO_ACKNOWLEDGE`.
-    acknowledgementMode: "AUTO_ACKNOWLEDGE"
-});
-
-// Initialize a queue receiver using the created session.
-listener jms:QueueListener consumerEP = new(jmsSession, queueName = "MyQueue");
-
-// Bind the created consumer to the listener service.
-service jmsListener on consumerEP {
-
-    // The `OnMessage` resource gets invoked when a message is received.
-    resource function onMessage(jms:QueueReceiverCaller consumer, jms:Message message) {
-        // Retrieve the text message.
-        var msg = message.getTextMessageContent();
-        if (msg is string) {
-            log:printInfo("Message : " + msg);
-        } else {
-            log:printError("Error occurred while reading message", err = msg);
-        }
-    }
-}
-```
-
-### JMS Queue Message Producer
-
-Following is a queue sender program that explicitly initializes a JMS session to be used in the producer.
-
+One of the key deviations from the JMS API was the asynchronous message consumption using message listeners. In 
+Ballerina transport listener concept is covered with **service** type, hence we have used the Ballerina service to 
+implement the message listener. Following is a message listener example listening on a topic named *MyTopic*.
 
 ```ballerina
-import wso2/jms;
 import ballerina/log;
-
-// Initialize a JMS connection with the provider.
-jms:Connection jmsConnection = new({
-    initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
-    providerUrl: "tcp://localhost:61616"
-});
-
-// Initialize a JMS session on top of the created connection.
-jms:Session jmsSession = new(jmsConnection, {
-    acknowledgementMode: "AUTO_ACKNOWLEDGE"
-});
-
-jms:QueueSender queueSender = new(jmsSession, queueName = "MyQueue");
-
-public function main(string... args) {
-    // Create a text message.
-    var msg = jmsSession.createTextMessage("Hello from Ballerina");
-    if (msg is error) {
-        log:printError("Error occurred while creating message", err = msg);
-    } else {
-        var result = queueSender->send(msg);
-        if (result is error) {
-            log:printError("Error occurred while sending message", err = result);
-        }
-    }
-}
-```
-
-### JMS Topic Subscriber
-
-Following is a topic subscriber program that subscribes to a particular JMS topic.
-
-```ballerina
 import wso2/jms;
-import ballerina/log;
 
-jms:Connection conn = new({
-    initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
-    providerUrl: "tcp://localhost:61616"
-});
+jms:Connection connection = new({
+                   initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
+                   providerUrl: "tcp://localhost:61616"
+              });
+jms:Session session = check con->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+jms:Destination dest = check session->createTopic("MyTopic");
 
-jms:Session jmsSession = new(conn, {
-    acknowledgementMode: "AUTO_ACKNOWLEDGE"
-});
+listener jms:MessageConsumer jmsConsumer = check session->createDurableSubscriber(dest, "sub-1");
 
-listener jms:TopicListener subscriberEndpoint = new(jmsSession, topicPattern = "MyTopic");
+service messageListener on jmsConsumer {
 
-service jmsListener on subscriberEndpoint {
-    resource function onMessage(jms:TopicSubscriberCaller subscriber, jms:Message message) {
-        var msg = message.getTextMessageContent();
-        if (msg is string) {
-            log:printInfo("Message : " + msg);
-        } else {
-            log:printError("Error occurred while reading message", err = msg);
-        }
-    }
-}
-```
-
-### JMS Topic Producer
-
-Following is a topic producer program that publishes to a particular JMS topic.
-
-```ballerina
-import wso2/jms;
-import ballerina/log;
-
-jms:Connection jmsConnection = new({
-    initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
-    providerUrl: "tcp://localhost:61616"
-});
-
-jms:Session jmsSession = new(jmsConnection, {
-    acknowledgementMode: "AUTO_ACKNOWLEDGE"
-});
-
-jms:TopicPublisher topicPublisher = new(jmsSession, topicPattern = "MyTopic");
-
-public function main(string... args) {
-    var msg = jmsSession.createTextMessage("Hello from Ballerina");
-    if (msg is error) {
-        log:printError("Error occurred while creating message", err = msg);
-    } else {
-        var result = topicPublisher->send(msg);
-        if (result is error) {
-            log:printError("Error occurred while sending message", err = result);
-        }
-    }
+   resource function onMessage(jms:Message message) {
+       if (message is jms:TextMessage) {
+           var val = message.getText();
+           if (val is string) {
+               log:printInfo("Message received: " + val );
+           } else {
+               log:printInfo("Message received without text");
+           }
+       } else {
+           log:printInfo("Message received.");
+       }
+   }
 }
 ```
