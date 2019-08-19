@@ -491,96 +491,96 @@ public type MapMessage client object {
 
 };
 
-public function getBoolean(handle message, handle name) returns boolean | error = @java:Method {
+function getBoolean(handle message, handle name) returns boolean | error = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function getByte(handle message, handle name) returns byte | error = @java:Method {
+function getByte(handle message, handle name) returns byte | error = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function getBytes(handle message, handle name) returns byte[] | error = @java:Method {
+function getBytes(handle message, handle name) returns byte[] | error = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-//public function getChar(handle message, handle name) returns int | error = @java:Method {
+//function getChar(handle message, handle name) returns int | error = @java:Method {
 //    class: "javax.jms.MapMessage"
 //} external;
 
-public function getDouble(handle message, handle name) returns float | error = @java:Method {
+function getDouble(handle message, handle name) returns float | error = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function getFloat(handle message, handle name) returns float | error = @java:Method {
+function getFloat(handle message, handle name) returns float | error = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function getInt(handle message, handle name) returns int | error = @java:Method {
+function getInt(handle message, handle name) returns int | error = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function getLong(handle message, handle name) returns int | error = @java:Method {
+function getLong(handle message, handle name) returns int | error = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function getMapNames(handle message) returns string[] | error = @java:Method {
+function getMapNames(handle message) returns string[] | error = @java:Method {
     class: "org.wso2.ei.module.jms.JmsMapMessageUtils"
 } external;
 
-public function getShort(handle message, handle name) returns int | error = @java:Method {
+function getShort(handle message, handle name) returns int | error = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function getString(handle message, handle name) returns handle | error = @java:Method {
+function getString(handle message, handle name) returns handle | error = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function itemExists(handle message, handle name) returns boolean | error = @java:Method {
+function itemExists(handle message, handle name) returns boolean | error = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function setBoolean(handle message, handle name, boolean value) returns error? = @java:Method {
+function setBoolean(handle message, handle name, boolean value) returns error? = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function setByte(handle message, handle name, byte value) returns error? = @java:Method {
+function setByte(handle message, handle name, byte value) returns error? = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-//public function setBytes(handle message, handle name, byte[] value) returns error? = @java:Method {
+//function setBytes(handle message, handle name, byte[] value) returns error? = @java:Method {
 //    class: "javax.jms.MapMessage"
 //} external;
 
-//public function setPortionOfBytes(handle message, handle name, handle array, int offset, int length) returns error? = @java:Method {
+//function setPortionOfBytes(handle message, handle name, handle array, int offset, int length) returns error? = @java:Method {
 //    name: "setBytes",
 //    paramTypes: ["java.lang.String", {class:"byte", dimensions:1}, "int", "int"],
 //    class: "javax.jms.MapMessage"
 //} external;
 
-//public function setChar(handle message, handle name, handle value) returns error? = @java:Method {
+//function setChar(handle message, handle name, handle value) returns error? = @java:Method {
 //    class: "javax.jms.MapMessage"
 //} external;
 
-public function setDouble(handle message, handle name, float value) returns error? = @java:Method {
+function setDouble(handle message, handle name, float value) returns error? = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function setFloat(handle message, handle name, float value) returns error? = @java:Method {
+function setFloat(handle message, handle name, float value) returns error? = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function setInt(handle message, handle name, int value) returns error? = @java:Method {
+function setInt(handle message, handle name, int value) returns error? = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function setLong(handle message, handle name, int value) returns error? = @java:Method {
+function setLong(handle message, handle name, int value) returns error? = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function setShort(handle message, handle name, int value) returns error? = @java:Method {
+function setShort(handle message, handle name, int value) returns error? = @java:Method {
     class: "javax.jms.MapMessage"
 } external;
 
-public function setString(handle message, handle name, handle value) returns error? = @java:Method {
+function setString(handle message, handle name, handle value) returns error? = @java:Method {
     class: "javax.jms.MapMessage"
 } external;

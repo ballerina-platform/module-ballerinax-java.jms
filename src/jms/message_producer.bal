@@ -41,7 +41,7 @@ public type MessageProducer client object {
                     connectionFactoryName: c.connectionFactoryName,
                     properties: c.properties
                 });
-            self.session = new Session(conn, {
+            self.session = conn->createSession({
                     acknowledgementMode: c.acknowledgementMode
                 });
         }

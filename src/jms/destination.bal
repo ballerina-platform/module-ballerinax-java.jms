@@ -91,7 +91,8 @@ function getDestinationType(string typeString) returns DestinationType|error {
         "temporaryQueue" => return TEMP_QUEUE;
         "temporaryTopic" => return TEMP_TOPIC;
     }
-    return error("Unknown destination type " + typeString);
+    error e = error("Unknown destination type " + typeString);
+    return e;
 }
 
 function toDestination(handle destination) returns [string, string] | error = @java:Method {

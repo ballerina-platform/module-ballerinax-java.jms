@@ -503,112 +503,112 @@ public type BytesMessage client object {
 
 };
 
-public function getBodyLength(handle message) returns int | error = @java:Method {
+function getBodyLength(handle message) returns int | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function readBoolean(handle message) returns boolean | error = @java:Method {
+function readBoolean(handle message) returns boolean | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function readByte(handle message) returns byte | error = @java:Method {
+function readByte(handle message) returns byte | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-//public function readBytes(handle message, handle value) returns int | error = @java:Method {
+//function readBytes(handle message, handle value) returns int | error = @java:Method {
 //    paramTypes: [{class:"byte", dimensions:1}],
 //    class: "javax.jms.BytesMessage"
 //} external;
 
-//public function readPortionOfBytes(handle message, handle value, int length) returns int | error = @java:Method {
+//function readPortionOfBytes(handle message, handle value, int length) returns int | error = @java:Method {
 //    name: "readBytes",
 //    paramTypes: [{class:"byte", dimensions:1}, "int"],
 //    class: "javax.jms.BytesMessage"
 //} external;
 
-//public function readChar(handle message) returns int | error = @java:Method {
+//function readChar(handle message) returns int | error = @java:Method {
 //    class: "javax.jms.BytesMessage"
 //} external;
 
-public function readDouble(handle message) returns float | error = @java:Method {
+function readDouble(handle message) returns float | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function readFloat(handle message) returns float | error = @java:Method {
+function readFloat(handle message) returns float | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function readInt(handle message) returns int | error = @java:Method {
+function readInt(handle message) returns int | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function readLong(handle message) returns int | error = @java:Method {
+function readLong(handle message) returns int | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function readShort(handle message) returns int | error = @java:Method {
+function readShort(handle message) returns int | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function readUnsignedByte(handle message) returns int | error = @java:Method {
+function readUnsignedByte(handle message) returns int | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function readUnsignedShort(handle message) returns int | error = @java:Method {
+function readUnsignedShort(handle message) returns int | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function readUTF(handle message) returns handle | error = @java:Method {
+function readUTF(handle message) returns handle | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function reset(handle message) returns error? = @java:Method {
+function reset(handle message) returns error? = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function writeBoolean(handle message, boolean value) returns error? = @java:Method {
+function writeBoolean(handle message, boolean value) returns error? = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function writeByte(handle message, byte value) returns error? = @java:Method {
+function writeByte(handle message, byte value) returns error? = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-//public function writeBytes(handle message, handle value) returns error? = @java:Method {
+//function writeBytes(handle message, handle value) returns error? = @java:Method {
 //    paramTypes: [{class:"byte", dimensions:1}, "int"],
 //    class: "javax.jms.BytesMessage"
 //} external;
 
-//public function writePortionOfBytes(handle message, handle value, int offset, int length) returns error? = @java:Method {
+//function writePortionOfBytes(handle message, handle value, int offset, int length) returns error? = @java:Method {
 //    name: "writeBytes",
 //    paramTypes: [{class:"byte", dimensions:1}, "int", "int"],
 //    class: "javax.jms.BytesMessage"
 //} external;
 
-//public function writeChar(handle message, handle value) returns error? = @java:Method {
+//function writeChar(handle message, handle value) returns error? = @java:Method {
 //    class: "javax.jms.BytesMessage"
 //} external;
 
-public function writeDouble(handle message, float value) returns error? = @java:Method {
+function writeDouble(handle message, float value) returns error? = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function writeFloat(handle message, float value) returns error? = @java:Method {
+function writeFloat(handle message, float value) returns error? = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function writeInt(handle message, int value) returns error? = @java:Method {
+function writeInt(handle message, int value) returns error? = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function writeLong(handle message, int value) returns error? = @java:Method {
+function writeLong(handle message, int value) returns error? = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function writeShort(handle message, int value) returns error? = @java:Method {
+function writeShort(handle message, int value) returns error? = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-public function writeUTF(handle message, handle value) returns error? = @java:Method {
+function writeUTF(handle message, handle value) returns error? = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;

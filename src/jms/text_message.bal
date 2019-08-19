@@ -341,10 +341,10 @@ public type TextMessage client object {
 
 };
 
-public function setText(handle textMessage, handle data) returns error? = @java:Method {
+function setText(handle textMessage, handle data) returns error? = @java:Method {
     class: "javax.jms.TextMessage"
 } external;
 
-public function getText(handle textMessage) returns handle | error = @java:Method {
+function getText(handle textMessage) returns handle | error = @java:Method {
     class: "javax.jms.TextMessage"
 } external;

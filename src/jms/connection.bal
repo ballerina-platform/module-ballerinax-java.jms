@@ -31,6 +31,7 @@ public type Connection client object {
         self.createConnection();
     }
 
+    # Creates a connection with the broker reading the connection configurations.
     function createConnection() {
         
         handle icf = java:fromString(self.config.initialContextFactory);
@@ -45,6 +46,14 @@ public type Connection client object {
         } else {
             log:printError("Error connecting broker", value);
         }
+    }
+
+    # Create a Session object, specifying transacted and acknowledgeMode
+    #
+    # + return - Returns the Session or an error if it fails.
+    public remote function createSession(SessionConfiguration sessionConfig) returns Session {
+        Session session = new(self.jmsConnection, sessionConfig);
+        return session;
     }
 
     # Starts (or restarts) a connection's delivery of incoming messages.
@@ -88,13 +97,13 @@ public type ConnectionConfiguration record {|
     map<string> properties = {};
 |};
 
-public function startJmsConnection(handle jmsConnection) returns error? = @java:Method {
+function startJmsConnection(handle jmsConnection) returns error? = @java:Method {
     name: "start",
     class: "javax.jms.Connection"
 } external;
 
 
-public function stopJmsConnection(handle jmsConnection) returns error? = @java:Method {
+function stopJmsConnection(handle jmsConnection) returns error? = @java:Method {
     name: "stop",
     class: "javax.jms.Connection"
 } external;

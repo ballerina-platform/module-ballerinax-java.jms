@@ -23,9 +23,9 @@ public type Session client object {
     private handle jmsSession = java:createNull();
 
     # The default constructor of the JMS session.
-    public function __init(Connection connection, SessionConfiguration c) {
-        self.config = c;
-        self.createSession(connection.getJmsConnection());
+    public function __init(handle connection, SessionConfiguration sessionConfig) {
+        self.config = sessionConfig;
+        self.createSession(connection);
     }
 
     private function createSession(handle jmsConnection) {
@@ -36,7 +36,7 @@ public type Session client object {
         }
     }
 
-    # Unsubscribes a durable subscription that has been created by a client.
+    # Unsubscribe a durable subscription that has been created by a client.
     # It is erroneous for a client to delete a durable subscription while there is an active (not closed) consumer
     # for the subscription, or while a consumed message being part of a pending transaction or has not been
     # acknowledged in the session.
@@ -120,6 +120,45 @@ public type Session client object {
         }
     }
 
+    # Creates a JMS map message.
+    #
+    # + return - Returns the JMS map message or an error if it fails.
+    public function createMapMessage() returns MapMessage|error {
+        handle|error val = createJmsMapMessage(self.jmsSession);
+        if (val is handle) {
+            MapMessage message = new(val);
+            return message;
+        } else {
+            return val;
+        }
+    }
+
+    # Creates a JMS stream message.
+    #
+    # + return - Returns the JMS stream message or an error if it fails.
+    public function createStreamMessage() returns StreamMessage|error {
+        handle|error val = createJmsStreamMessage(self.jmsSession);
+        if (val is handle) {
+            StreamMessage message = new(val);
+            return message;
+        } else {
+            return val;
+        }
+    }
+
+    # Creates a JMS byte message.
+    #
+    # + return - Returns the JMS byte message or an error if it fails.
+    public function createByteMessage() returns BytesMessage|error {
+        handle|error val = createJmsBytesMessage(self.jmsSession);
+        if (val is handle) {
+            BytesMessage message = new(val);
+            return message;
+        } else {
+            return val;
+        }
+    }
+
     public remote function createConsumer(Destination destination, string messageSelector = "",
                                           boolean noLocal = false) returns MessageConsumer|error {
         var val = createJmsConsumer(self.jmsSession, destination.getJmsDestination(),
@@ -142,24 +181,38 @@ public type SessionConfiguration record {|
     string acknowledgementMode = "AUTO_ACKNOWLEDGE";
 |};
 
-public function createJmsMessage(handle session) returns handle | error = @java:Method {
+function createJmsMessage(handle session) returns handle | error = @java:Method {
     name: "createMessage",
     class: "javax.jms.Session"
 } external;
 
-public function createJmsTextMessage(handle session) returns handle | error = @java:Method {
+function createJmsTextMessage(handle session) returns handle | error = @java:Method {
     name: "createTextMessage",
     class: "javax.jms.Session"
 } external;
 
-public function createJmsTextMessageWithText(handle session, handle text) returns handle | error = @java:Method {
+function createJmsTextMessageWithText(handle session, handle text) returns handle | error = @java:Method {
     name: "createTextMessage",
     paramTypes: ["java.lang.String"],
     class: "javax.jms.Session"
 } external;
 
+function createJmsMapMessage(handle session) returns handle | error = @java:Method {
+    name: "createMapMessage",
+    class: "javax.jms.Session"
+} external;
 
-public function createJmsConsumer(handle jmsSession, handle jmsDestination,
+function createJmsStreamMessage(handle session) returns handle | error = @java:Method {
+    name: "createStreamMessage",
+    class: "javax.jms.Session"
+} external;
+
+function createJmsBytesMessage(handle session) returns handle | error = @java:Method {
+    name: "createBytesMessage",
+    class: "javax.jms.Session"
+} external;
+
+function createJmsConsumer(handle jmsSession, handle jmsDestination,
                                   handle selectorString, boolean noLocal) returns handle|error = @java:Method {
     name: "createConsumer",
     paramTypes: ["javax.jms.Destination", "java.lang.String", "boolean"],

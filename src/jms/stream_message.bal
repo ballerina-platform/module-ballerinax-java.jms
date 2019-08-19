@@ -482,11 +482,11 @@ public type StreamMessage client object {
 
 };
 
-public function readString(handle message) returns handle | error = @java:Method {
+function readString(handle message) returns handle | error = @java:Method {
     class: "javax.jms.StreamMessage"
 } external;
 
-public function writeString(handle message, handle value) returns error? = @java:Method {
+function writeString(handle message, handle value) returns error? = @java:Method {
     class: "javax.jms.StreamMessage"
 } external;
 

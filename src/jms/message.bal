@@ -321,142 +321,142 @@ public type Message client object {
     }
 };
 
-public function acknowledge(handle message) returns error? = @java:Method {
+function acknowledge(handle message) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function clearBody(handle message) returns error? = @java:Method {
+function clearBody(handle message) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function clearProperties(handle message) returns error? = @java:Method {
+function clearProperties(handle message) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getBooleanProperty(handle message, handle name) returns boolean | error = @java:Method {
+function getBooleanProperty(handle message, handle name) returns boolean | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getByteProperty(handle message, handle name) returns byte | error = @java:Method {
+function getByteProperty(handle message, handle name) returns byte | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getDoubleProperty(handle message, handle name) returns float | error = @java:Method {
+function getDoubleProperty(handle message, handle name) returns float | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getFloatProperty(handle message, handle name) returns float | error = @java:Method {
+function getFloatProperty(handle message, handle name) returns float | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getIntProperty(handle message, handle name) returns int | error = @java:Method {
+function getIntProperty(handle message, handle name) returns int | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSCorrelationID(handle message) returns handle | error = @java:Method {
+function getJMSCorrelationID(handle message) returns handle | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSCorrelationIDAsBytes(handle message) returns byte[] | error = @java:Method {
+function getJMSCorrelationIDAsBytes(handle message) returns byte[] | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSDeliveryMode(handle message) returns int | error = @java:Method {
+function getJMSDeliveryMode(handle message) returns int | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSDeliveryTime(handle message) returns int | error = @java:Method {
+function getJMSDeliveryTime(handle message) returns int | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSDestination(handle message) returns handle | error = @java:Method {
+function getJMSDestination(handle message) returns handle | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSExpiration(handle message) returns int | error = @java:Method {
+function getJMSExpiration(handle message) returns int | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSMessageID(handle message) returns handle | error = @java:Method {
+function getJMSMessageID(handle message) returns handle | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSPriority(handle message) returns int | error = @java:Method {
+function getJMSPriority(handle message) returns int | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSRedelivered(handle message) returns boolean | error = @java:Method {
+function getJMSRedelivered(handle message) returns boolean | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSReplyTo(handle message) returns handle | error = @java:Method {
+function getJMSReplyTo(handle message) returns handle | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSTimestamp(handle message) returns int | error = @java:Method {
+function getJMSTimestamp(handle message) returns int | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getJMSType(handle message) returns handle | error = @java:Method {
+function getJMSType(handle message) returns handle | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getLongProperty(handle message, handle name) returns int | error = @java:Method {
+function getLongProperty(handle message, handle name) returns int | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getPropertyNames(handle message) returns string[] | error = @java:Method {
+function getPropertyNames(handle message) returns string[] | error = @java:Method {
     class: "org.wso2.ei.module.jms.JmsMessageUtils"
 } external;
 
-public function getShortProperty(handle message, handle name) returns int | error = @java:Method {
+function getShortProperty(handle message, handle name) returns int | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function getStringProperty(handle message, handle name) returns handle | error = @java:Method {
+function getStringProperty(handle message, handle name) returns handle | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function propertyExists(handle message, handle name) returns boolean | error = @java:Method {
+function propertyExists(handle message, handle name) returns boolean | error = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function setBooleanProperty(handle message, handle name, boolean value) returns error? = @java:Method {
+function setBooleanProperty(handle message, handle name, boolean value) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function setByteProperty(handle message, handle name, byte value) returns error? = @java:Method {
+function setByteProperty(handle message, handle name, byte value) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function setDoubleProperty(handle message, handle name, float value) returns error? = @java:Method {
+function setDoubleProperty(handle message, handle name, float value) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function setFloatProperty(handle message, handle name, float value) returns error? = @java:Method {
+function setFloatProperty(handle message, handle name, float value) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function setIntProperty(handle message, handle name, int value) returns error? = @java:Method {
+function setIntProperty(handle message, handle name, int value) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function setJMSReplyTo(handle message, handle destination) returns error? = @java:Method {
+function setJMSReplyTo(handle message, handle destination) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function setJMSType(handle message, handle jmsType) returns error? = @java:Method {
+function setJMSType(handle message, handle jmsType) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function setLongProperty(handle message, handle name, int value) returns error? = @java:Method {
+function setLongProperty(handle message, handle name, int value) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function setShortProperty(handle message, handle name, int value) returns error? = @java:Method {
+function setShortProperty(handle message, handle name, int value) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
 
-public function setStringProperty(handle message, handle name, handle value) returns error? = @java:Method {
+function setStringProperty(handle message, handle name, handle value) returns error? = @java:Method {
     class: "javax.jms.Message"
 } external;
