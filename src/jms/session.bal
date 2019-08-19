@@ -213,6 +213,31 @@ public type Session client object {
             return val;
         }
     }
+
+    public remote function createSharedConsumer(Destination destination, string subscriberName,
+                                                string messageSelector = "") returns MessageConsumer|error {
+         var val = createJmsSharedConsumer(self.jmsSession, destination.getJmsDestination(),
+                                           java:fromString(subscriberName), java:fromString(messageSelector));
+         if (val is handle) {
+             MessageConsumer consumer = new(val);
+             return consumer;
+         } else {
+             return val;
+         }
+    }
+
+    public remote function createSharedDurableConsumer(Destination destination, string subscriberName,
+                                                string messageSelector = "") returns MessageConsumer|error {
+         var val = createJmsSharedDurableConsumer(self.jmsSession, destination.getJmsDestination(),
+                                                  java:fromString(subscriberName), java:fromString(messageSelector));
+         if (val is handle) {
+             MessageConsumer consumer = new(val);
+             return consumer;
+         } else {
+             return val;
+         }
+    }
+
 };
 
 # The Configurations that are related to a JMS session.
@@ -279,6 +304,20 @@ function createJmsDurableSubscriber(handle jmsSession, handle subscriberName, ha
                                     handle selectorString, boolean noLocal) returns handle|error = @java:Method {
     name: "createDurableSubscriber",
     paramTypes: ["javax.jms.Topic", "java.lang.String", "java.lang.String", "boolean"],
+    class: "javax.jms.Session"
+} external;
+
+function createJmsSharedConsumer(handle jmsSession, handle subscriberName, handle jmsDestination,
+                                    handle selectorString) returns handle|error = @java:Method {
+    name: "createSharedConsumer",
+    paramTypes: ["javax.jms.Topic", "java.lang.String", "java.lang.String"],
+    class: "javax.jms.Session"
+} external;
+
+function createJmsSharedDurableConsumer(handle jmsSession, handle subscriberName, handle jmsDestination,
+                                    handle selectorString) returns handle|error = @java:Method {
+    name: "createSharedDurableConsumer",
+    paramTypes: ["javax.jms.Topic", "java.lang.String", "java.lang.String"],
     class: "javax.jms.Session"
 } external;
 
