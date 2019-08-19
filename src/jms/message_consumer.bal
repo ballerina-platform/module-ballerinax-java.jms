@@ -21,7 +21,7 @@ import ballerina/'lang\.object as lang;
 public type MessageConsumer client object {
 
     *lang:AbstractListener;
-    private handle jmsConsumer = java:createNull();
+    private handle jmsConsumer = JAVA_NULL;
 
     function __init(handle jmsMessageConsumer) {
         self.jmsConsumer = jmsMessageConsumer;
@@ -48,7 +48,6 @@ public type MessageConsumer client object {
     }
 
     public function __immediateStop() returns error? {
-
     }
 
     # Stops consuming messages through the QueueListener.
@@ -89,7 +88,6 @@ public type MessageConsumer client object {
     }
 
     private function getBallerinaMessage(handle jmsMessage) returns Message|error {
-        
         if (isTextMessage(jmsMessage)) {
             return new TextMessage(jmsMessage);
         } else if (isMapMessage(jmsMessage)) {

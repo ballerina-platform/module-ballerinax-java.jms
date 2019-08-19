@@ -22,6 +22,8 @@
 # application data being sent.
 public type AbstractMessage abstract client object {
 
+    handle jmsMessage = JAVA_NULL;
+
     public remote function acknowledge() returns error?;
 
     public function clearBody() returns error?;

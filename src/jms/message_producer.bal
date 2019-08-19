@@ -18,47 +18,17 @@ import ballerina/log;
 import ballerinax/java;
 
 
-# JMS QueueSender Endpoint
+# JMS Message Producer client object to send messages to both queues and topics.
 #
-# + session - Session of the queue sender
 public type MessageProducer client object {
 
-    public Session session;
-    private handle jmsProducer = java:createNull();
-    private handle JAVA_NULL = java:createNull();
+    private handle jmsProducer = JAVA_NULL;
 
-    # Initialize the QueueSender endpoint
+    # Initialize the Message Producer client object
     #
-    # + c - The JMS Session object or Configurations related to the receiver
-    # + queueName - Name of the target queue
-    public function __init(Session|SenderEndpointConfiguration c, Destination? queue = ()) returns error? {
-        if (c is Session) {
-            self.session = c;
-        } else {
-            Connection conn = new({
-                    initialContextFactory: c.initialContextFactory,
-                    providerUrl: c.providerUrl,
-                    connectionFactoryName: c.connectionFactoryName,
-                    properties: c.properties
-                });
-            self.session = check conn->createSession({
-                    acknowledgementMode: c.acknowledgementMode
-                });
-        }
-        if (queue is Destination) {
-            self.initMessageProducer(self.session, queue.getJmsDestination());
-        } else {
-            self.initMessageProducer(self.session, self.JAVA_NULL);
-        }
-    }
-
-    function initMessageProducer(Session session, handle jmsDestination) {
-        handle|error val = createJmsProducer(session.getJmsSession(), jmsDestination);
-        if (val is handle) {
-            self.jmsProducer = val;
-        } else {
-            log:printError("Error occurred while creating producer");
-        }
+    # + jmsProducer - reference to java MessageProducer object
+    public function __init(handle jmsProducer) returns error? {
+        self.jmsProducer = jmsProducer;
     }
 
     # Sends a message to the JMS provider
@@ -78,11 +48,6 @@ public type MessageProducer client object {
         return sendToDestination(self.jmsProducer, destination.getJmsDestination(), message.getJmsMessage());
     }
 };
-
-function createJmsProducer(handle session, handle destination) returns handle|error = @java:Method {
-    name: "createProducer",
-    class: "javax.jms.Session"
-} external;
 
 function send(handle messageProducer, handle message) returns error? = @java:Method {
     name: "send",

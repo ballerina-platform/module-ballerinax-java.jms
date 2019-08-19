@@ -24,8 +24,6 @@ public type BytesMessage client object {
     // Add a reference to the `AbstractMessage` object type.
     *AbstractMessage;
 
-    handle jmsMessage = java:createNull();
-
     # Initialized a `BytesMessage` object.
     #
     # + handle - The java reference to the jms text message.

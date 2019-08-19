@@ -41,27 +41,18 @@ public const TEMP_TOPIC = "temporaryTopic";
 public type Destination object {
     private string destinationName;
     private DestinationType destinationType;
-    private handle jmsDestination = java:createNull();
+    private handle jmsDestination = JAVA_NULL;
 
     // This object is constructed as package private as it needs to be created using the session.
-    public function __init(Session|handle d, string destName, DestinationType destType) {
+    function __init(handle jmsDestination, string destName, DestinationType destType) {
         self.destinationName = destName;
         self.destinationType = destType;
-
-        if (d is Session) {
-            handle|error jmsDest = self.createDestination(d, destName, destType);
-            if (jmsDest is handle) {
-                self.jmsDestination = jmsDest;
-            } else {
-                log:printError("Error occurred while creating destination ");
-            }
-        } else {
-            self.jmsDestination = d;
-        }
+        self.jmsDestination = jmsDestination;
+        
     }
 
     public function createDestination(Session session, string destName, DestinationType destType) returns handle|error {
-        handle|error d = java:createNull();
+        handle|error d = JAVA_NULL;
         match destType {
             QUEUE => d = createJmsQueue(session.getJmsSession(), java:fromString(destName));
             TOPIC => d = createJmsTopic(session.getJmsSession(), java:fromString(destName));
@@ -75,7 +66,7 @@ public type Destination object {
         return self.destinationName;
     }
 
-    public function getType() returns string {
+    public function getType() returns DestinationType {
         return self.destinationType;
     }
 
@@ -99,21 +90,4 @@ function toDestination(handle destination) returns [string, string] | error = @j
     class: "org.wso2.ei.module.jms.JmsDestinationUtils"
 } external;
 
-function createJmsQueue(handle session, handle queueName) returns handle | error = @java:Method {
-    name: "createQueue",
-    class: "javax.jms.Session"
-} external;
 
-function createJmsTopic(handle session, handle topicName) returns handle | error = @java:Method {
-    name: "createTopic",
-    class: "javax.jms.Session"
-} external;
-
-function createTemporaryJmsQueue(handle session) returns handle | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsSessionUtils"
-} external;
-
-function createTemporaryJmsTopic(handle session) returns handle | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsSessionUtils"
-
-} external;

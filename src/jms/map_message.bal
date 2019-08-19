@@ -24,8 +24,6 @@ public type MapMessage client object {
     // Add a reference to the `AbstractMessage` object type.
     *AbstractMessage;
 
-    handle jmsMessage = java:createNull();
-
     # Initialized a `MapMessage` object.
     #
     # + handle - The java reference to the jms text message.

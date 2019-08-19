@@ -23,7 +23,7 @@ import ballerina/log;
 public type Connection client object {
 
     public ConnectionConfiguration config = {};
-    private handle jmsConnection = java:createNull();
+    private handle jmsConnection = JAVA_NULL;
 
     # JMS Connection constructor
     public function __init(ConnectionConfiguration c) {
@@ -50,7 +50,7 @@ public type Connection client object {
     #
     # + return - Returns the Session or an error if it fails.
     public remote function createSession(SessionConfiguration sessionConfig) returns Session | error {
-        return new(self.jmsConnection, sessionConfig);
+        return new Session(self.jmsConnection, sessionConfig);
     }
 
     # Starts (or restarts) a connection's delivery of incoming messages.

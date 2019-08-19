@@ -35,7 +35,6 @@ public class JmsUtils {
     private JmsUtils() {
     }
 
-//
     static boolean notNullOrEmptyAfterTrim(String str) {
         return !(str == null || str.trim().isEmpty());
     }

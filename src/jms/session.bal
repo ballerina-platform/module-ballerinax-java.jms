@@ -20,7 +20,7 @@
 public type Session client object {
 
     private SessionConfiguration config;
-    private handle jmsSession = java:createNull();
+    private handle jmsSession = JAVA_NULL;
 
     # The default constructor of the JMS session.
     public function __init(handle connection, SessionConfiguration sessionConfig) returns error? {
@@ -48,14 +48,24 @@ public type Session client object {
     #
     # + return - Returns the JMS destination for a temporary queue or an error if it fails.
     public remote function createTemporaryQueue() returns Destination|JmsError {
-        return new Destination(self, "", TEMP_TOPIC);
+        handle|error val = createTemporaryJmsQueue(self.jmsSession);
+        if (val is handle) {
+            return new Destination(val, "", TEMP_QUEUE);
+        } else {
+            return val;
+        }
     }
 
     # Creates a JMS Topic, which can be used as a temporary response destination.
     #
     # + return - Returns the JMS destination for a temporary topic or an error if it fails.
     public function createTemporaryTopic() returns Destination|JmsError {
-        return new Destination(self, "", TEMP_TOPIC);
+        handle|error val = createTemporaryJmsTopic(self.jmsSession);
+        if (val is handle) {
+            return new Destination(val, "", TEMP_TOPIC);
+        } else {
+            return val;
+        }
     }
 
     # Creates a JMS Queue, which can be used with a message producer.
@@ -63,7 +73,12 @@ public type Session client object {
     # + queueName - The name of the Queue.
     # + return - Returns the JMS destination for a queue or an error if it fails.
     public remote function createQueue(string queueName) returns Destination|error {
-        return new Destination(self, queueName, QUEUE);
+        handle|error val = createJmsQueue(self.jmsSession, java:fromString(queueName));
+        if (val is handle) {
+            return new Destination(val, queueName, QUEUE);
+        } else {
+            return val;
+        }
     }
 
     # Creates a JMS Topic, which can be used with a message producer.
@@ -71,7 +86,12 @@ public type Session client object {
     # + topicName - The name of the Topic.
     # + return - Returns the JMS destination for a topic or an error if it fails.
     public remote function createTopic(string topicName) returns Destination|error {
-        return new Destination(self, topicName, TOPIC);
+        handle|error val = createJmsTopic(self.jmsSession, java:fromString(topicName));
+        if (val is handle) {
+            return new Destination(val, topicName, QUEUE);
+        } else {
+            return val;
+        }
     }
 
     # Get the reference to the java session object.
@@ -156,6 +176,18 @@ public type Session client object {
         }
     }
 
+    public function createProducer(Destination? destination = ()) returns MessageProducer|error {
+
+        handle jmsDestination = (destination is Destination) ? destination.getJmsDestination(): JAVA_NULL;
+        handle|error v = createJmsProducer(self.jmsSession, jmsDestination);
+        if (v is handle) {
+            return new MessageProducer(v);
+        } else {
+            log:printError("Error occurred while creating producer");
+            return v;
+        }
+    }
+
     public remote function createConsumer(Destination destination, string messageSelector = "",
                                           boolean noLocal = false) returns MessageConsumer|error {
         var val = createJmsConsumer(self.jmsSession, destination.getJmsDestination(),
@@ -168,6 +200,19 @@ public type Session client object {
         }
     }
 
+    public remote function createDurableSubscriber(Destination destination, string subscriberName,
+                                                   string messageSelector = "",
+                                                   boolean noLocal = false) returns MessageConsumer|error {
+        var val = createJmsDurableSubscriber(self.jmsSession, destination.getJmsDestination(),
+                                             java:fromString(subscriberName),
+                                             java:fromString(messageSelector), noLocal);
+        if (val is handle) {
+            MessageConsumer consumer = new(val);
+            return consumer;
+        } else {
+            return val;
+        }
+    }
 };
 
 # The Configurations that are related to a JMS session.
@@ -223,4 +268,35 @@ function createJmsSession(handle connection, handle acknowledgmentMode) returns 
 function unsubscribeJmsSubscription(handle session, handle subscriptionId) returns error? = @java:Method {
     name: "unsubscribe",
     class: "javax.jms.Session"
+} external;
+
+function createJmsProducer(handle session, handle jmsDestination) returns handle|error = @java:Method {
+    name: "createProducer",
+    class: "javax.jms.Session"
+} external;
+
+function createJmsDurableSubscriber(handle jmsSession, handle subscriberName, handle jmsDestination,
+                                    handle selectorString, boolean noLocal) returns handle|error = @java:Method {
+    name: "createDurableSubscriber",
+    paramTypes: ["javax.jms.Topic", "java.lang.String", "java.lang.String", "boolean"],
+    class: "javax.jms.Session"
+} external;
+
+function createJmsQueue(handle session, handle queueName) returns handle | error = @java:Method {
+    name: "createQueue",
+    class: "javax.jms.Session"
+} external;
+
+function createJmsTopic(handle session, handle topicName) returns handle | error = @java:Method {
+    name: "createTopic",
+    class: "javax.jms.Session"
+} external;
+
+function createTemporaryJmsQueue(handle session) returns handle | error = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsSessionUtils"
+} external;
+
+function createTemporaryJmsTopic(handle session) returns handle | error = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsSessionUtils"
+
 } external;

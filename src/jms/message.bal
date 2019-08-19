@@ -24,8 +24,6 @@ public type Message client object {
     // Add a reference to the `AbstractMessage` object type.
     *AbstractMessage;
 
-    handle jmsMessage = java:createNull();
-
     # Initialized a `Message` object.
     # 
     # + handle - The java reference to the jms message.
