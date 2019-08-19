@@ -30,5 +30,7 @@ hs_err_pid*
 # Eclipse files
 .project
 
+#VSCode
+.vscode/
 # Temporary directories
 target/
