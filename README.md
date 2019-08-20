@@ -26,7 +26,7 @@ import wso2/jms;
 
 public function main() returns error? {
 
-        jms:Connection connection = new({
+        jms:Connection connection = jms:createConnection({
                           initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
                           providerUrl: "tcp://localhost:61616"
                         });
@@ -63,7 +63,7 @@ implement the message listener. Following is a message listener example listenin
 import ballerina/log;
 import wso2/jms;
 
-jms:Connection connection = new({
+jms:Connection connection = jms:createConnection({
                    initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
                    providerUrl: "tcp://localhost:61616"
               });
