@@ -33,11 +33,21 @@ import javax.jms.MessageListener;
 import javax.jms.StreamMessage;
 import javax.jms.TextMessage;
 
+/**
+ * Representation of {@link javax.jms.MessageListener} with utility methods to invoke as inter-op functions.
+ */
 public class JmsMessageListenerUtils {
 
     private JmsMessageListenerUtils() {
     }
 
+    /**
+     * Set {@link javax.jms.MessageListener} to a {@link javax.jms.MessageConsumer}
+     *
+     * @param consumer {@link javax.jms.MessageConsumer} object
+     * @param serviceObject Ballerina service object
+     * @throws BallerinaJmsException in an error situation
+     */
     public static void setMessageListener(MessageConsumer consumer, ObjectValue serviceObject) throws BallerinaJmsException {
         BRuntime runtime = BRuntime.getCurrentRuntime();
         try {
@@ -47,6 +57,9 @@ public class JmsMessageListenerUtils {
         }
     }
 
+    /**
+     * Passes a message to the listener.
+     */
     private static class ListenerImpl implements MessageListener {
 
         private final ObjectValue serviceObject;

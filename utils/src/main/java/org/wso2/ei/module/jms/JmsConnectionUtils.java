@@ -34,6 +34,9 @@ import javax.jms.JMSException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+/**
+ * Representation of {@link javax.jms.Connection} with utility methods to invoke as inter-op functions.
+ */
 public class JmsConnectionUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JmsConnectionUtils.class);
@@ -41,11 +44,19 @@ public class JmsConnectionUtils {
     private JmsConnectionUtils() {
     }
 
+    /**
+     * Creates a connection with the default user identity.
+     *
+     * @param initialContextFactory JNDI config that can be used to lookup JMS connection factory object
+     * @param providerUrl URL of the JNDI provider.
+     * @param connectionFactoryName Name of connection factory
+     * @param optionalConfigs Other JMS configs
+     * @return  {@link javax.jms.Connection} object
+     * @throws BallerinaJmsException in an error situation
+     */
     public static Connection createJmsConnection(String initialContextFactory, String providerUrl,
-                                                 String connectionFactoryName ,
+                                                 String connectionFactoryName,
                                                  MapValue<String, String> optionalConfigs) throws BallerinaJmsException {
-
-        
         Connection connection = createConnection(initialContextFactory, providerUrl, connectionFactoryName,
                                                           optionalConfigs);
         try {
@@ -60,6 +71,12 @@ public class JmsConnectionUtils {
         return connection;
     }
 
+    /**
+     * Starts (or restarts) a connection's delivery of incoming messages.
+     *
+     * @param connection {@javax.jms.Connection} object to start the connection
+     * @throws BallerinaJmsException in an error situation
+     */
     public static void startJmsConnection(Connection connection) throws BallerinaJmsException {
         try {
             connection.start();
@@ -68,6 +85,12 @@ public class JmsConnectionUtils {
         }
     }
 
+    /**
+     * Temporarily stops a connection's delivery of incoming messages.
+     *
+     * @param connection {@link javax.jms.Connection} object to stop the connection
+     * @throws BallerinaJmsException in an error situation
+     */
     public static void stopJmsConnection(Connection connection) throws BallerinaJmsException {
         try {
             connection.stop();
@@ -76,15 +99,22 @@ public class JmsConnectionUtils {
         }
     }
 
+    /**
+     * Read ConnectionConfiguration and create connection with relevant JMS provider
+     *
+     * @param initialContextFactory JNDI config that can be used to lookup JMS connection factory object
+     * @param providerUrl URL of the JNDI provider.
+     * @param connectionFactoryName Name of connection factory
+     * @param optionalConfigs Other JMS configs
+     * @return  {@javax.jms.Connection} object
+     * @throws BallerinaJmsException in an error situation
+     */
     private static Connection createConnection(String initialContextFactory, String providerUrl,
                                               String connectionFactoryName ,
                                               MapValue<String, String> optionalConfigs) throws BallerinaJmsException{
         Map<String, String> configParams = new HashMap<>();
-
         configParams.put(Constants.ALIAS_INITIAL_CONTEXT_FACTORY, initialContextFactory);
-
         configParams.put(Constants.ALIAS_PROVIDER_URL, providerUrl);
-
         configParams.put(Constants.ALIAS_CONNECTION_FACTORY_NAME, connectionFactoryName);
 
         preProcessIfWso2MB(configParams);
@@ -92,7 +122,6 @@ public class JmsConnectionUtils {
 
         Properties properties = new Properties();
         configParams.forEach(properties::put);
-
         optionalConfigs.forEach(properties::put);
 
         try {
@@ -114,7 +143,12 @@ public class JmsConnectionUtils {
     }
 
 
-    //
+    /**
+     * If ConnectionConfiguration, then default to WSO2 MB as the JMS provider
+     *
+     * @param configParams JMS provider specific parameters
+     * @throws BallerinaJmsException in an error situation
+     */
     private static void preProcessIfWso2MB(Map<String, String> configParams) throws BallerinaJmsException {
         String initialConnectionFactoryName = configParams.get(Constants.ALIAS_INITIAL_CONTEXT_FACTORY);
         if (Constants.BMB_ICF_ALIAS.equalsIgnoreCase(initialConnectionFactoryName)
@@ -139,6 +173,11 @@ public class JmsConnectionUtils {
         }
     }
 
+    /**
+     * Update JMS provider specific config parameter
+     *
+     * @param configParams JMS provider specific parameters
+     */
     private static void updateMappedParameters(Map<String, String> configParams) {
         Iterator<Map.Entry<String, String>> iterator = configParams.entrySet().iterator();
         Map<String, String> tempMap = new HashMap<>();
