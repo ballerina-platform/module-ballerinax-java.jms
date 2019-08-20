@@ -35,6 +35,11 @@ public class JmsUtils {
     private JmsUtils() {
     }
 
+    /**
+     * Check given string is not null or empty after trimming
+     * @param str String value
+     * @return true/false based on the input
+     */
     static boolean notNullOrEmptyAfterTrim(String str) {
         return !(str == null || str.trim().isEmpty());
     }

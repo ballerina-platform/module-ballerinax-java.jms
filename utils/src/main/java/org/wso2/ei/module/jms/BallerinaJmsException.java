@@ -19,6 +19,9 @@
 
 package org.wso2.ei.module.jms;
 
+/**
+ * Representation of the custom exception in the JMS module
+ */
 public class BallerinaJmsException extends Exception {
 
     BallerinaJmsException(String message) {

@@ -27,36 +27,65 @@ import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-import javax.jms.ObjectMessage;
 import javax.jms.StreamMessage;
 import javax.jms.TextMessage;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ *  Representation of {@link javax.jms.Message} with utility methods to invoke as inter-op functions.
+ */
 public class JmsMessageUtils {
 
     private JmsMessageUtils() {}
 
+    /**
+     * Check whether {@link javax.jms.Message} is {@link javax.jms.TextMessage}
+     *
+     * @param message {@link javax.jms.Message} object
+     * @return true/false based on the evaluation
+     */
     public static boolean isTextMessage(Message message) {
         return message instanceof TextMessage;
     }
 
+    /**
+     * Check whether {@link javax.jms.Message} is {@link javax.jms.MapMessage}
+     *
+     * @param message {@link javax.jms.Message} object
+     * @return true/false based on the evaluation
+     */
     public static boolean isMapMessage(Message message) {
         return message instanceof MapMessage;
     }
 
+    /**
+     * Check whether {@link javax.jms.Message} is {@link javax.jms.BytesMessage}
+     *
+     * @param message {@link javax.jms.Message} object
+     * @return true/false based on the evaluation
+     */
     public static boolean isBytesMessage(Message message) {
         return message instanceof BytesMessage;
     }
 
+    /**
+     * Check whether {@link javax.jms.Message} is {@link javax.jms.StreamMessage}
+     *
+     * @param message {@link javax.jms.Message} object
+     * @return true/false based on the evaluation
+     */
     public static boolean isStreamMessage(Message message) {
         return message instanceof StreamMessage;
     }
 
-    public static boolean isObjectMessage(Message message) {
-        return message instanceof ObjectMessage;
-    }
-
+    /**
+     * Return all property names in the {@link javax.jms.MapMessage} as Ballerina array
+     *
+     * @param message {@link javax.jms.Message} object
+     * @return Ballerina array consist of property names
+     * @throws BallerinaJmsException
+     */
     public static ArrayValue getPropertyNames(Message message) throws BallerinaJmsException {
         try {
             List<String> propertyNames = Collections.list(message.getPropertyNames());

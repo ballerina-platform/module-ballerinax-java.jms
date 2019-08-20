@@ -32,8 +32,18 @@ import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
 import java.util.ArrayList;
 
+/**
+ * Representation of {@link javax.jms.Destination} with utility methods to invoke as inter-op functions.
+ */
 public class JmsDestinationUtils {
 
+    /**
+     * Convert {@link javax.jms.Destination} to Ballerina Tuple
+     *
+     * @param destination {@link javax.jms.Destination} object
+     * @return Ballerina Tuple represent {@link javax.jms.Destination}
+     * @throws BallerinaJmsException in an error situation
+     */
     public static ArrayValue toDestination(Destination destination) throws BallerinaJmsException {
         String name = null;
         String type = null;

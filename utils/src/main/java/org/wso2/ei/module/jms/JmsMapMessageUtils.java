@@ -28,8 +28,18 @@ import javax.jms.MapMessage;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Representation of {@link javax.jms.MapMessage} with utility methods to invoke as inter-op functions.
+ */
 public class JmsMapMessageUtils {
 
+    /**
+     * Return all names in the {@link javax.jms.MapMessage} as Ballerina array
+     *
+     * @param message {@link javax.jms.MapMessage} object
+     * @return Ballerina array consist of map names
+     * @throws BallerinaJmsException in an error situation
+     */
     public static ArrayValue getMapNames(MapMessage message) throws BallerinaJmsException {
         try {
             ArrayList propertyNames = Collections.list(message.getMapNames());

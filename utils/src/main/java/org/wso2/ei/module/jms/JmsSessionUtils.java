@@ -28,12 +28,23 @@ import javax.jms.Session;
 import javax.jms.TemporaryQueue;
 import javax.jms.TemporaryTopic;
 
+/**
+ * Representation of {@link javax.jms.Session} with utility methods to invoke as inter-op functions.
+ */
 public class JmsSessionUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JmsSessionUtils.class);
 
     private JmsSessionUtils() {}
 
+    /**
+     * Creates a {@link javax.jms.Session} object with given {@link javax.jms.Connection}
+     *
+     * @param connection {@link javax.jms.Connection} object
+     * @param ackModeString Acknowledgment mode
+     * @return {@link javax.jms.Session} object
+     * @throws BallerinaJmsException in an error situation
+     */
     public static Session createJmsSession(Connection connection, String ackModeString) throws BallerinaJmsException {
 
         int sessionAckMode;
@@ -67,6 +78,13 @@ public class JmsSessionUtils {
         }
     }
 
+    /**
+     * Creates a {@link javax.jms.TemporaryQueue} object.
+     *
+     * @param session {@link javax.jms.Session} object
+     * @return return temporary queue name
+     * @throws BallerinaJmsException in an error situation
+     */
     public static String createTemporaryJmsQueue(Session session) throws BallerinaJmsException {
         try {
             TemporaryQueue temporaryQueue = session.createTemporaryQueue();
@@ -76,6 +94,13 @@ public class JmsSessionUtils {
         }
     }
 
+    /**
+     * Creates a {@link javax.jms.TemporaryTopic} object.
+     *
+     * @param session {@link javax.jms.Session} object
+     * @return return temporary topic name
+     * @throws BallerinaJmsException in an error situation
+     */
     public static String createTemporaryJmsTopic(Session session) throws BallerinaJmsException {
         try {
             TemporaryTopic temporaryTopic = session.createTemporaryTopic();
