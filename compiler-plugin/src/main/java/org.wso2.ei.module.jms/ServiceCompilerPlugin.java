@@ -41,10 +41,10 @@ import java.util.List;
                                      @SupportedResourceParamTypes.Type(orgName = "wso2", packageName = "jms", name = "Message")
                              }
 )
-public class JmsServiceCompilerPlugin extends AbstractTransportCompilerPlugin {
+public class ServiceCompilerPlugin extends AbstractTransportCompilerPlugin {
 
-    protected static final String INVALID_RESOURCE_SIGNATURE_FOR = "Invalid resource signature for ";
-    protected DiagnosticLog dlog = null;
+    private static final String INVALID_RESOURCE_SIGNATURE_FOR = "Invalid resource signature for ";
+    private DiagnosticLog dlog = null;
 
     @Override
     public void init(DiagnosticLog diagnosticLog) {
@@ -71,17 +71,23 @@ public class JmsServiceCompilerPlugin extends AbstractTransportCompilerPlugin {
         if (!isResourceReturnsErrorOrNil(resource)) {
             dlog.logDiagnostic(Diagnostic.Kind.ERROR, resource.pos, "Invalid return type: expected error?");
         }
+
+        if (!Constants.RESOURCE_NAME.equals(resource.name.value)) {
+            dlog.logDiagnostic(Diagnostic.Kind.ERROR, resource.pos,
+                               "resource: Expected resource name is [" + Constants.RESOURCE_NAME + "] found ["
+                               + resource.name.value + "]");
+        }
         List<BLangSimpleVariable> paramDetails = resource.getParameters();
         if (paramDetails == null || paramDetails.size() != 1) {
             dlog.logDiagnostic(Diagnostic.Kind.ERROR, resource.pos, INVALID_RESOURCE_SIGNATURE_FOR
                     + resource.getName().getValue() +
-                    " resource: Unexpected parameter count(expected parameter count = 1)");
+                    " resource: Expected " + Constants.MESSAGE_BAL_OBJECT_FULL_NAME + " parameter only.");
             return;
         }
-        if (!Constants.MESSAGE_BAL_OBJECT_FULL_NAME.equals(paramDetails.get(1).type.toString())) {
+        if (!Constants.MESSAGE_BAL_OBJECT_FULL_NAME.equals(paramDetails.get(0).type.toString())) {
             dlog.logDiagnostic(Diagnostic.Kind.ERROR, resource.pos,
                                INVALID_RESOURCE_SIGNATURE_FOR + resource.getName().getValue() +
-                               " resource: parameter should be " + Constants.MESSAGE_BAL_OBJECT_FULL_NAME);
+                               " resource: Parameter should be " + Constants.MESSAGE_BAL_OBJECT_FULL_NAME);
         }
     }
 

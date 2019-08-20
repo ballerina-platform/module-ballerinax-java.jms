@@ -19,10 +19,6 @@
             <artifactId>ballerina-runtime</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.ballerinalang</groupId>
-            <artifactId>ballerina-lang</artifactId>
-        </dependency>
-        <dependency>
             <groupId>javax.jms</groupId>
             <artifactId>javax.jms-api</artifactId>
         </dependency>
@@ -68,13 +64,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerArgument>-proc:none</compilerArgument>
-                </configuration>
             </plugin>
         </plugins>
     </build>
