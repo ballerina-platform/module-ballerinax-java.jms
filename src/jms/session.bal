@@ -50,7 +50,7 @@ public type Session client object {
     public remote function createTemporaryQueue() returns Destination|JmsError {
         handle|error val = createTemporaryJmsQueue(self.jmsSession);
         if (val is handle) {
-            return new Destination(val, "", TEMP_QUEUE);
+            return new TemporaryQueue(val);
         } else {
             return val;
         }
@@ -62,7 +62,7 @@ public type Session client object {
     public function createTemporaryTopic() returns Destination|JmsError {
         handle|error val = createTemporaryJmsTopic(self.jmsSession);
         if (val is handle) {
-            return new Destination(val, "", TEMP_TOPIC);
+            return new TemporaryTopic(val);
         } else {
             return val;
         }
@@ -75,7 +75,7 @@ public type Session client object {
     public remote function createQueue(string queueName) returns Destination|error {
         handle|error val = createJmsQueue(self.jmsSession, java:fromString(queueName));
         if (val is handle) {
-            return new Destination(val, queueName, QUEUE);
+            return new Queue(val);
         } else {
             return val;
         }
@@ -88,7 +88,7 @@ public type Session client object {
     public remote function createTopic(string topicName) returns Destination|error {
         handle|error val = createJmsTopic(self.jmsSession, java:fromString(topicName));
         if (val is handle) {
-            return new Destination(val, topicName, QUEUE);
+            return new Topic(val);
         } else {
             return val;
         }

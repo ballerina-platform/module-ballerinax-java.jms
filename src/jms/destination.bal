@@ -16,78 +16,27 @@
 
 import ballerinax/java;
 
-# Defines the possible values for the destination type in JMS `Destination`.
-#
-# `queue`: Destination type queue
-# `topic`: Destination type topic
-public type DestinationType "queue"|"topic"|"temporaryQueue"|"temporaryTopic";
+# Represent the JMS destination
+public type Destination abstract object {
 
-# Constant for JMS destination type queue
-public const QUEUE = "queue";
+    handle jmsDestination = JAVA_NULL;
 
-# Constant for JMS destination type topic
-public const TOPIC = "topic";
+    function getJmsDestination() returns handle;
 
-# Constant for JMS destination type temporary queue
-public const TEMP_QUEUE = "temporaryQueue";
-
-# Constant for JMS destination type temporary topic
-public const TEMP_TOPIC = "temporaryTopic";
-
-# Destination object
-#
-# + destinationName - Name of the destination
-# + destinationType - Type of the destination (either queue or topic)
-public type Destination object {
-    private string destinationName;
-    private DestinationType destinationType;
-    private handle jmsDestination = JAVA_NULL;
-
-    // This object is constructed as package private as it needs to be created using the session.
-    function __init(handle jmsDestination, string destName, DestinationType destType) {
-        self.destinationName = destName;
-        self.destinationType = destType;
-        self.jmsDestination = jmsDestination;
-        
-    }
-
-    public function createDestination(Session session, string destName, DestinationType destType) returns handle|error {
-        handle|error d = JAVA_NULL;
-        match destType {
-            QUEUE => d = createJmsQueue(session.getJmsSession(), java:fromString(destName));
-            TOPIC => d = createJmsTopic(session.getJmsSession(), java:fromString(destName));
-            TEMP_QUEUE => d = createTemporaryJmsTopic(session.getJmsSession());
-            TEMP_TOPIC => d = createTemporaryJmsQueue(session.getJmsSession());
-        }
-        return d;
-    }
-
-    public function getName() returns string {
-        return self.destinationName;
-    }
-
-    public function getType() returns DestinationType {
-        return self.destinationType;
-    }
-
-    function getJmsDestination() returns handle {
-        return self.jmsDestination;
-    }
 };
 
-function getDestinationType(string typeString) returns DestinationType|error {
-    match typeString {
-        "queue" => return QUEUE;
-        "topic" => return TOPIC;
-        "temporaryQueue" => return TEMP_QUEUE;
-        "temporaryTopic" => return TEMP_TOPIC;
+function getDestination(handle jmsDestination) returns Destination | error {
+    [string, string] [destinationName, destinationType] = check toDestination(jmsDestination);
+    match destinationType {
+        "queue" => return new Queue(jmsDestination);
+        "topic" => return new Topic(jmsDestination);
+        "temporaryQueue" => return new TemporaryQueue(jmsDestination);
+        "temporaryTopic" => return new TemporaryTopic(jmsDestination);
     }
-    error e = error("Unknown destination type " + typeString);
-    return e;
+    JmsError err = error("Invalid destination type");
+    return err;
 }
 
 function toDestination(handle destination) returns [string, string] | error = @java:Method {
     class: "org.wso2.ei.module.jms.JmsDestinationUtils"
 } external;
-
-

@@ -127,9 +127,7 @@ public type Message client object {
     public function getJMSDestination() returns Destination | error? {
         handle|error val = getJMSDestination(self.jmsMessage);
         if (val is handle) {
-            [string, string] [destinationName, destinationType] = check toDestination(val);
-            Destination destination = new(val, destinationName, check getDestinationType(destinationType));
-            return destination;
+            return getDestination(val);
         } else {
             return val;
         }
@@ -174,9 +172,7 @@ public type Message client object {
     public function getJMSReplyTo() returns Destination | error? {
         handle|error val = getJMSReplyTo(self.jmsMessage);
         if (val is handle) {
-            [string, string] [destinationName, destinationType] = check toDestination(val);
-            Destination destination = new(val, destinationName, check getDestinationType(destinationType));
-            return destination;
+            return getDestination(val);
         } else {
             return val;
         }

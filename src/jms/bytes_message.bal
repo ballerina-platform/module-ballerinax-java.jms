@@ -308,9 +308,7 @@ public type BytesMessage client object {
     public function getJMSDestination() returns Destination | error? {
         handle|error val = getJMSDestination(self.jmsMessage);
         if (val is handle) {
-            [string, string] [destinationName, destinationType] = check toDestination(val);
-            Destination destination = new(val, destinationName, check getDestinationType(destinationType));
-            return destination;
+            return getDestination(val);
         } else {
             return val;
         }
@@ -355,9 +353,7 @@ public type BytesMessage client object {
     public function getJMSReplyTo() returns Destination | error? {
         handle|error val = getJMSReplyTo(self.jmsMessage);
         if (val is handle) {
-            [string, string] [destinationName, destinationType] = check toDestination(val);
-            Destination destination = new(val, destinationName, check getDestinationType(destinationType));
-            return destination;
+            return getDestination(val);
         } else {
             return val;
         }
@@ -492,9 +488,9 @@ public type BytesMessage client object {
         return setStringProperty(self.jmsMessage, java:fromString(name), java:fromString(value));
     }
 
-    # Get the JMS text message
+    # Get the JMS bytes message
     #
-    # + return - Returns the java reference to the jms text message
+    # + return - Returns the java reference to the jms bytes message
     function getJmsMessage() returns handle {
         return self.jmsMessage;
     }
