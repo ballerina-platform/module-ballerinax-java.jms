@@ -26,13 +26,15 @@ public type Connection client object {
     private handle jmsConnection = JAVA_NULL;
 
     # JMS Connection constructor
-    public function __init(ConnectionConfiguration c) {
+    function __init(ConnectionConfiguration c) returns error?{
         self.config = c;
-        self.createConnection();
+        return self.createConnection();
     }
 
     # Creates a connection with the broker reading the connection configurations.
-    function createConnection() {
+    #
+    # + return - Return error or nil
+    function createConnection() returns error? {
         handle icf = java:fromString(self.config.initialContextFactory);
         handle providerUrl = java:fromString(self.config.providerUrl);
         handle factoryName = java:fromString(self.config.connectionFactoryName);
@@ -40,9 +42,11 @@ public type Connection client object {
         handle|error value = createJmsConnection(icf, providerUrl, factoryName, self.config.properties);
         if (value is handle) {
             self.jmsConnection = value;
-            log:printInfo("Successfully connected to broker.");
+            log:printDebug("Successfully connected to broker.");
+            return;
         } else {
-            log:printError("Error connecting broker", value);
+            log:printDebug("Error connecting to broker.");
+            return value;
         }
     }
 
@@ -93,6 +97,10 @@ public type ConnectionConfiguration record {|
     string? password = ();
     map<string> properties = {};
 |};
+
+public function createConnection(ConnectionConfiguration c) returns Connection|error{
+    return new Connection(c);
+}
 
 function createJmsConnection(handle initialContextFactory, handle providerUrl,
                                     handle connectionFactoryName, map<string> otherPropeties) returns handle | error = @java:Method {
