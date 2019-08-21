@@ -30,6 +30,8 @@ import org.wso2.ballerinalang.util.AbstractTransportCompilerPlugin;
 
 import java.util.List;
 
+import static org.ballerinalang.jvm.util.BLangConstants.VERSION_SEPARATOR;
+
 /**
  * Abstract Compiler plugin for validating Jms Listener services.
  *
@@ -43,7 +45,15 @@ import java.util.List;
 )
 public class ServiceCompilerPlugin extends AbstractTransportCompilerPlugin {
 
+    private static final String PACKAGE_NAME = "wso2/jms";
+    private static final String VERSION = "0.6.0";
+
+    private static final String PACKAGE_NAME_WITH_VERSION = PACKAGE_NAME + VERSION_SEPARATOR + VERSION;
+    private static final String MESSAGE_BAL_OBJECT_NAME = "Message";
+    private static final String RESOURCE_NAME = "onMessage";
+    private static final String MESSAGE_BAL_OBJECT_FULL_NAME = PACKAGE_NAME_WITH_VERSION + ":" + MESSAGE_BAL_OBJECT_NAME;
     private static final String INVALID_RESOURCE_SIGNATURE_FOR = "Invalid resource signature for ";
+
     private DiagnosticLog dlog = null;
 
     @Override
@@ -72,22 +82,22 @@ public class ServiceCompilerPlugin extends AbstractTransportCompilerPlugin {
             dlog.logDiagnostic(Diagnostic.Kind.ERROR, resource.pos, "Invalid return type: expected error?");
         }
 
-        if (!Constants.RESOURCE_NAME.equals(resource.name.value)) {
+        if (!RESOURCE_NAME.equals(resource.name.value)) {
             dlog.logDiagnostic(Diagnostic.Kind.ERROR, resource.pos,
-                               "resource: Expected resource name is [" + Constants.RESOURCE_NAME + "] found ["
+                               "resource: Expected resource name is [" + RESOURCE_NAME + "] found ["
                                + resource.name.value + "]");
         }
         List<BLangSimpleVariable> paramDetails = resource.getParameters();
         if (paramDetails == null || paramDetails.size() != 1) {
             dlog.logDiagnostic(Diagnostic.Kind.ERROR, resource.pos, INVALID_RESOURCE_SIGNATURE_FOR
                     + resource.getName().getValue() +
-                    " resource: Expected " + Constants.MESSAGE_BAL_OBJECT_FULL_NAME + " parameter only.");
+                    " resource: Expected " + MESSAGE_BAL_OBJECT_FULL_NAME + " parameter only.");
             return;
         }
-        if (!Constants.MESSAGE_BAL_OBJECT_FULL_NAME.equals(paramDetails.get(0).type.toString())) {
+        if (!MESSAGE_BAL_OBJECT_FULL_NAME.equals(paramDetails.get(0).type.toString())) {
             dlog.logDiagnostic(Diagnostic.Kind.ERROR, resource.pos,
                                INVALID_RESOURCE_SIGNATURE_FOR + resource.getName().getValue() +
-                               " resource: Parameter should be " + Constants.MESSAGE_BAL_OBJECT_FULL_NAME);
+                               " resource: Parameter should be " + MESSAGE_BAL_OBJECT_FULL_NAME);
         }
     }
 
