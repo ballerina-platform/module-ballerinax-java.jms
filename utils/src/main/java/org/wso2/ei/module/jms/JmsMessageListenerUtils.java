@@ -21,6 +21,7 @@ package org.wso2.ei.module.jms;
 
 import org.ballerinalang.jvm.BRuntime;
 import org.ballerinalang.jvm.BallerinaValues;
+import org.ballerinalang.jvm.types.AttachedFunction;
 import org.ballerinalang.jvm.values.HandleValue;
 import org.ballerinalang.jvm.values.ObjectValue;
 
@@ -72,26 +73,63 @@ public class JmsMessageListenerUtils {
 
         @Override
         public void onMessage(Message message) {
-            ObjectValue value = BallerinaValues.createObjectValue(Constants.PACKAGE_NAME,
-                                                                  getMessageObjectName(message),
-                                                                  new HandleValue(message));
-            Object[] args = {value, true};
-            runtime.invokeMethod(serviceObject, Constants.SERVICE_RESOURCE_NAME, args);
-        }
 
-        private String getMessageObjectName(Message message) {
+            String messageObjectName;
+            String specificFunctionName;
             if (message instanceof TextMessage) {
-                return Constants.TEXT_MESSAGE_BAL_OBJECT_NAME;
+                messageObjectName = Constants.TEXT_MESSAGE_BAL_OBJECT_NAME;
+                specificFunctionName = Constants.SERVICE_RESOURCE_ON_TEXT_MESSAGE;
             } else if (message instanceof MapMessage) {
-                return Constants.MAP_MESSAGE_BAL_OBJECT_NAME;
+                messageObjectName = Constants.MAP_MESSAGE_BAL_OBJECT_NAME;
+                specificFunctionName = Constants.SERVICE_RESOURCE_ON_MAP_MESSAGE;
             } else if (message instanceof BytesMessage) {
-                return Constants.BYTE_MESSAGE_BAL_OBJECT_NAME;
+                messageObjectName = Constants.BYTE_MESSAGE_BAL_OBJECT_NAME;
+                specificFunctionName = Constants.SERVICE_RESOURCE_ON_BYTES_MESSAGE;
             } else if (message instanceof StreamMessage) {
-                return Constants.STREAM_MESSAGE_BAL_OBJECT_NAME;
+                messageObjectName = Constants.STREAM_MESSAGE_BAL_OBJECT_NAME;
+                specificFunctionName = Constants.SERVICE_RESOURCE_ON_STREAM_MESSAGE;
             } else {
-                return Constants.MESSAGE_BAL_OBJECT_NAME;
+                messageObjectName = Constants.MESSAGE_BAL_OBJECT_NAME;
+                specificFunctionName = Constants.SERVICE_RESOURCE_ON_OTHER_MESSAGE;
+            }
+
+            ObjectValue param = BallerinaValues.createObjectValue(Constants.PACKAGE_NAME, messageObjectName,
+                                                                  new HandleValue(message));
+            Object[] params = {param, true};
+
+            AttachedFunction[] attachedFunctions = serviceObject.getType().getAttachedFunctions();
+            if (isMessageTypeSpecificFunction(attachedFunctions)) {
+                invokeMessageSpecificFunctions(specificFunctionName, attachedFunctions, params);
+            } else {
+                runtime.invokeMethod(serviceObject, Constants.SERVICE_RESOURCE_ON_MESSAGE, params);
             }
         }
+
+        /**
+         * With compiler plugin we guarantee that there are more than 1 resource in a message type specific scenario
+         * with the inclusion of mandatory onOtherMessage function.
+         *
+         * @param functions functions list
+         * @return true if there are message type specific functions found.
+         */
+        private boolean isMessageTypeSpecificFunction(AttachedFunction[] functions) {
+            return functions.length > 1;
+        }
+
+        private void invokeMessageSpecificFunctions(String specificFunctionName, AttachedFunction[] attachedFunctions, Object[] params) {
+            boolean functionFound = false;
+            for(AttachedFunction function: attachedFunctions) {
+                if (specificFunctionName.equals(function.getName())) {
+                    functionFound = true;
+                    runtime.invokeMethod(serviceObject, specificFunctionName, params);
+                    break;
+                }
+            }
+            if (!functionFound) {
+                runtime.invokeMethod(serviceObject, Constants.SERVICE_RESOURCE_ON_OTHER_MESSAGE, params);
+            }
+        }
+
     }
 
 }

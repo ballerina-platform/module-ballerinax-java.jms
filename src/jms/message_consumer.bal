@@ -33,6 +33,8 @@ public type MessageConsumer client object {
     # + name - Name of the service.
     # + return - Returns nil or an error upon failure to register the listener.
     public function __attach(service s, string? name = ()) returns error? {
+        string n = (name is string)? name: "";
+        log:printDebug("Message consumer attached to service" + n);
         return setMessageListener(self.jmsConsumer, s);
     }
 

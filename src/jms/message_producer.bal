@@ -35,7 +35,7 @@ public type MessageProducer client object {
     #
     # + message - Message to be sent to the JMS provider
     # + return - Error if unable to send the message to the queue
-    public remote function send(TextMessage message) returns error? {
+    public remote function send(Message message) returns error? {
         return send(self.jmsProducer, message.getJmsMessage());
     }
 
@@ -44,7 +44,7 @@ public type MessageProducer client object {
     # + destination - Destination used for the message sender
     # + message - Message to be sent to the JMS provider
     # + return - Error if sending to the given destination fails
-    public remote function sendTo(Destination destination, TextMessage message) returns error? {
+    public remote function sendTo(Destination destination, Message message) returns error? {
         return sendToDestination(self.jmsProducer, destination.getJmsDestination(), message.getJmsMessage());
     }
 };

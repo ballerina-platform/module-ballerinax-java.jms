@@ -119,9 +119,13 @@ public class Constants {
     static final String MAP_MESSAGE_BAL_OBJECT_NAME = "MapMessage";
     static final String BYTE_MESSAGE_BAL_OBJECT_NAME = "BytesMessage";
     static final String STREAM_MESSAGE_BAL_OBJECT_NAME = "StreamMessage";
-    static final String MESSAGE_BAL_OBJECT_FULL_NAME = PACKAGE_NAME_WITH_VERSION + ":" + MESSAGE_BAL_OBJECT_NAME;
 
-    static final String SERVICE_RESOURCE_NAME = "onMessage";
+    static final String SERVICE_RESOURCE_ON_MESSAGE = "onMessage";
+    static final String SERVICE_RESOURCE_ON_TEXT_MESSAGE = "onTextMessage";
+    static final String SERVICE_RESOURCE_ON_MAP_MESSAGE = "onMapMessage";
+    static final String SERVICE_RESOURCE_ON_BYTES_MESSAGE = "onBytesMessage";
+    static final String SERVICE_RESOURCE_ON_STREAM_MESSAGE = "onStreamMessage";
+    static final String SERVICE_RESOURCE_ON_OTHER_MESSAGE = "onOtherMessage";
 
     private Constants() {
     }
