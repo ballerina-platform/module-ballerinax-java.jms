@@ -84,28 +84,6 @@
     </properties>
     <profiles>
         <profile>
-            <id>unix</id>
-            <activation>
-                <os>
-                    <family>unix</family>
-                </os>
-            </activation>
-            <properties>
-                <script.extension>.sh</script.extension>
-            </properties>
-        </profile>
-        <profile>
-            <id>DOS</id>
-            <activation>
-                <os>
-                    <family>dos</family>
-                </os>
-            </activation>
-            <properties>
-                <script.extension>.bat</script.extension>
-            </properties>
-        </profile>
-        <profile>
             <id>ballerina-build</id>
             <build>
                 <plugins>
@@ -116,13 +94,18 @@
                         <executions>
                             <execution>
                                 <id>ballerina-build</id>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
                             </execution>
                         </executions>
                         <configuration>
-                            <executable>${project-home}/resources/ballerina-build${script.extension}</executable>
+                            <executable>ballerina</executable>
+                            <arguments>
+                                <argument>compile</argument>
+<!--                                <argument>jms</argument>-->
+                            </arguments>
                         </configuration>
                     </plugin>
                 </plugins>
