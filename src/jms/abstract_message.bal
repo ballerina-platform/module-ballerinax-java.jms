@@ -30,49 +30,49 @@ public type AbstractMessage abstract client object {
 
     public function clearProperties() returns error?;
 
-    public function getBooleanProperty(string name) returns boolean | error?;
+    public function getBooleanProperty(string name) returns boolean | error;
 
-    public function getByteProperty(string name) returns byte | error?;
+    public function getByteProperty(string name) returns byte | error;
 
-    public function getDoubleProperty(string name) returns float | error?;
+    public function getDoubleProperty(string name) returns float | error;
 
-    public function getFloatProperty(string name) returns float | error?;
+    public function getFloatProperty(string name) returns float | error;
 
-    public function getIntProperty(string name) returns int | error?;
+    public function getIntProperty(string name) returns int | error;
 
-    public function getJMSCorrelationID() returns string | error?;
+    public function getJMSCorrelationID() returns string | error;
 
-    public function getJMSCorrelationIDAsBytes() returns byte[] | error?;
+    public function getJMSCorrelationIDAsBytes() returns byte[] | error;
 
-    public function getJMSDeliveryMode() returns int | error?;
+    public function getJMSDeliveryMode() returns int | error;
 
-    public function getJMSDeliveryTime() returns int | error?;
+    public function getJMSDeliveryTime() returns int | error;
 
-    public function getJMSDestination() returns Destination | error?;
+    public function getJMSDestination() returns Destination | error;
 
-    public function getJMSExpiration() returns int | error?;
+    public function getJMSExpiration() returns int | error;
 
-    public function getJMSMessageID() returns string | error?;
+    public function getJMSMessageID() returns string | error;
 
-    public function getJMSPriority() returns int | error?;
+    public function getJMSPriority() returns int | error;
 
-    public function getJMSRedelivered() returns boolean | error?;
+    public function getJMSRedelivered() returns boolean | error;
 
-    public function getJMSReplyTo() returns Destination | error?;
+    public function getJMSReplyTo() returns Destination | error;
 
-    public function getJMSTimestamp() returns int | error?;
+    public function getJMSTimestamp() returns int | error;
 
-    public function getJMSType() returns string | error?;
+    public function getJMSType() returns string | error;
 
-    public function getLongProperty(string name) returns int | error?;
+    public function getLongProperty(string name) returns int | error;
 
-    public function getPropertyNames() returns string[] | error?;
+    public function getPropertyNames() returns string[] | error;
 
-    public function getShortProperty(string name) returns int | error?;
+    public function getShortProperty(string name) returns int | error;
 
-    public function getStringProperty(string name) returns string | error?;
+    public function getStringProperty(string name) returns string | error;
 
-    public function propertyExists(string name) returns boolean | error?;
+    public function propertyExists(string name) returns boolean | error;
 
     public function setBooleanProperty(string name, boolean value) returns error?;
 

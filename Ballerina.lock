@@ -1,7 +1,33 @@
-[project]
-name = "wso2"
+org_name = "wso2"
 version = "0.6.0"
-lockfileversion = "1"
-ballerinaversion = "unknown"
-modules = []
+lockfile_version = "1.0.0"
+ballerina_version = "1.0.0-alpha3"
 
+[[imports]]
+org_name = "wso2"
+name = "jms"
+version = "0.6.0"
+
+[[imports.imports]]
+org_name = "ballerinax"
+name = "java"
+version = "0.0.0"
+imports = []
+
+[[imports.imports]]
+org_name = "ballerina"
+name = "log"
+version = ""
+imports = []
+
+[[imports.imports]]
+org_name = "ballerina"
+name = "lang.object"
+version = ""
+imports = []
+
+[[imports]]
+org_name = "ballerinax"
+name = "java"
+version = "0.0.0"
+imports = []

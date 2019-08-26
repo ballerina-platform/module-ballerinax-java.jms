@@ -14,9 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/log;
 import ballerinax/java;
-
 
 # JMS Message Producer client object to send messages to both queues and topics.
 #

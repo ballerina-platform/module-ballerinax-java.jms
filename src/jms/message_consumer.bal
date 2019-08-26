@@ -52,6 +52,9 @@ public type MessageConsumer client object {
     public function __immediateStop() returns error? {
     }
 
+    public function __detach(service s) returns error? {
+    }
+
     # Stops consuming messages through the QueueListener.
     #
     # + return - Returns nil or an error upon failure to close the queue receiver.

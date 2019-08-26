@@ -70,8 +70,8 @@ jms:Connection connection = check jms:createConnection({
 jms:Session session = check con->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
 jms:Destination dest = check session->createTopic("MyTopic");
 
-listener jms:MessageConsumer jmsConsumer = check session->createDurableSubscriber(dest, "sub-1");
-
+`listener jms:MessageConsumer jmsConsumer = check session->createDurableSubscriber(dest, "sub-1");
+`
 service messageListener on jmsConsumer {
 
    resource function onMessage(jms:Message message) {

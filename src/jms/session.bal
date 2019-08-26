@@ -14,6 +14,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/log;
+import ballerinax/java;
+
 # Represents the JMS session.
 #
 # + config - Stores the configurations related to a JMS session.

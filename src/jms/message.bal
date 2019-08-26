@@ -14,6 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerinax/java;
+
 # Represent the 'Message' used to send and receive content from the a JMS provider.
 #
 # Most message-oriented middleware (MOM) products treat messages as lightweight entities that consist of a header
@@ -56,42 +58,42 @@ public type Message client object {
     # Get the given boolean property.
     #
     # + return - Returns the boolean value or an error if it fails.
-    public function getBooleanProperty(string name) returns boolean | error? {
+    public function getBooleanProperty(string name) returns boolean | error {
         return getBooleanProperty(self.jmsMessage, java:fromString(name));
     }
 
     # Get the given byte property.
     #
     # + return - Returns the byte value or an error if it fails.
-    public function getByteProperty(string name) returns byte | error? {
+    public function getByteProperty(string name) returns byte | error {
         return getByteProperty(self.jmsMessage, java:fromString(name));
     }
 
     # Get the given double property.
     #
     # + return - Returns the double value or an error if it fails.
-    public function getDoubleProperty(string name) returns float | error? {
+    public function getDoubleProperty(string name) returns float | error {
         return getDoubleProperty(self.jmsMessage, java:fromString(name));
     }
 
     # Get the given float property.
     #
     # + return - Returns the float value or an error if it fails.
-    public function getFloatProperty(string name) returns float | error? {
+    public function getFloatProperty(string name) returns float | error {
         return getFloatProperty(self.jmsMessage, java:fromString(name));
     }
 
     # Get the given int property.
     #
     # + return - Returns the int value or an error if it fails.
-    public function getIntProperty(string name) returns int | error? {
+    public function getIntProperty(string name) returns int | error {
         return getIntProperty(self.jmsMessage, java:fromString(name));
     }
 
     # Get the message correlation ID.
     #
     # + return - Returns the message correlation ID or an error if it fails.
-    public function getJMSCorrelationID() returns string | error? {
+    public function getJMSCorrelationID() returns string? | error {
         handle|error val = getJMSCorrelationID(self.jmsMessage);
         if (val is handle) {
             return java:toString(val);
@@ -103,28 +105,28 @@ public type Message client object {
     # Get the message correlation ID as an array of bytes.
     #
     # + return - Returns the message correlation ID as an byte array or an error if it fails.
-    public function getJMSCorrelationIDAsBytes() returns byte[] | error? {
+    public function getJMSCorrelationIDAsBytes() returns byte[] | error {
         return getJMSCorrelationIDAsBytes(self.jmsMessage);
     }
 
     # Get the message delivery mode.
     #
     # + return - Returns the message delivery mode or an error if it fails.
-    public function getJMSDeliveryMode() returns int | error? {
+    public function getJMSDeliveryMode() returns int | error {
         return getJMSDeliveryMode(self.jmsMessage);
     }
 
     # Get the message delivery time.
     #
     # + return - Returns the message delivery time or an error if it fails.
-    public function getJMSDeliveryTime() returns int | error? {
+    public function getJMSDeliveryTime() returns int | error {
         return getJMSDeliveryTime(self.jmsMessage);
     }
 
     # Get the message destination object.
     #
     # + return - Returns the message destination object or an error if it fails.
-    public function getJMSDestination() returns Destination | error? {
+    public function getJMSDestination() returns Destination | error {
         handle|error val = getJMSDestination(self.jmsMessage);
         if (val is handle) {
             return getDestination(val);
@@ -136,14 +138,14 @@ public type Message client object {
     # Get the message expiration time.
     #
     # + return - Returns the message expiration time or an error if it fails.
-    public function getJMSExpiration() returns int | error? {
+    public function getJMSExpiration() returns int | error {
         return getJMSExpiration(self.jmsMessage);
     }
 
     # Get the message ID.
     #
     # + return - Returns the message ID or an error if it fails.
-    public function getJMSMessageID() returns string | error? {
+    public function getJMSMessageID() returns string? | error {
         handle|error val = getJMSMessageID(self.jmsMessage);
         if (val is handle) {
             return java:toString(val);
@@ -155,21 +157,21 @@ public type Message client object {
     # Get the message priority.
     #
     # + return - Returns the message priority or an error if it fails.
-    public function getJMSPriority() returns int | error? {
+    public function getJMSPriority() returns int | error {
         return getJMSPriority(self.jmsMessage);
     }
 
     # Get an indication whether the message being redelivered.
     #
     # + return - Returns the message redelivered or an error if it fails.
-    public function getJMSRedelivered() returns boolean | error? {
+    public function getJMSRedelivered() returns boolean | error {
         return getJMSRedelivered(self.jmsMessage);
     }
 
     # Get the Destination object to which a reply to this message should be sent.
     #
     # + return - Returns the reply to destination or an error if it fails.
-    public function getJMSReplyTo() returns Destination | error? {
+    public function getJMSReplyTo() returns Destination | error {
         handle|error val = getJMSReplyTo(self.jmsMessage);
         if (val is handle) {
             return getDestination(val);
@@ -181,14 +183,14 @@ public type Message client object {
     # Get the message timestamp.
     #
     # + return - Returns the message timestamp or an error if it fails.
-    public function getJMSTimestamp() returns int | error? {
+    public function getJMSTimestamp() returns int | error {
         return getJMSTimestamp(self.jmsMessage);
     }
 
     # Get the message type identifier.
     #
     # + return - Returns the message type or an error if it fails.
-    public function getJMSType() returns string | error? {
+    public function getJMSType() returns string? | error {
         handle|error val = getJMSType(self.jmsMessage);
         if (val is handle) {
             return java:toString(val);
@@ -200,28 +202,28 @@ public type Message client object {
     # Get the given long property.
     #
     # + return - Returns the int value or an error if it fails.
-    public function getLongProperty(string name) returns int | error? {
+    public function getLongProperty(string name) returns int | error {
         return getLongProperty(self.jmsMessage, java:fromString(name));
     }
 
     # Get string array of property names.
     #
     # + return - Returns the string array of property names or an error if it fails.
-    public function getPropertyNames() returns string[] | error? {
+    public function getPropertyNames() returns string[] | error {
         return getPropertyNames(self.jmsMessage);
     }
 
     # Get the given short property.
     #
     # + return - Returns the int value or an error if it fails.
-    public function getShortProperty(string name) returns int | error? {
+    public function getShortProperty(string name) returns int | error {
         return getShortProperty(self.jmsMessage, java:fromString(name));
     }
 
     # Get the given string property.
     #
     # + return - Returns the string value or an error if it fails.
-    public function getStringProperty(string name) returns string | error? {
+    public function getStringProperty(string name) returns string? | error {
         handle|error val = getStringProperty(self.jmsMessage, java:fromString(name));
         if (val is handle) {
             return java:toString(val);
@@ -233,7 +235,7 @@ public type Message client object {
     # Indicate whether a property value exists.
     #
     # + return - Returns true if the property exists or an error if it fails.
-    public function propertyExists(string name) returns boolean | error? {
+    public function propertyExists(string name) returns boolean | error {
         return propertyExists(self.jmsMessage, java:fromString(name));
     }
 
