@@ -159,9 +159,9 @@ public type BytesMessage client object {
     # + return - Returns an error if it fails.
     public function writeBytes(byte[] value, int? offset = (), int? length = ()) returns error? {
         if(offset is int && length is int) {
-//            return writePortionOfBytes(self.jmsMessage, value, offset, length);
+            return writePortionOfBytes(self.jmsMessage, value, offset, length);
         } else {
-//            return writeBytes(self.jmsMessage, value);
+            return writeBytes(self.jmsMessage, value);
         }
     }
 
@@ -567,15 +567,12 @@ function writeByte(handle message, byte value) returns error? = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-function writeBytes(handle message, handle value) returns error? = @java:Method {
-    paramTypes: [{class:"byte", dimensions:1}, "int"],
-    class: "javax.jms.BytesMessage"
+function writeBytes(handle message, byte[] value) returns error? = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsBytesMessageUtils"
 } external;
 
-function writePortionOfBytes(handle message, handle value, int offset, int length) returns error? = @java:Method {
-    name: "writeBytes",
-    paramTypes: [{class:"byte", dimensions:1}, "int", "int"],
-    class: "javax.jms.BytesMessage"
+function writePortionOfBytes(handle message, byte[] value, int offset, int length) returns error? = @java:Method {
+    class: "org.wso2.ei.module.jms.JmsBytesMessageUtils"
 } external;
 
 //function writeChar(handle message, handle value) returns error? = @java:Method {
