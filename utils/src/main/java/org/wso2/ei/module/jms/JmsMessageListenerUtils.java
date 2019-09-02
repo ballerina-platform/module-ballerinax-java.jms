@@ -22,7 +22,6 @@ package org.wso2.ei.module.jms;
 import org.ballerinalang.jvm.BRuntime;
 import org.ballerinalang.jvm.BallerinaValues;
 import org.ballerinalang.jvm.types.AttachedFunction;
-import org.ballerinalang.jvm.types.BPackage;
 import org.ballerinalang.jvm.values.HandleValue;
 import org.ballerinalang.jvm.values.ObjectValue;
 
@@ -93,8 +92,8 @@ public class JmsMessageListenerUtils {
                 messageObjectName = Constants.MESSAGE_BAL_OBJECT_NAME;
                 specificFunctionName = Constants.SERVICE_RESOURCE_ON_OTHER_MESSAGE;
             }
-            BPackage packageId = new BPackage(Constants.ORG, Constants.PACKAGE_NAME, Constants.VERSION);
-            ObjectValue param = BallerinaValues.createObjectValue(packageId, messageObjectName,
+
+            ObjectValue param = BallerinaValues.createObjectValue(Constants.PACKAGE_NAME, messageObjectName,
                                                                   new HandleValue(message));
             Object[] params = {param, true};
 
