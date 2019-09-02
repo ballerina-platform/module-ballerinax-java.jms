@@ -92,7 +92,6 @@ public class JmsMessageListenerUtils {
                 messageObjectName = Constants.MESSAGE_BAL_OBJECT_NAME;
                 specificFunctionName = Constants.SERVICE_RESOURCE_ON_OTHER_MESSAGE;
             }
-
             ObjectValue param = BallerinaValues.createObjectValue(Constants.PACKAGE_NAME, messageObjectName,
                                                                   new HandleValue(message));
             Object[] params = {param, true};
