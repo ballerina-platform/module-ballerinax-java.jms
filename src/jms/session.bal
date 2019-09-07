@@ -119,6 +119,7 @@ public type Session client object {
 
     # Creates a JMS text message.
     #
+    # + text - The string used to initialize this message
     # + return - Returns the JMS text message or an error if it fails.
     public function createTextMessage(string? text = ()) returns TextMessage|error {
         if (text is string) {

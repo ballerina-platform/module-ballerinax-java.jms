@@ -52,6 +52,7 @@ public type Connection client object {
 
     # Create a Session object, specifying transacted and acknowledgeMode
     #
+    # + sessionConfig - SessionConfiguration record consist with JMS session config
     # + return - Returns the Session or an error if it fails.
     public remote function createSession(SessionConfiguration sessionConfig) returns Session | error {
         return new Session(self.jmsConnection, sessionConfig);

@@ -19,7 +19,7 @@ import ballerinax/java;
 # Represent the JMS destination
 public type Destination abstract object {
 
-    handle jmsDestination = JAVA_NULL;
+    handle jmsDestination;
 
     function getJmsDestination() returns handle;
 
@@ -28,10 +28,18 @@ public type Destination abstract object {
 function getDestination(handle jmsDestination) returns Destination | error {
     [string, string] [destinationName, destinationType] = check toDestination(jmsDestination);
     match destinationType {
-        "queue" => return new Queue(jmsDestination);
-        "topic" => return new Topic(jmsDestination);
-        "temporaryQueue" => return new TemporaryQueue(jmsDestination);
-        "temporaryTopic" => return new TemporaryTopic(jmsDestination);
+        "queue" => {
+            return new Queue(jmsDestination);
+        }
+        "topic" => {
+            return new Topic(jmsDestination);
+        }
+        "temporaryQueue" => {
+            return new TemporaryQueue(jmsDestination);
+        }
+        "temporaryTopic" => {
+            return new TemporaryTopic(jmsDestination);
+        }
     }
     JmsError err = error("Invalid destination type");
     return err;

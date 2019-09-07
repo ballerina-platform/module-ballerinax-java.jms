@@ -22,7 +22,7 @@
 # application data being sent.
 public type AbstractMessage abstract client object {
 
-    handle jmsMessage = JAVA_NULL;
+    handle jmsMessage;
 
     public remote function acknowledge() returns error?;
 

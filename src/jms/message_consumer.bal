@@ -20,7 +20,7 @@ import ballerina/'lang\.object as lang;
 
 public type MessageConsumer client object {
 
-    *lang:AbstractListener;
+    *lang:Listener;
     private handle jmsConsumer = JAVA_NULL;
 
     function __init(handle jmsMessageConsumer) {

@@ -57,6 +57,7 @@ public type Message client object {
 
     # Get the given boolean property.
     #
+    # + name - The name of the boolean property
     # + return - Returns the boolean value or an error if it fails.
     public function getBooleanProperty(string name) returns boolean | error {
         return getBooleanProperty(self.jmsMessage, java:fromString(name));
@@ -64,6 +65,7 @@ public type Message client object {
 
     # Get the given byte property.
     #
+    # + name - The name of the byte property
     # + return - Returns the byte value or an error if it fails.
     public function getByteProperty(string name) returns byte | error {
         return getByteProperty(self.jmsMessage, java:fromString(name));
@@ -71,6 +73,7 @@ public type Message client object {
 
     # Get the given double property.
     #
+    # + name - The name of the double property
     # + return - Returns the double value or an error if it fails.
     public function getDoubleProperty(string name) returns float | error {
         return getDoubleProperty(self.jmsMessage, java:fromString(name));
@@ -78,6 +81,7 @@ public type Message client object {
 
     # Get the given float property.
     #
+    # + name - The name of the float property
     # + return - Returns the float value or an error if it fails.
     public function getFloatProperty(string name) returns float | error {
         return getFloatProperty(self.jmsMessage, java:fromString(name));
@@ -85,6 +89,7 @@ public type Message client object {
 
     # Get the given int property.
     #
+    # + name - The name of the int property
     # + return - Returns the int value or an error if it fails.
     public function getIntProperty(string name) returns int | error {
         return getIntProperty(self.jmsMessage, java:fromString(name));
@@ -201,6 +206,7 @@ public type Message client object {
 
     # Get the given long property.
     #
+    # + name - The name of the long property
     # + return - Returns the int value or an error if it fails.
     public function getLongProperty(string name) returns int | error {
         return getLongProperty(self.jmsMessage, java:fromString(name));
@@ -215,6 +221,7 @@ public type Message client object {
 
     # Get the given short property.
     #
+    # + name - The name of the short property
     # + return - Returns the int value or an error if it fails.
     public function getShortProperty(string name) returns int | error {
         return getShortProperty(self.jmsMessage, java:fromString(name));
@@ -222,6 +229,7 @@ public type Message client object {
 
     # Get the given string property.
     #
+    # + name - The name of the string property
     # + return - Returns the string value or an error if it fails.
     public function getStringProperty(string name) returns string? | error {
         handle|error val = getStringProperty(self.jmsMessage, java:fromString(name));
@@ -234,6 +242,7 @@ public type Message client object {
 
     # Indicate whether a property value exists.
     #
+    # + name - The name of the property to test
     # + return - Returns true if the property exists or an error if it fails.
     public function propertyExists(string name) returns boolean | error {
         return propertyExists(self.jmsMessage, java:fromString(name));
@@ -241,6 +250,8 @@ public type Message client object {
 
     # Set the boolean value with the specified name into the message.
     #
+    # + name - The name of the boolean property
+    # + value - The boolean property value to set
     # + return - Returns an error if it fails.
     public function setBooleanProperty(string name, boolean value) returns error? {
         return setBooleanProperty(self.jmsMessage, java:fromString(name), value);
@@ -248,6 +259,8 @@ public type Message client object {
 
     # Set the byte value with the specified name into the message.
     #
+    # + name - The name of the byte property
+    # + value - The byte property value to set
     # + return - Returns an error if it fails.
     public function setByteProperty(string name, byte value) returns error? {
         return setByteProperty(self.jmsMessage, java:fromString(name), value);
@@ -255,6 +268,8 @@ public type Message client object {
 
     # Set the double value with the specified name into the message.
     #
+    # + name - The name of the double property
+    # + value - The double property value to set
     # + return - Returns an error if it fails.
     public function setDoubleProperty(string name, float value) returns error? {
         return setDoubleProperty(self.jmsMessage, java:fromString(name), value);
@@ -262,6 +277,8 @@ public type Message client object {
 
     # Set the float value with the specified name into the message.
     #
+    # + name - The name of the float property
+    # + value - The float property value to set
     # + return - Returns an error if it fails.
     public function setFloatProperty(string name, float value) returns error? {
         return setFloatProperty(self.jmsMessage, java:fromString(name), value);
@@ -269,6 +286,8 @@ public type Message client object {
 
     # Set the int value with the specified name into the message.
     #
+    # + name - The name of the int property
+    # + value - The int property value to set
     # + return - Returns an error if it fails.
     public function setIntProperty(string name, int value) returns error? {
         return setIntProperty(self.jmsMessage, java:fromString(name), value);
@@ -276,6 +295,7 @@ public type Message client object {
 
     # Set the reply destination to the message which a reply should send.
     #
+    # + replyTo - Destination to which to send a response to this message
     # + return - Returns an error if it fails.
     public function setJMSReplyTo(Destination replyTo) returns error? {
         return setJMSReplyTo(self.jmsMessage, replyTo.getJmsDestination());
@@ -283,6 +303,7 @@ public type Message client object {
 
     # Set the message type.
     #
+    # + jmsType - The message type
     # + return - Returns an error if it fails.
     public function setJMSType(string jmsType) returns error? {
         return setJMSType(self.jmsMessage, java:fromString(jmsType));
@@ -290,6 +311,8 @@ public type Message client object {
 
     # Set the long value with the specified name into the message.
     #
+    # + name - The name of the long property
+    # + value - The long property value to set
     # + return - Returns an error if it fails.
     public function setLongProperty(string name, int value) returns error? {
         return setLongProperty(self.jmsMessage, java:fromString(name), value);
@@ -297,6 +320,8 @@ public type Message client object {
 
     # Set the short value with the specified name into the message.
     #
+    # + name - The name of the short property
+    # + value - The short property value to set
     # + return - Returns an error if it fails.
     public function setShortProperty(string name, int value) returns error? {
         return setShortProperty(self.jmsMessage, java:fromString(name), value);
@@ -304,6 +329,8 @@ public type Message client object {
 
     # Set the string value with the specified name into the message.
     #
+    # + name - The name of the string property
+    # + value - The string property value to set
     # + return - Returns an error if it fails.
     public function setStringProperty(string name, string value) returns error? {
         return setStringProperty(self.jmsMessage, java:fromString(name), java:fromString(value));

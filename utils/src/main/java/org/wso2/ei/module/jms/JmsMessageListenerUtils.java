@@ -22,6 +22,7 @@ package org.wso2.ei.module.jms;
 import org.ballerinalang.jvm.BRuntime;
 import org.ballerinalang.jvm.BallerinaValues;
 import org.ballerinalang.jvm.types.AttachedFunction;
+import org.ballerinalang.jvm.types.BPackage;
 import org.ballerinalang.jvm.values.HandleValue;
 import org.ballerinalang.jvm.values.ObjectValue;
 
@@ -92,7 +93,9 @@ public class JmsMessageListenerUtils {
                 messageObjectName = Constants.MESSAGE_BAL_OBJECT_NAME;
                 specificFunctionName = Constants.SERVICE_RESOURCE_ON_OTHER_MESSAGE;
             }
-            ObjectValue param = BallerinaValues.createObjectValue(Constants.PACKAGE_NAME, messageObjectName,
+
+            BPackage jmsPackage = new BPackage(Constants.ORG, Constants.PACKAGE_NAME, Constants.VERSION);
+            ObjectValue param = BallerinaValues.createObjectValue(jmsPackage, messageObjectName,
                                                                   new HandleValue(message));
             Object[] params = {param, true};
 
@@ -100,7 +103,7 @@ public class JmsMessageListenerUtils {
             if (isMessageTypeSpecificFunction(attachedFunctions)) {
                 invokeMessageSpecificFunctions(specificFunctionName, attachedFunctions, params);
             } else {
-                runtime.invokeMethod(serviceObject, Constants.SERVICE_RESOURCE_ON_MESSAGE, params);
+                runtime.invokeMethodAsync(serviceObject, Constants.SERVICE_RESOURCE_ON_MESSAGE, params);
             }
         }
 
@@ -120,12 +123,12 @@ public class JmsMessageListenerUtils {
             for(AttachedFunction function: attachedFunctions) {
                 if (specificFunctionName.equals(function.getName())) {
                     functionFound = true;
-                    runtime.invokeMethod(serviceObject, specificFunctionName, params);
+                    runtime.invokeMethodAsync(serviceObject, specificFunctionName, params);
                     break;
                 }
             }
             if (!functionFound) {
-                runtime.invokeMethod(serviceObject, Constants.SERVICE_RESOURCE_ON_OTHER_MESSAGE, params);
+                runtime.invokeMethodAsync(serviceObject, Constants.SERVICE_RESOURCE_ON_OTHER_MESSAGE, params);
             }
         }
 
