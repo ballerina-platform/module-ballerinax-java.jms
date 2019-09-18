@@ -23,6 +23,7 @@ import org.ballerinalang.jvm.types.BTupleType;
 import org.ballerinalang.jvm.types.BType;
 import org.ballerinalang.jvm.types.BTypes;
 import org.ballerinalang.jvm.values.ArrayValue;
+import org.ballerinalang.jvm.values.HandleValue;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -31,6 +32,7 @@ import javax.jms.TemporaryQueue;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Representation of {@link javax.jms.Destination} with utility methods to invoke as inter-op functions.
@@ -38,39 +40,25 @@ import java.util.ArrayList;
 public class JmsDestinationUtils {
 
     /**
-     * Convert {@link javax.jms.Destination} to Ballerina Tuple
+     * Get the {@link javax.jms.Destination} type
      *
      * @param destination {@link javax.jms.Destination} object
      * @return Ballerina Tuple represent {@link javax.jms.Destination}
-     * @throws BallerinaJmsException in an error situation
      */
-    public static ArrayValue toDestination(Destination destination) throws BallerinaJmsException {
-        String name = null;
-        String type = null;
-        try {
-            if (destination instanceof TemporaryQueue) {
-                name = ((TemporaryQueue) destination).getQueueName();
-                type = Constants.DESTINATION_TYPE_TEMP_QUEUE;
-            } else if (destination instanceof TemporaryTopic) {
-                name = ((TemporaryTopic) destination).getTopicName();
-                type = Constants.DESTINATION_TYPE_TEMP_TOPIC;
-            } else if (destination instanceof Queue) {
-                name = ((Queue) destination).getQueueName();
-                type = Constants.DESTINATION_TYPE_QUEUE;
-            } else if (destination instanceof Topic) {
-                name = ((Topic) destination).getTopicName();
-                type = Constants.DESTINATION_TYPE_TOPIC;
-            }
+    public static String getDestinationType(Destination destination) {
+        String destinationType = null;
 
-            return new ArrayValue(new String[] {name, type}, new BTupleType(new ArrayList<BType>(){
-                {
-                    add(BTypes.typeString);
-                    add(BTypes.typeString);
-                }
-            }));
-        } catch (JMSException e) {
-            throw new BallerinaJmsException("Error occurred while extracting JMS Destination.", e);
+        if (destination instanceof TemporaryQueue) {
+            destinationType = Constants.DESTINATION_TYPE_TEMP_QUEUE;
+        } else if (destination instanceof TemporaryTopic) {
+            destinationType = Constants.DESTINATION_TYPE_TEMP_TOPIC;
+        } else if (destination instanceof Queue) {
+            destinationType = Constants.DESTINATION_TYPE_QUEUE;
+        } else if (destination instanceof Topic) {
+            destinationType = Constants.DESTINATION_TYPE_TOPIC;
         }
+
+        return destinationType;
     }
 
 }

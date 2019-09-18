@@ -26,7 +26,8 @@ public type Destination abstract object {
 };
 
 function getDestination(handle jmsDestination) returns Destination | error {
-    [string, string] [destinationName, destinationType] = check toDestination(jmsDestination);
+    handle jmsDestinationType = getDestinationType(jmsDestination);
+    string? destinationType = java:toString(jmsDestinationType);
     match destinationType {
         "queue" => {
             return new Queue(jmsDestination);
@@ -45,6 +46,6 @@ function getDestination(handle jmsDestination) returns Destination | error {
     return err;
 }
 
-function toDestination(handle destination) returns [string, string] | error = @java:Method {
+function getDestinationType(handle destination) returns handle = @java:Method {
     class: "org.wso2.ei.module.jms.JmsDestinationUtils"
 } external;
