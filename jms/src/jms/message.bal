@@ -16,222 +16,21 @@
 
 import ballerinax/java;
 
-# Represent the 'MapMessage' used to send and receive content from the a JMS provider.
+# Represent the 'Message' used to send and receive content from the a JMS provider.
 #
 # Most message-oriented middleware (MOM) products treat messages as lightweight entities that consist of a header
 # and a body. The header contains fields used for message routing and identification; the body contains the
 # application data being sent.
-public type MapMessage client object {
+public type Message client object {
 
     // Add a reference to the `AbstractMessage` object type.
     *AbstractMessage;
 
-    # Initialized a `MapMessage` object.
-    #
-    # + handle - The java reference to the jms text message.
-    function __init(handle mapMessage) {
-        self.jmsMessage = mapMessage;
-    }
-
-    # Get the boolean value by given name.
-    #
-    # + name - The name of the boolean
-    # + return - Returns the boolean value or an error if it fails.
-    public function getBoolean(string name) returns boolean | error {
-        return getBoolean(self.jmsMessage, java:fromString(name));
-    }
-
-    # Get the byte value by given name.
-    #
-    # + name - The name of the byte
-    # + return - Returns the byte value or an error if it fails.
-    public function getByte(string name) returns byte | error {
-        return getByte(self.jmsMessage, java:fromString(name));
-    }
-
-    # Get the byte array by given name.
-    #
-    # + name - The name of the byte array
-    # + return - Returns the byte array or an error if it fails.
-    public function getBytes(string name) returns byte[] | error {
-        return getBytes(self.jmsMessage, java:fromString(name));
-    }
-
-//    # Get the char value by given name.
-//    #
-//    # + return - Returns the char value or an error if it fails.
-//    public function getChar(string name) returns string | error {
-//        handle|error val = getChar(self.jmsMessage, java:fromString(name));
-//        if (val is handle) {
-//            return java:toString(val);
-//        } else {
-//            return val;
-//        }
-//    }
-
-
-    # Get the double value by given name.
-    #
-    # + name - The name of the double
-    # + return - Returns the double value or an error if it fails.
-    public function getDouble(string name) returns float | error {
-        return getDouble(self.jmsMessage, java:fromString(name));
-    }
-
-    # Get the float value by given name.
-    #
-    # + name - The name of the float
-    # + return - Returns the float value or an error if it fails.
-    public function getFloat(string name) returns float | error {
-        return getFloat(self.jmsMessage, java:fromString(name));
-    }
-
-    # Get the int value by given name.
-    #
-    # + name - The name of the int
-    # + return - Returns the int value or an error if it fails.
-    public function getInt(string name) returns int | error {
-        return getInt(self.jmsMessage, java:fromString(name));
-    }
-
-    # Get the long value by given name.
-    #
-    # + name - The name of the long
-    # + return - Returns the long value or an error if it fails.
-    public function getLong(string name) returns int | error {
-        return getLong(self.jmsMessage, java:fromString(name));
-    }
-
-    # Get all the names in the MapMessage object.
-    #
-    # + return - Returns the string[] or an error if it fails.
-    public function getMapNames() returns string[] | error {
-        return getMapNames(self.jmsMessage);
-    }
-
-    # Get the short value by given name.
-    #
-    # + name - The name of the short
-    # + return - Returns the short value or an error if it fails.
-    public function getShort(string name) returns int | error {
-        return getShort(self.jmsMessage, java:fromString(name));
-    }
-
-    # Get the string value by given name.
-    #
-    # + name - The name of the string
-    # + return - Returns the string value or an error if it fails.
-    public function getString(string name) returns string? | error {
-        handle|error val = getString(self.jmsMessage, java:fromString(name));
-        if(val is handle) {
-            return java:toString(val);
-        } else {
-            return val;
-        }
-    }
-
-    # Check whether an item exists in this MapMessage.
-    #
-    # + name - The name of the item to test
-    # + return - Returns the item exists or an error if it fails.
-    public function itemExists(string name) returns boolean | error {
-        return itemExists(self.jmsMessage, java:fromString(name));
-    }
-
-    # Set a boolean value with the specified name.
-    #
-    # + name - The name of the boolean
-    # + value - The boolean value to set in the Map
-    # + return - Returns an error if it fails.
-    public function setBoolean(string name, boolean value) returns error? {
-        return setBoolean(self.jmsMessage, java:fromString(name), value);
-    }
-
-    # Set a byte value with the specified name.
-    #
-    # + name - the name of the byte
-    # + value - The byte value to set in the Map
-    # + return - Returns an error if it fails.
-    public function setByte(string name, byte value) returns error? {
-        return setByte(self.jmsMessage, java:fromString(name), value);
-    }
-
-    # Set a byte array with the specified name.
-    #
-    # + name - The name of the byte array
-    # + value - The byte array value to set in the Map
-    # + offset - The initial offset within the byte array
-    # + length - The number of bytes to use
-    # + return - Returns an error if it fails.
-    public function setBytes(string name, byte[] value, int? offset = (), int? length = ()) returns error? {
-        if(offset is int && length is int) {
- //           return setPortionOfBytes(self.jmsMessage, java:fromString(name), value, offset, length);
-       } else {
- //           return setBytes(self.jmsMessage, java:fromString(name), value);
-        }
-    }
-
-//    # Set a char value with the specified name.
-//    #
-//    # + name - The name of the Unicode character
-//    # + value - The Unicode character value to set in the Map
-//    # + return - Returns an error if it fails.
-//    public function setChar(string name, string value) returns error? {
-//        return setChar(self.jmsMessage, java:fromString(name), java:fromString(value));
-//    }
-
-    # Set a double value with the specified name.
-    #
-    # + name - The name of the double
-    # + value - The double value to set in the Map
-    # + return - Returns an error if it fails.
-    public function setDouble(string name, float value) returns error? {
-        return setDouble(self.jmsMessage, java:fromString(name), value);
-    }
-
-    # Set a float value with the specified name.
-    #
-    # + name - The name of the float
-    # + value - The float value to set in the Map
-    # + return - Returns an error if it fails.
-    public function setFloat(string name, float value) returns error? {
-        return setFloat(self.jmsMessage, java:fromString(name), value);
-    }
-
-    # Set a int value with the specified name.
-    #
-    # + name - The name of the int
-    # + value - The int value to set in the Map
-    # + return - Returns an error if it fails.
-    public function setInt(string name, int value) returns error? {
-        return setInt(self.jmsMessage, java:fromString(name), value);
-    }
-
-    # Set a long value with the specified name.
-    #
-    # + name - The name of the long
-    # + value - The long value to set in the Map
-    # + return - Returns an error if it fails.
-    public function setLong(string name, int value) returns error? {
-        return setLong(self.jmsMessage, java:fromString(name), value);
-    }
-
-    # Set a short value with the specified name.
-    #
-    # + name - The name of the short
-    # + value - The short value to set in the Map
-    # + return - Returns an error if it fails.
-    public function setShort(string name, int value) returns error? {
-        return setShort(self.jmsMessage, java:fromString(name), value);
-    }
-
-    # Set a string value with the specified name.
-    #
-    # + name - The name of the string
-    # + value - The string value to set in the Map
-    # + return - Returns an error if it fails.
-    public function setString(string name, string value) returns error? {
-        return setString(self.jmsMessage, java:fromString(name), java:fromString(value));
+    # Initialized a `Message` object.
+    # 
+    # + handle - The java reference to the jms message.
+    public function __init(handle message) {
+        self.jmsMessage = message;
     }
 
     # Acknowledges the reception of this message. This is used when the consumer has chosen CLIENT_ACKNOWLEDGE as its
@@ -537,105 +336,150 @@ public type MapMessage client object {
         return setStringProperty(self.jmsMessage, java:fromString(name), java:fromString(value));
     }
 
-    # Get the JMS map message
+    # Get the JMS message
     #
-    # + return - Returns the java reference to the jms map message
+    # + return - Returns the java reference to the jms text message
     function getJmsMessage() returns handle {
         return self.jmsMessage;
     }
-
 };
 
-function getBoolean(handle message, handle name) returns boolean | error = @java:Method {
-    class: "javax.jms.MapMessage"
+function acknowledge(handle message) returns error? = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function getByte(handle message, handle name) returns byte | error = @java:Method {
-    class: "javax.jms.MapMessage"
+function clearBody(handle message) returns error? = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function getBytes(handle message, handle name) returns byte[] | error = @java:Method {
-    class: "javax.jms.MapMessage"
+function clearProperties(handle message) returns error? = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-//function getChar(handle message, handle name) returns int | error = @java:Method {
-//    class: "javax.jms.MapMessage"
-//} external;
-
-function getDouble(handle message, handle name) returns float | error = @java:Method {
-    class: "javax.jms.MapMessage"
+function getBooleanProperty(handle message, handle name) returns boolean | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function getFloat(handle message, handle name) returns float | error = @java:Method {
-    class: "javax.jms.MapMessage"
+function getByteProperty(handle message, handle name) returns byte | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function getInt(handle message, handle name) returns int | error = @java:Method {
-    class: "javax.jms.MapMessage"
+function getDoubleProperty(handle message, handle name) returns float | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function getLong(handle message, handle name) returns int | error = @java:Method {
-    class: "javax.jms.MapMessage"
+function getFloatProperty(handle message, handle name) returns float | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function getMapNames(handle message) returns string[] | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsMapMessageUtils"
+function getIntProperty(handle message, handle name) returns int | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function getShort(handle message, handle name) returns int | error = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSCorrelationID(handle message) returns handle | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function getString(handle message, handle name) returns handle | error = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSCorrelationIDAsBytes(handle message) returns byte[] | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function itemExists(handle message, handle name) returns boolean | error = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSDeliveryMode(handle message) returns int | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function setBoolean(handle message, handle name, boolean value) returns error? = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSDeliveryTime(handle message) returns int | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function setByte(handle message, handle name, byte value) returns error? = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSDestination(handle message) returns handle | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-//function setBytes(handle message, handle name, byte[] value) returns error? = @java:Method {
-//    class: "javax.jms.MapMessage"
-//} external;
-
-//function setPortionOfBytes(handle message, handle name, handle array, int offset, int length) returns error? = @java:Method {
-//    name: "setBytes",
-//    paramTypes: ["java.lang.String", {class:"byte", dimensions:1}, "int", "int"],
-//    class: "javax.jms.MapMessage"
-//} external;
-
-//function setChar(handle message, handle name, handle value) returns error? = @java:Method {
-//    class: "javax.jms.MapMessage"
-//} external;
-
-function setDouble(handle message, handle name, float value) returns error? = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSExpiration(handle message) returns int | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function setFloat(handle message, handle name, float value) returns error? = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSMessageID(handle message) returns handle | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function setInt(handle message, handle name, int value) returns error? = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSPriority(handle message) returns int | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function setLong(handle message, handle name, int value) returns error? = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSRedelivered(handle message) returns boolean | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function setShort(handle message, handle name, int value) returns error? = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSReplyTo(handle message) returns handle | error = @java:Method {
+    class: "javax.jms.Message"
 } external;
 
-function setString(handle message, handle name, handle value) returns error? = @java:Method {
-    class: "javax.jms.MapMessage"
+function getJMSTimestamp(handle message) returns int | error = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function getJMSType(handle message) returns handle | error = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function getLongProperty(handle message, handle name) returns int | error = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function getPropertyNames(handle message) returns string[] | error = @java:Method {
+    class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
+} external;
+
+function getShortProperty(handle message, handle name) returns int | error = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function getStringProperty(handle message, handle name) returns handle | error = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function propertyExists(handle message, handle name) returns boolean | error = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setBooleanProperty(handle message, handle name, boolean value) returns error? = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setByteProperty(handle message, handle name, byte value) returns error? = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setDoubleProperty(handle message, handle name, float value) returns error? = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setFloatProperty(handle message, handle name, float value) returns error? = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setIntProperty(handle message, handle name, int value) returns error? = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setJMSReplyTo(handle message, handle destination) returns error? = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setJMSType(handle message, handle jmsType) returns error? = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setLongProperty(handle message, handle name, int value) returns error? = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setShortProperty(handle message, handle name, int value) returns error? = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setStringProperty(handle message, handle name, handle value) returns error? = @java:Method {
+    class: "javax.jms.Message"
 } external;

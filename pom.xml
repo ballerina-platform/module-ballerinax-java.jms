@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
   ~
@@ -24,7 +25,7 @@
         <version>1.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wso2.ei</groupId>
+    <groupId>org.wso2.ei.b7a</groupId>
     <artifactId>module-jms</artifactId>
     <packaging>pom</packaging>
     <version>0.6.0</version>
@@ -33,6 +34,7 @@
     <modules>
         <module>utils</module>
         <module>compiler-plugin</module>
+        <module>jms</module>
     </modules>
 
     <dependencyManagement>
@@ -73,47 +75,26 @@
         </dependencies>
     </dependencyManagement>
 
-    <properties>
-        <project-home>${project.basedir}</project-home>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!--ballerina.version>1.0.0-alpha3</ballerina.version-->
-        <ballerina.version>1.0.0</ballerina.version>
-        <maven.checkstyleplugin.excludes>**/generated/**</maven.checkstyleplugin.excludes>
-        <maven.spotbugsplugin.exclude.file>spotbugs-exclude.xml</maven.spotbugsplugin.exclude.file>
-        <slf4j.version>1.7.21</slf4j.version>
-        <jms.version>2.0.1</jms.version>
-    </properties>
-    <profiles>
-        <profile>
-            <id>ballerina-build</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.6.0</version>
-                        <executions>
-                            <execution>
-                                <id>ballerina-build</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <executable>ballerina</executable>
-                            <arguments>
-                                <argument>compile</argument>
-<!--                                <argument>jms</argument>-->
-                            </arguments>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${exec.maven.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven.dependeny.plugin}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -138,4 +119,16 @@
             </releases>
         </repository>
     </repositories>
+    <properties>
+        <project-home>${project.basedir}</project-home>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <ballerina.version>1.0.0</ballerina.version>
+        <exec.maven.plugin.version>1.6.0</exec.maven.plugin.version>
+        <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
+        <maven.dependeny.plugin>3.1.1</maven.dependeny.plugin>
+        <maven.checkstyleplugin.excludes>**/generated/**</maven.checkstyleplugin.excludes>
+        <maven.spotbugsplugin.exclude.file>spotbugs-exclude.xml</maven.spotbugsplugin.exclude.file>
+        <slf4j.version>1.7.21</slf4j.version>
+        <jms.version>2.0.1</jms.version>
+    </properties>
 </project>

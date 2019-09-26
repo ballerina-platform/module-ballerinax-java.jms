@@ -103,10 +103,10 @@ public function createConnection(ConnectionConfiguration c) returns Connection|e
     return new Connection(c);
 }
 
-function createJmsConnection(handle initialContextFactory, handle providerUrl,
-                                    handle connectionFactoryName, map<string> otherPropeties) returns handle | error = @java:Method {
-                                            class: "org.wso2.ei.module.jms.JmsConnectionUtils"
-                                        } external;
+function createJmsConnection(handle initialContextFactory, handle providerUrl, handle connectionFactoryName,
+                             map<string> otherPropeties) returns handle | error = @java:Method {
+    class: "org.wso2.ei.b7a.jms.JmsConnectionUtils"
+} external;
 
 function startJmsConnection(handle jmsConnection) returns error? = @java:Method {
     name: "start",

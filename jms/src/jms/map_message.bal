@@ -16,214 +16,222 @@
 
 import ballerinax/java;
 
-# Represent the 'BytesMessage' used to send and receive content from the a JMS provider.
+# Represent the 'MapMessage' used to send and receive content from the a JMS provider.
 #
 # Most message-oriented middleware (MOM) products treat messages as lightweight entities that consist of a header
 # and a body. The header contains fields used for message routing and identification; the body contains the
 # application data being sent.
-public type BytesMessage client object {
+public type MapMessage client object {
 
     // Add a reference to the `AbstractMessage` object type.
     *AbstractMessage;
 
-    # Initialized a `BytesMessage` object.
+    # Initialized a `MapMessage` object.
     #
     # + handle - The java reference to the jms text message.
-    function __init(handle bytesMessage) {
-        self.jmsMessage = bytesMessage;
+    function __init(handle mapMessage) {
+        self.jmsMessage = mapMessage;
     }
 
-    # Get the number of bytes of the message body.
+    # Get the boolean value by given name.
     #
-    # + return - Returns the body length or an error if it fails.
-    public function getBodyLength() returns int | error {
-        return getBodyLength(self.jmsMessage);
+    # + name - The name of the boolean
+    # + return - Returns the boolean value or an error if it fails.
+    public function getBoolean(string name) returns boolean | error {
+        return getBoolean(self.jmsMessage, java:fromString(name));
     }
 
-    # Read a boolean from the message.
+    # Get the byte value by given name.
     #
-    # + return - Returns a boolean value or an error if it fails.
-    public function readBoolean() returns boolean | error {
-        return readBoolean(self.jmsMessage);
+    # + name - The name of the byte
+    # + return - Returns the byte value or an error if it fails.
+    public function getByte(string name) returns byte | error {
+        return getByte(self.jmsMessage, java:fromString(name));
     }
 
-    # Read a byte from the message.
+    # Get the byte array by given name.
     #
-    # + return - Returns a byte value or an error if it fails.
-    public function readByte() returns byte | error {
-        return readByte(self.jmsMessage);
+    # + name - The name of the byte array
+    # + return - Returns the byte array or an error if it fails.
+    public function getBytes(string name) returns byte[] | error {
+        return getBytes(self.jmsMessage, java:fromString(name));
     }
 
-    # Read a byte array from the message.
-    #
-    # + length - The number of bytes to read
-    # + return - Returns a byte array or an error if it fails.
-    public function readBytes(int? length = ()) returns byte[] | error {
-        if(length is int) {
-            return readPortionOfBytes(self.jmsMessage, length);
-        } else {
-            return readBytes(self.jmsMessage);
-        }
-    }
-
-//    # Read a unicode character value from the message.
+//    # Get the char value by given name.
 //    #
-//    # + return - Returns a string value or an error if it fails.
-//    public function readChar() returns string | error {
-//        returns readChar(self.jmsMessage);
+//    # + return - Returns the char value or an error if it fails.
+//    public function getChar(string name) returns string | error {
+//        handle|error val = getChar(self.jmsMessage, java:fromString(name));
+//        if (val is handle) {
+//            return java:toString(val);
+//        } else {
+//            return val;
+//        }
 //    }
 
-    # Read a double value from the message.
+
+    # Get the double value by given name.
     #
-    # + return - Returns a double value or an error if it fails.
-    public function readDouble() returns float | error {
-        return readDouble(self.jmsMessage);
+    # + name - The name of the double
+    # + return - Returns the double value or an error if it fails.
+    public function getDouble(string name) returns float | error {
+        return getDouble(self.jmsMessage, java:fromString(name));
     }
 
-    # Read a float value from the message.
+    # Get the float value by given name.
     #
-    # + return - Returns a float value or an error if it fails.
-    public function readFloat() returns float | error {
-        return readFloat(self.jmsMessage);
+    # + name - The name of the float
+    # + return - Returns the float value or an error if it fails.
+    public function getFloat(string name) returns float | error {
+        return getFloat(self.jmsMessage, java:fromString(name));
     }
 
-    # Read an int value from the message.
+    # Get the int value by given name.
     #
-    # + return - Returns an int value or an error if it fails.
-    public function readInt() returns int | error {
-        return readInt(self.jmsMessage);
+    # + name - The name of the int
+    # + return - Returns the int value or an error if it fails.
+    public function getInt(string name) returns int | error {
+        return getInt(self.jmsMessage, java:fromString(name));
     }
 
-    # Read a long value from the message.
+    # Get the long value by given name.
     #
-    # + return - Returns a long value or an error if it fails.
-    public function readLong() returns int | error {
-        return readLong(self.jmsMessage);
+    # + name - The name of the long
+    # + return - Returns the long value or an error if it fails.
+    public function getLong(string name) returns int | error {
+        return getLong(self.jmsMessage, java:fromString(name));
     }
 
-    # Read a short value from the message.
+    # Get all the names in the MapMessage object.
     #
-    # + return - Returns a short value or an error if it fails.
-    public function readShort() returns int | error {
-        return readShort(self.jmsMessage);
+    # + return - Returns the string[] or an error if it fails.
+    public function getMapNames() returns string[] | error {
+        return getMapNames(self.jmsMessage);
     }
 
-    # Read an unsigned 8-bit number from the message.
+    # Get the short value by given name.
     #
-    # + return - Returns a int value or an error if it fails.
-    public function readUnsignedByte() returns int | error {
-        return readUnsignedByte(self.jmsMessage);
+    # + name - The name of the short
+    # + return - Returns the short value or an error if it fails.
+    public function getShort(string name) returns int | error {
+        return getShort(self.jmsMessage, java:fromString(name));
     }
 
-    # Read an unsigned 16-bit number from the message.
+    # Get the string value by given name.
     #
-    # + return - Returns a int value or an error if it fails.
-    public function readUnsignedShort() returns int | error {
-        return readUnsignedShort(self.jmsMessage);
-    }
-
-    # Read a string that has been encoded using a modified UTF-8 format from the message.
-    #
-    # + return - Returns a string value or an error if it fails.
-    public function readUTF() returns string? | error {
-        handle|error val = readUTF(self.jmsMessage);
-        if (val is handle) {
+    # + name - The name of the string
+    # + return - Returns the string value or an error if it fails.
+    public function getString(string name) returns string? | error {
+        handle|error val = getString(self.jmsMessage, java:fromString(name));
+        if(val is handle) {
             return java:toString(val);
         } else {
             return val;
         }
     }
 
-    # Puts the message body in read-only mode and repositions the stream of bytes to the beginning.
+    # Check whether an item exists in this MapMessage.
     #
-    # + return - Returns an error if it fails.
-    public function reset() returns error? {
-        return reset(self.jmsMessage);
+    # + name - The name of the item to test
+    # + return - Returns the item exists or an error if it fails.
+    public function itemExists(string name) returns boolean | error {
+        return itemExists(self.jmsMessage, java:fromString(name));
     }
 
-    # Write a boolean to the message stream as a 1-byte value.
+    # Set a boolean value with the specified name.
     #
-    # + value - The boolean value to be written
+    # + name - The name of the boolean
+    # + value - The boolean value to set in the Map
     # + return - Returns an error if it fails.
-    public function writeBoolean(boolean value) returns error? {
-        return writeBoolean(self.jmsMessage, value);
+    public function setBoolean(string name, boolean value) returns error? {
+        return setBoolean(self.jmsMessage, java:fromString(name), value);
     }
 
-    # Write a byte to the message.
+    # Set a byte value with the specified name.
     #
-    # + value - The byte value to be written
+    # + name - the name of the byte
+    # + value - The byte value to set in the Map
     # + return - Returns an error if it fails.
-    public function writeByte(byte value) returns error? {
-        return writeByte(self.jmsMessage, value);
+    public function setByte(string name, byte value) returns error? {
+        return setByte(self.jmsMessage, java:fromString(name), value);
     }
 
-    # Write a byte array to the message.
+    # Set a byte array with the specified name.
     #
-    # + value - The byte array to be written
+    # + name - The name of the byte array
+    # + value - The byte array value to set in the Map
     # + offset - The initial offset within the byte array
     # + length - The number of bytes to use
     # + return - Returns an error if it fails.
-    public function writeBytes(byte[] value, int? offset = (), int? length = ()) returns error? {
+    public function setBytes(string name, byte[] value, int? offset = (), int? length = ()) returns error? {
         if(offset is int && length is int) {
-            return writePortionOfBytes(self.jmsMessage, value, offset, length);
-        } else {
-            return writeBytes(self.jmsMessage, value);
+ //           return setPortionOfBytes(self.jmsMessage, java:fromString(name), value, offset, length);
+       } else {
+ //           return setBytes(self.jmsMessage, java:fromString(name), value);
         }
     }
 
-//    # Write a char to the message.
+//    # Set a char value with the specified name.
 //    #
+//    # + name - The name of the Unicode character
+//    # + value - The Unicode character value to set in the Map
 //    # + return - Returns an error if it fails.
-//    public function writeChar(string value) returns error? {
-//        return writeChar(self.jmsMessage, java:fromString(value));
+//    public function setChar(string name, string value) returns error? {
+//        return setChar(self.jmsMessage, java:fromString(name), java:fromString(value));
 //    }
 
-    # Write a double to the message.
+    # Set a double value with the specified name.
     #
-    # + value - The double value to be written
+    # + name - The name of the double
+    # + value - The double value to set in the Map
     # + return - Returns an error if it fails.
-    public function writeDouble(float value) returns error? {
-        return writeDouble(self.jmsMessage, value);
+    public function setDouble(string name, float value) returns error? {
+        return setDouble(self.jmsMessage, java:fromString(name), value);
     }
 
-    # Write a float to the message.
+    # Set a float value with the specified name.
     #
-    # + value - The float value to be written
+    # + name - The name of the float
+    # + value - The float value to set in the Map
     # + return - Returns an error if it fails.
-    public function writeFloat(float value) returns error? {
-        return writeFloat(self.jmsMessage, value);
+    public function setFloat(string name, float value) returns error? {
+        return setFloat(self.jmsMessage, java:fromString(name), value);
     }
 
-    # Write an int to the message.
+    # Set a int value with the specified name.
     #
-    # + value - The int value to be written
+    # + name - The name of the int
+    # + value - The int value to set in the Map
     # + return - Returns an error if it fails.
-    public function writeInt(int value) returns error? {
-        return writeInt(self.jmsMessage, value);
+    public function setInt(string name, int value) returns error? {
+        return setInt(self.jmsMessage, java:fromString(name), value);
     }
 
-    # Write a long to the message.
+    # Set a long value with the specified name.
     #
-    # + value - The long value to be written
+    # + name - The name of the long
+    # + value - The long value to set in the Map
     # + return - Returns an error if it fails.
-    public function writeLong(int value) returns error? {
-        return writeLong(self.jmsMessage, value);
+    public function setLong(string name, int value) returns error? {
+        return setLong(self.jmsMessage, java:fromString(name), value);
     }
 
-    # Write a short to the message.
+    # Set a short value with the specified name.
     #
-    # + value - The short value to be written
+    # + name - The name of the short
+    # + value - The short value to set in the Map
     # + return - Returns an error if it fails.
-    public function writeShort(int value) returns error? {
-        return writeShort(self.jmsMessage, value);
+    public function setShort(string name, int value) returns error? {
+        return setShort(self.jmsMessage, java:fromString(name), value);
     }
 
-    # Write a string to the message.
+    # Set a string value with the specified name.
     #
-    # + value - The string value to be written
+    # + name - The name of the string
+    # + value - The string value to set in the Map
     # + return - Returns an error if it fails.
-    public function writeUTF(string value) returns error? {
-        return writeUTF(self.jmsMessage, java:fromString(value));
+    public function setString(string name, string value) returns error? {
+        return setString(self.jmsMessage, java:fromString(name), java:fromString(value));
     }
 
     # Acknowledges the reception of this message. This is used when the consumer has chosen CLIENT_ACKNOWLEDGE as its
@@ -529,115 +537,105 @@ public type BytesMessage client object {
         return setStringProperty(self.jmsMessage, java:fromString(name), java:fromString(value));
     }
 
-    # Get the JMS bytes message
+    # Get the JMS map message
     #
-    # + return - Returns the java reference to the jms bytes message
+    # + return - Returns the java reference to the jms map message
     function getJmsMessage() returns handle {
         return self.jmsMessage;
     }
 
 };
 
-function getBodyLength(handle message) returns int | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function getBoolean(handle message, handle name) returns boolean | error = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function readBoolean(handle message) returns boolean | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function getByte(handle message, handle name) returns byte | error = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function readByte(handle message) returns byte | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function getBytes(handle message, handle name) returns byte[] | error = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function readBytes(handle message) returns byte[] | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsBytesMessageUtils"
-} external;
-
-function readPortionOfBytes(handle message, int length) returns byte[] | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsBytesMessageUtils"
-} external;
-
-//function readChar(handle message) returns int | error = @java:Method {
-//    class: "javax.jms.BytesMessage"
+//function getChar(handle message, handle name) returns int | error = @java:Method {
+//    class: "javax.jms.MapMessage"
 //} external;
 
-function readDouble(handle message) returns float | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function getDouble(handle message, handle name) returns float | error = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function readFloat(handle message) returns float | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function getFloat(handle message, handle name) returns float | error = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function readInt(handle message) returns int | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function getInt(handle message, handle name) returns int | error = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function readLong(handle message) returns int | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function getLong(handle message, handle name) returns int | error = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function readShort(handle message) returns int | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function getMapNames(handle message) returns string[] | error = @java:Method {
+    class: "org.wso2.ei.b7a.jms.JmsMapMessageUtils"
 } external;
 
-function readUnsignedByte(handle message) returns int | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function getShort(handle message, handle name) returns int | error = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function readUnsignedShort(handle message) returns int | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function getString(handle message, handle name) returns handle | error = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function readUTF(handle message) returns handle | error = @java:Method {
-    class: "javax.jms.BytesMessage"
+function itemExists(handle message, handle name) returns boolean | error = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function reset(handle message) returns error? = @java:Method {
-    class: "javax.jms.BytesMessage"
+function setBoolean(handle message, handle name, boolean value) returns error? = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function writeBoolean(handle message, boolean value) returns error? = @java:Method {
-    class: "javax.jms.BytesMessage"
+function setByte(handle message, handle name, byte value) returns error? = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function writeByte(handle message, byte value) returns error? = @java:Method {
-    class: "javax.jms.BytesMessage"
-} external;
-
-function writeBytes(handle message, byte[] value) returns error? = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsBytesMessageUtils"
-} external;
-
-function writePortionOfBytes(handle message, byte[] value, int offset, int length) returns error? = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsBytesMessageUtils"
-} external;
-
-//function writeChar(handle message, handle value) returns error? = @java:Method {
-//    class: "javax.jms.BytesMessage"
+//function setBytes(handle message, handle name, byte[] value) returns error? = @java:Method {
+//    class: "javax.jms.MapMessage"
 //} external;
 
-function writeDouble(handle message, float value) returns error? = @java:Method {
-    class: "javax.jms.BytesMessage"
+//function setPortionOfBytes(handle message, handle name, handle array, int offset, int length) returns error? = @java:Method {
+//    name: "setBytes",
+//    paramTypes: ["java.lang.String", {class:"byte", dimensions:1}, "int", "int"],
+//    class: "javax.jms.MapMessage"
+//} external;
+
+//function setChar(handle message, handle name, handle value) returns error? = @java:Method {
+//    class: "javax.jms.MapMessage"
+//} external;
+
+function setDouble(handle message, handle name, float value) returns error? = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function writeFloat(handle message, float value) returns error? = @java:Method {
-    class: "javax.jms.BytesMessage"
+function setFloat(handle message, handle name, float value) returns error? = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function writeInt(handle message, int value) returns error? = @java:Method {
-    class: "javax.jms.BytesMessage"
+function setInt(handle message, handle name, int value) returns error? = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function writeLong(handle message, int value) returns error? = @java:Method {
-    class: "javax.jms.BytesMessage"
+function setLong(handle message, handle name, int value) returns error? = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function writeShort(handle message, int value) returns error? = @java:Method {
-    class: "javax.jms.BytesMessage"
+function setShort(handle message, handle name, int value) returns error? = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;
 
-function writeUTF(handle message, handle value) returns error? = @java:Method {
-    class: "javax.jms.BytesMessage"
+function setString(handle message, handle name, handle value) returns error? = @java:Method {
+    class: "javax.jms.MapMessage"
 } external;

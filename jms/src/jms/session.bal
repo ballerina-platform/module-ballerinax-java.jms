@@ -330,7 +330,7 @@ function createJmsConsumer(handle jmsSession, handle jmsDestination,
 } external;
 
 function createJmsSession(handle connection, handle acknowledgmentMode) returns handle | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsSessionUtils"
+    class: "org.wso2.ei.b7a.jms.JmsSessionUtils"
 } external;
 
 function unsubscribeJmsSubscription(handle session, handle subscriptionId) returns error? = @java:Method {
@@ -375,10 +375,10 @@ function createJmsTopic(handle session, handle topicName) returns handle | error
 } external;
 
 function createTemporaryJmsQueue(handle session) returns handle | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsSessionUtils"
+    class: "org.wso2.ei.b7a.jms.JmsSessionUtils"
 } external;
 
 function createTemporaryJmsTopic(handle session) returns handle | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsSessionUtils"
+    class: "org.wso2.ei.b7a.jms.JmsSessionUtils"
 
 } external;
