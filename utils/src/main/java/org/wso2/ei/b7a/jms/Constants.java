@@ -17,14 +17,13 @@
  *
  */
 
-package org.wso2.ei.module.jms;
+package org.wso2.ei.b7a.jms;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.naming.Context;
 
-import static org.ballerinalang.jvm.util.BLangConstants.ORG_NAME_SEPARATOR;
 import static org.ballerinalang.jvm.util.BLangConstants.VERSION_SEPARATOR;
 
 /**

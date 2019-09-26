@@ -17,18 +17,31 @@
  *
  */
 
-package org.wso2.ei.module.jms;
+package org.wso2.ei.b7a.jms;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Representation of the custom exception in the JMS module
+ * Utility class for JMS related common operations.
  */
-public class BallerinaJmsException extends Exception {
+public class JmsUtils {
 
-    BallerinaJmsException(String message) {
-        super(message);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JmsUtils.class);
+
+    /**
+     * Utility class cannot be instantiated.
+     */
+    private JmsUtils() {
     }
 
-    public BallerinaJmsException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * Check given string is not null or empty after trimming
+     * @param str String value
+     * @return true/false based on the input
+     */
+    static boolean notNullOrEmptyAfterTrim(String str) {
+        return !(str == null || str.trim().isEmpty());
     }
 }
+

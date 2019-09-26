@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.ei.module.jms;
+package org.wso2.ei.b7a.jms;
 
 import org.ballerinalang.compiler.plugins.SupportedResourceParamTypes;
 import org.ballerinalang.model.tree.AnnotationAttachmentNode;

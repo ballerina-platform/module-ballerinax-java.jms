@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.ei.module.jms;
+package org.wso2.ei.b7a.jms;
 
 import org.ballerinalang.jvm.values.MapValue;
 import org.slf4j.Logger;
