@@ -47,5 +47,5 @@ function getDestination(handle jmsDestination) returns Destination | error {
 }
 
 function getDestinationType(handle destination) returns handle = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsDestinationUtils"
+    class: "org.wso2.ei.b7a.jms.JmsDestinationUtils"
 } external;

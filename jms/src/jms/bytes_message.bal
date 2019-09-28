@@ -16,21 +16,214 @@
 
 import ballerinax/java;
 
-# Represent the 'Message' used to send and receive content from the a JMS provider.
+# Represent the 'BytesMessage' used to send and receive content from the a JMS provider.
 #
 # Most message-oriented middleware (MOM) products treat messages as lightweight entities that consist of a header
 # and a body. The header contains fields used for message routing and identification; the body contains the
 # application data being sent.
-public type Message client object {
+public type BytesMessage client object {
 
     // Add a reference to the `AbstractMessage` object type.
     *AbstractMessage;
 
-    # Initialized a `Message` object.
-    # 
-    # + handle - The java reference to the jms message.
-    public function __init(handle message) {
-        self.jmsMessage = message;
+    # Initialized a `BytesMessage` object.
+    #
+    # + handle - The java reference to the jms text message.
+    function __init(handle bytesMessage) {
+        self.jmsMessage = bytesMessage;
+    }
+
+    # Get the number of bytes of the message body.
+    #
+    # + return - Returns the body length or an error if it fails.
+    public function getBodyLength() returns int | error {
+        return getBodyLength(self.jmsMessage);
+    }
+
+    # Read a boolean from the message.
+    #
+    # + return - Returns a boolean value or an error if it fails.
+    public function readBoolean() returns boolean | error {
+        return readBoolean(self.jmsMessage);
+    }
+
+    # Read a byte from the message.
+    #
+    # + return - Returns a byte value or an error if it fails.
+    public function readByte() returns byte | error {
+        return readByte(self.jmsMessage);
+    }
+
+    # Read a byte array from the message.
+    #
+    # + length - The number of bytes to read
+    # + return - Returns a byte array or an error if it fails.
+    public function readBytes(int? length = ()) returns byte[] | error {
+        if(length is int) {
+            return readPortionOfBytes(self.jmsMessage, length);
+        } else {
+            return readBytes(self.jmsMessage);
+        }
+    }
+
+//    # Read a unicode character value from the message.
+//    #
+//    # + return - Returns a string value or an error if it fails.
+//    public function readChar() returns string | error {
+//        returns readChar(self.jmsMessage);
+//    }
+
+    # Read a double value from the message.
+    #
+    # + return - Returns a double value or an error if it fails.
+    public function readDouble() returns float | error {
+        return readDouble(self.jmsMessage);
+    }
+
+    # Read a float value from the message.
+    #
+    # + return - Returns a float value or an error if it fails.
+    public function readFloat() returns float | error {
+        return readFloat(self.jmsMessage);
+    }
+
+    # Read an int value from the message.
+    #
+    # + return - Returns an int value or an error if it fails.
+    public function readInt() returns int | error {
+        return readInt(self.jmsMessage);
+    }
+
+    # Read a long value from the message.
+    #
+    # + return - Returns a long value or an error if it fails.
+    public function readLong() returns int | error {
+        return readLong(self.jmsMessage);
+    }
+
+    # Read a short value from the message.
+    #
+    # + return - Returns a short value or an error if it fails.
+    public function readShort() returns int | error {
+        return readShort(self.jmsMessage);
+    }
+
+    # Read an unsigned 8-bit number from the message.
+    #
+    # + return - Returns a int value or an error if it fails.
+    public function readUnsignedByte() returns int | error {
+        return readUnsignedByte(self.jmsMessage);
+    }
+
+    # Read an unsigned 16-bit number from the message.
+    #
+    # + return - Returns a int value or an error if it fails.
+    public function readUnsignedShort() returns int | error {
+        return readUnsignedShort(self.jmsMessage);
+    }
+
+    # Read a string that has been encoded using a modified UTF-8 format from the message.
+    #
+    # + return - Returns a string value or an error if it fails.
+    public function readUTF() returns string? | error {
+        handle|error val = readUTF(self.jmsMessage);
+        if (val is handle) {
+            return java:toString(val);
+        } else {
+            return val;
+        }
+    }
+
+    # Puts the message body in read-only mode and repositions the stream of bytes to the beginning.
+    #
+    # + return - Returns an error if it fails.
+    public function reset() returns error? {
+        return reset(self.jmsMessage);
+    }
+
+    # Write a boolean to the message stream as a 1-byte value.
+    #
+    # + value - The boolean value to be written
+    # + return - Returns an error if it fails.
+    public function writeBoolean(boolean value) returns error? {
+        return writeBoolean(self.jmsMessage, value);
+    }
+
+    # Write a byte to the message.
+    #
+    # + value - The byte value to be written
+    # + return - Returns an error if it fails.
+    public function writeByte(byte value) returns error? {
+        return writeByte(self.jmsMessage, value);
+    }
+
+    # Write a byte array to the message.
+    #
+    # + value - The byte array to be written
+    # + offset - The initial offset within the byte array
+    # + length - The number of bytes to use
+    # + return - Returns an error if it fails.
+    public function writeBytes(byte[] value, int? offset = (), int? length = ()) returns error? {
+        if(offset is int && length is int) {
+            return writePortionOfBytes(self.jmsMessage, value, offset, length);
+        } else {
+            return writeBytes(self.jmsMessage, value);
+        }
+    }
+
+//    # Write a char to the message.
+//    #
+//    # + return - Returns an error if it fails.
+//    public function writeChar(string value) returns error? {
+//        return writeChar(self.jmsMessage, java:fromString(value));
+//    }
+
+    # Write a double to the message.
+    #
+    # + value - The double value to be written
+    # + return - Returns an error if it fails.
+    public function writeDouble(float value) returns error? {
+        return writeDouble(self.jmsMessage, value);
+    }
+
+    # Write a float to the message.
+    #
+    # + value - The float value to be written
+    # + return - Returns an error if it fails.
+    public function writeFloat(float value) returns error? {
+        return writeFloat(self.jmsMessage, value);
+    }
+
+    # Write an int to the message.
+    #
+    # + value - The int value to be written
+    # + return - Returns an error if it fails.
+    public function writeInt(int value) returns error? {
+        return writeInt(self.jmsMessage, value);
+    }
+
+    # Write a long to the message.
+    #
+    # + value - The long value to be written
+    # + return - Returns an error if it fails.
+    public function writeLong(int value) returns error? {
+        return writeLong(self.jmsMessage, value);
+    }
+
+    # Write a short to the message.
+    #
+    # + value - The short value to be written
+    # + return - Returns an error if it fails.
+    public function writeShort(int value) returns error? {
+        return writeShort(self.jmsMessage, value);
+    }
+
+    # Write a string to the message.
+    #
+    # + value - The string value to be written
+    # + return - Returns an error if it fails.
+    public function writeUTF(string value) returns error? {
+        return writeUTF(self.jmsMessage, java:fromString(value));
     }
 
     # Acknowledges the reception of this message. This is used when the consumer has chosen CLIENT_ACKNOWLEDGE as its
@@ -336,150 +529,115 @@ public type Message client object {
         return setStringProperty(self.jmsMessage, java:fromString(name), java:fromString(value));
     }
 
-    # Get the JMS message
+    # Get the JMS bytes message
     #
-    # + return - Returns the java reference to the jms text message
+    # + return - Returns the java reference to the jms bytes message
     function getJmsMessage() returns handle {
         return self.jmsMessage;
     }
+
 };
 
-function acknowledge(handle message) returns error? = @java:Method {
-    class: "javax.jms.Message"
+function getBodyLength(handle message) returns int | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function clearBody(handle message) returns error? = @java:Method {
-    class: "javax.jms.Message"
+function readBoolean(handle message) returns boolean | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function clearProperties(handle message) returns error? = @java:Method {
-    class: "javax.jms.Message"
+function readByte(handle message) returns byte | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getBooleanProperty(handle message, handle name) returns boolean | error = @java:Method {
-    class: "javax.jms.Message"
+function readBytes(handle message) returns byte[] | error = @java:Method {
+    class: "org.wso2.ei.b7a.jms.JmsBytesMessageUtils"
 } external;
 
-function getByteProperty(handle message, handle name) returns byte | error = @java:Method {
-    class: "javax.jms.Message"
+function readPortionOfBytes(handle message, int length) returns byte[] | error = @java:Method {
+    class: "org.wso2.ei.b7a.jms.JmsBytesMessageUtils"
 } external;
 
-function getDoubleProperty(handle message, handle name) returns float | error = @java:Method {
-    class: "javax.jms.Message"
+//function readChar(handle message) returns int | error = @java:Method {
+//    class: "javax.jms.BytesMessage"
+//} external;
+
+function readDouble(handle message) returns float | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getFloatProperty(handle message, handle name) returns float | error = @java:Method {
-    class: "javax.jms.Message"
+function readFloat(handle message) returns float | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getIntProperty(handle message, handle name) returns int | error = @java:Method {
-    class: "javax.jms.Message"
+function readInt(handle message) returns int | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getJMSCorrelationID(handle message) returns handle | error = @java:Method {
-    class: "javax.jms.Message"
+function readLong(handle message) returns int | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getJMSCorrelationIDAsBytes(handle message) returns byte[] | error = @java:Method {
-    class: "javax.jms.Message"
+function readShort(handle message) returns int | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getJMSDeliveryMode(handle message) returns int | error = @java:Method {
-    class: "javax.jms.Message"
+function readUnsignedByte(handle message) returns int | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getJMSDeliveryTime(handle message) returns int | error = @java:Method {
-    class: "javax.jms.Message"
+function readUnsignedShort(handle message) returns int | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getJMSDestination(handle message) returns handle | error = @java:Method {
-    class: "javax.jms.Message"
+function readUTF(handle message) returns handle | error = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getJMSExpiration(handle message) returns int | error = @java:Method {
-    class: "javax.jms.Message"
+function reset(handle message) returns error? = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getJMSMessageID(handle message) returns handle | error = @java:Method {
-    class: "javax.jms.Message"
+function writeBoolean(handle message, boolean value) returns error? = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getJMSPriority(handle message) returns int | error = @java:Method {
-    class: "javax.jms.Message"
+function writeByte(handle message, byte value) returns error? = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getJMSRedelivered(handle message) returns boolean | error = @java:Method {
-    class: "javax.jms.Message"
+function writeBytes(handle message, byte[] value) returns error? = @java:Method {
+    class: "org.wso2.ei.b7a.jms.JmsBytesMessageUtils"
 } external;
 
-function getJMSReplyTo(handle message) returns handle | error = @java:Method {
-    class: "javax.jms.Message"
+function writePortionOfBytes(handle message, byte[] value, int offset, int length) returns error? = @java:Method {
+    class: "org.wso2.ei.b7a.jms.JmsBytesMessageUtils"
 } external;
 
-function getJMSTimestamp(handle message) returns int | error = @java:Method {
-    class: "javax.jms.Message"
+//function writeChar(handle message, handle value) returns error? = @java:Method {
+//    class: "javax.jms.BytesMessage"
+//} external;
+
+function writeDouble(handle message, float value) returns error? = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getJMSType(handle message) returns handle | error = @java:Method {
-    class: "javax.jms.Message"
+function writeFloat(handle message, float value) returns error? = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getLongProperty(handle message, handle name) returns int | error = @java:Method {
-    class: "javax.jms.Message"
+function writeInt(handle message, int value) returns error? = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getPropertyNames(handle message) returns string[] | error = @java:Method {
-    class: "org.wso2.ei.module.jms.JmsMessageUtils"
+function writeLong(handle message, int value) returns error? = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getShortProperty(handle message, handle name) returns int | error = @java:Method {
-    class: "javax.jms.Message"
+function writeShort(handle message, int value) returns error? = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;
 
-function getStringProperty(handle message, handle name) returns handle | error = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function propertyExists(handle message, handle name) returns boolean | error = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function setBooleanProperty(handle message, handle name, boolean value) returns error? = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function setByteProperty(handle message, handle name, byte value) returns error? = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function setDoubleProperty(handle message, handle name, float value) returns error? = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function setFloatProperty(handle message, handle name, float value) returns error? = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function setIntProperty(handle message, handle name, int value) returns error? = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function setJMSReplyTo(handle message, handle destination) returns error? = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function setJMSType(handle message, handle jmsType) returns error? = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function setLongProperty(handle message, handle name, int value) returns error? = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function setShortProperty(handle message, handle name, int value) returns error? = @java:Method {
-    class: "javax.jms.Message"
-} external;
-
-function setStringProperty(handle message, handle name, handle value) returns error? = @java:Method {
-    class: "javax.jms.Message"
+function writeUTF(handle message, handle value) returns error? = @java:Method {
+    class: "javax.jms.BytesMessage"
 } external;

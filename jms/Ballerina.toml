@@ -13,14 +13,14 @@ target = "java8"
 
   [[platform.libraries]]
   module = "jms"
-  path = "./utils/target/jms-utils-0.6.0.jar"
+  path = "../utils/target/jms-utils-0.6.0.jar"
   artafactId = "jms-utils"
   version = "0.6.0"
   groupId = "org.wso2.ei"
 
   [[platform.libraries]]
   module = "jms"
-  path = "./utils/target/classes/lib/javax.jms-api-2.0.1.jar"
+  path = "../utils/target/classes/lib/javax.jms-api-2.0.1.jar"
   artafactId = "javax.jms-api"
   version = "2.0.1"
   groupId = "javax.jms"

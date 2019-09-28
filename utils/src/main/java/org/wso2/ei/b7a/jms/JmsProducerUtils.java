@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.ei.module.jms;
+package org.wso2.ei.b7a.jms;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
