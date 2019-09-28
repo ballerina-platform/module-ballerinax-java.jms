@@ -1,46 +1,29 @@
-import ballerinax/java.jms;
-import ballerina/io;
+import ballerina/log;
+import wso2/jms;
 
-// This initializes a JMS connection with the provider. This example uses
-// the ActiveMQ Artemis broker for demonstration. However, it can be tried
-// with other brokers that support JMS.
+public function main() returns error? {
 
-jms:Connection jmsConnection = new({
-        initialContextFactory: 
-        "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
-        providerUrl: "tcp://localhost:61616"
-    });
+    jms:Connection connection = check jms:createConnection({
+                        initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
+                        providerUrl: "tcp://localhost:61616"
+                    });
+    jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+    jms:Destination queue = check session->createQueue("MyQueue");
+    jms:MessageProducer producer = check session.createProducer(queue);
+    jms:MessageConsumer consumer = check session->createConsumer(queue);
 
-// Initializes a JMS session on top of the created connection.
-jms:Session jmsSession = new(jmsConnection, {
-        acknowledgementMode: "AUTO_ACKNOWLEDGE"
-    });
+    jms:TextMessage msg = check session.createTextMessage("Hello Ballerina!");
+    check producer->send(msg);
 
-// Initializes a queue receiver on top of the created sessions.
-listener jms:QueueListener queueReceiver = new(jmsSession, "MyQueue");
-
-public function main() {
-    jms:QueueReceiverCaller caller = queueReceiver.getCallerActions();
-    // Keeps the JMS session alive until the message is received by the JMS provider.
-    // If the message is not received within five seconds, the session times out.
-    var result = caller->receive(30000);
-
-    if (result is jms:Message) {
-        // This is executed if the message is received.
-        var messageText = result.getPayload();
-        if (messageText is string) {
-            io:println("Message : " + messageText);
-        } else if (messageText is error) {
-            io:println("Error occurred while reading message.",
-                messageText.reason());
+    jms:Message? response = check consumer->receive(3000);
+    if (response is jms:TextMessage) {
+        var val = response.getText();
+        if (val is string) {
+            log:printInfo("Message received: " + val);
+        } else {
+            log:printInfo("Message received without text");
         }
-    } else if (result is ()) {
-        // This is executed if the message is not received within five seconds.
-        io:println("Message not received");
-
     } else {
-        // This is executed if an error occurs.
-        io:println("Error receiving message : " +
-                <string>result.detail()["message"]);
+        log:printInfo("Message received.");
     }
 }
