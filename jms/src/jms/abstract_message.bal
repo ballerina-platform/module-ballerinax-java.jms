@@ -84,6 +84,10 @@ public type AbstractMessage abstract client object {
 
     public function setIntProperty(string name, int value) returns error?;
 
+    public function setJMSCorrelationID(string correlationId) returns error?;
+
+    public function setJMSCorrelationIDAsBytes(byte[] correlationId) returns error?;
+
     public function setJMSReplyTo(Destination replyTo) returns error?;
 
     public function setJMSType(string jmsType) returns error?;

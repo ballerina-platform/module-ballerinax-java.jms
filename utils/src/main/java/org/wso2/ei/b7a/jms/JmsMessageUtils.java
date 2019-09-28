@@ -84,7 +84,7 @@ public class JmsMessageUtils {
      *
      * @param message {@link javax.jms.Message} object
      * @return Ballerina array consist of property names
-     * @throws BallerinaJmsException
+     * @throws BallerinaJmsException in an error situation
      */
     public static ArrayValue getPropertyNames(Message message) throws BallerinaJmsException {
         try {
@@ -93,6 +93,23 @@ public class JmsMessageUtils {
 
         } catch (JMSException e) {
             throw new BallerinaJmsException("Error occurred while getting property names.", e);
+        }
+    }
+
+    /**
+     * Set the JMS correlation id value as an array of byte
+     *
+     * @param message {@link javax.jms.Message} object
+     * @param value correlation id value as an array of byte
+     * @throws BallerinaJmsException in an error situation
+     */
+    public static void setJMSCorrelationIDAsBytes(Message message,  ArrayValue value) throws BallerinaJmsException {
+        try {
+            byte[] correlationId = value.getBytes();
+            message.setJMSCorrelationIDAsBytes(correlationId);
+        } catch (JMSException e) {
+            throw new BallerinaJmsException("Error occurred while setting correlationId value " +
+                    "as an array of bytes", e);
         }
     }
 }

@@ -293,6 +293,22 @@ public type Message client object {
         return setIntProperty(self.jmsMessage, java:fromString(name), value);
     }
 
+    # Sets the correlation id for the message.
+    # 
+    # + correlationId - correlation id of a message as a string
+    # + return - Returns an error if it fails.
+    public function setJMSCorrelationID(string correlationId) returns error? {
+        return setJMSCorrelationID(self.jmsMessage, java:fromString(correlationId));
+    }
+
+    # Sets the correlation id an array of bytes for the message.
+    # 
+    # + correlationId - correlation id value as an array of bytes
+    # + return - Returns an error if it fails.
+    public function setJMSCorrelationIDAsBytes(byte[] correlationId) returns error? {
+        return setJMSCorrelationIDAsBytes(self.jmsMessage, correlationId);
+    }
+
     # Set the reply destination to the message which a reply should send.
     #
     # + replyTo - Destination to which to send a response to this message
@@ -462,6 +478,14 @@ function setFloatProperty(handle message, handle name, float value) returns erro
 
 function setIntProperty(handle message, handle name, int value) returns error? = @java:Method {
     class: "javax.jms.Message"
+} external;
+
+function setJMSCorrelationID(handle message, handle correlationId) returns error? = @java:Method {
+    class: "javax.jms.Message"
+} external;
+
+function setJMSCorrelationIDAsBytes(handle message, byte[] correlationId) returns error? = @java:Method {
+    class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
 } external;
 
 function setJMSReplyTo(handle message, handle destination) returns error? = @java:Method {

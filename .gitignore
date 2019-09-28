@@ -26,6 +26,8 @@ hs_err_pid*
 *.iml
 .idea/
 .DS_Store
+.classpath
+.settings
 
 # Eclipse files
 .project

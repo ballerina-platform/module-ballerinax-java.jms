@@ -460,6 +460,22 @@ public type StreamMessage client object {
         return setIntProperty(self.jmsMessage, java:fromString(name), value);
     }
 
+    # Sets the correlation id for the message.
+    # 
+    # + correlationId - correlation id of a message as a string
+    # + return - Returns an error if it fails.
+    public function setJMSCorrelationID(string correlationId) returns error? {
+        return setJMSCorrelationID(self.jmsMessage, java:fromString(correlationId));
+    }
+
+    # Sets the correlation id an array of bytes for the message.
+    # 
+    # + correlationId - correlation id value as an array of bytes
+    # + return - Returns an error if it fails.
+    public function setJMSCorrelationIDAsBytes(byte[] correlationId) returns error? {
+        return setJMSCorrelationIDAsBytes(self.jmsMessage, correlationId);
+    }
+
     # Set the reply destination to the message which a reply should send.
     #
     # + replyTo - Destination to which to send a response to this message
