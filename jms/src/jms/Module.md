@@ -1,3 +1,5 @@
+Connects to a JMS provider using Ballerina.
+
 ## Module overview
 
 The `wso2/jms` module provides an API to connect to an external JMS provider like ActiveMQ from Ballerina.
