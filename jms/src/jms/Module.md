@@ -39,7 +39,7 @@ public function main() returns error? {
 
         check producer->send(msg);
 
-        jms:Message response = check consumer->receive(3000);
+        jms:Message? response = check consumer->receive(3000);
         if (response is jms:TextMessage) {
             var val = response.getText();
             if (val is string) {
