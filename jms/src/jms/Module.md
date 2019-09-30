@@ -28,30 +28,30 @@ import wso2/jms;
 
 public function main() returns error? {
 
-        jms:Connection connection = check jms:createConnection({
-                          initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-                          providerUrl: "tcp://localhost:61616"
-                        });
-        jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
-        jms:Destination queue = check session->createQueue("MyQueue");
-        jms:MessageProducer producer = check session.createProducer(queue);
-        jms:MessageConsumer consumer = check session->createConsumer(queue);
+    jms:Connection connection = check jms:createConnection({
+                      initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+                      providerUrl: "tcp://localhost:61616"
+                    });
+    jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+    jms:Destination queue = check session->createQueue("MyQueue");
+    jms:MessageProducer producer = check session.createProducer(queue);
+    jms:MessageConsumer consumer = check session->createConsumer(queue);
 
-        jms:TextMessage msg = check session.createTextMessage("Hello Ballerina!");
+    jms:TextMessage msg = check session.createTextMessage("Hello Ballerina!");
 
-        check producer->send(msg);
+    check producer->send(msg);
 
-        jms:Message? response = check consumer->receive(3000);
-        if (response is jms:TextMessage) {
-            var val = response.getText();
-            if (val is string) {
-                log:printInfo("Message received: " + val);
-            } else {
-                log:printInfo("Message received without text");
-            }
+    jms:Message? response = check consumer->receive(3000);
+    if (response is jms:TextMessage) {
+        var val = response.getText();
+        if (val is string) {
+            log:printInfo("Message received: " + val);
         } else {
-            log:printInfo("Message received.");
+            log:printInfo("Message received without text");
         }
+    } else {
+        log:printInfo("Message received.");
+    }
 }
 ```
 
@@ -69,10 +69,10 @@ jms:Connection connection = check jms:createConnection({
                    initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
                    providerUrl: "tcp://localhost:61616"
               });
-jms:Session session = check con->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
-jms:Destination dest = check session->createTopic("MyTopic");
+jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+jms:Destination topic = check session->createTopic("MyTopic");
 
-`listener jms:MessageConsumer jmsConsumer = check session->createDurableSubscriber(dest, "sub-1");
+`listener jms:MessageConsumer jmsConsumer = check session->createDurableSubscriber(topic, "sub-1");
 `
 service messageListener on jmsConsumer {
 
