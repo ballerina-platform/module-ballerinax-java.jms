@@ -1,32 +1,31 @@
 import ballerina/http;
-import ballerinax/java.jms;
 import ballerina/log;
+import wso2/jms;
 
-// Create a simple queue receiver.  This example makes use of the
-// ActiveMQ Artemis broker for demonstration while it can be tried with other
-// brokers that support JMS.
+jms:Connection connection = check jms:createConnection({
+                   initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
+                   providerUrl: "tcp://localhost:61616"
+              });
+jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+jms:Destination queue = check session->createQueue("MyQueue");
 
-listener jms:QueueListener consumerEndpoint = new({
-        initialContextFactory: 
-        "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
-        providerUrl: "tcp://localhost:61616",
-        acknowledgementMode: "AUTO_ACKNOWLEDGE"
-    }, "MyQueue");
+listener jms:MessageConsumer jmsConsumer = check session->createConsumer(queue);
 
-// Bind the created JMS consumer to the listener service.
-service jmsListener on consumerEndpoint {
+service messageListener on jmsConsumer {
 
-    resource function onMessage(jms:QueueReceiverCaller consumer,
-                                jms:Message message) {
-        var textContent = message.getPayload();
-        if (textContent is string) {
-            log:printInfo("Message received from broker. Payload: " +
-                    textContent);
-            forwardToBakend(textContent);
-        } else if (textContent is error) {
-            log:printError("Error while reading message", err = textContent);
-        }
-    }
+   resource function onMessage(jms:Message message) {
+       if (message is jms:TextMessage) {
+           var val = message.getText();
+           if (val is string) {
+               log:printInfo("Message received: " + val + " and forwarding to HTTP endpoint");
+               forwardToBakend(<@untainted> val);
+           } else {
+               log:printInfo("Message received without text");
+           }
+       } else {
+           log:printInfo("Message received.");
+       }
+   }
 }
 
 function forwardToBakend(string textContent) {

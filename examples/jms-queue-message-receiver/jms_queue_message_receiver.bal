@@ -1,37 +1,27 @@
-import ballerinax/java.jms;
 import ballerina/log;
+import wso2/jms;
 
-// This initializes a JMS connection with the provider. This example uses
-// the ActiveMQ Artemis broker. However, it can be tried with
-// other brokers that support JMS.
+jms:Connection connection = check jms:createConnection({
+                   initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
+                   providerUrl: "tcp://localhost:61616"
+              });
+jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+jms:Destination queue = check session->createQueue("MyQueue");
 
-jms:Connection conn = new({
-        initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
-        providerUrl: "tcp://localhost:61616"
-    });
+listener jms:MessageConsumer jmsConsumer = check session->createConsumer(queue);
 
-// Iitializes a JMS session on top of the created connection.
-jms:Session jmsSession = new(conn, {
-        // The below is an optional property that defaults to `AUTO_ACKNOWLEDGE`.
-        acknowledgementMode: "AUTO_ACKNOWLEDGE"
-    });
+service messageListener on jmsConsumer {
 
-// Initializes a queue receiver using the created session.
-listener jms:QueueListener consumerEndpoint = new(jmsSession, "MyQueue");
-
-// Binds the created consumer to the listener service.
-service jmsListener on consumerEndpoint {
-
-    // This resource is invoked when a message is received.
-    resource function onMessage(jms:QueueReceiverCaller consumer,
-                                jms:Message message) {
-        // Retrieve the text message.
-        var messageText = message.getPayload();
-        if (messageText is string) {
-            log:printInfo("Message : " + messageText);
-        } else if (messageText is error) {
-            log:printError("Error occurred while reading message",
-                err = messageText);
-        }
-    }
+   resource function onMessage(jms:Message message) {
+       if (message is jms:TextMessage) {
+           var val = message.getText();
+           if (val is string) {
+               log:printInfo("Message received: " + val );
+           } else {
+               log:printInfo("Message received without text");
+           }
+       } else {
+           log:printInfo("Message received.");
+       }
+   }
 }
