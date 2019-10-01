@@ -24,12 +24,12 @@
     <parent>
         <groupId>org.wso2.ei.b7a</groupId>
         <artifactId>module-jms</artifactId>
-        <version>0.6.0</version>
+        <version>0.6.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jms-compiler-plugin</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
     <packaging>jar</packaging>
     <name>JMS Compiler Plugin</name>
 

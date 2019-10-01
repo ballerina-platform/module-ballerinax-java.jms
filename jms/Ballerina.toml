@@ -13,9 +13,9 @@ target = "java8"
 
   [[platform.libraries]]
   module = "jms"
-  path = "../utils/target/jms-utils-0.6.0.jar"
+  path = "../utils/target/jms-utils-0.6.1.jar"
   artafactId = "jms-utils"
-  version = "0.6.0"
+  version = "0.6.1"
   groupId = "org.wso2.ei"
 
   [[platform.libraries]]
