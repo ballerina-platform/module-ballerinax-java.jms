@@ -24,11 +24,11 @@
     <parent>
         <artifactId>module-jms</artifactId>
         <groupId>org.wso2.ei.b7a</groupId>
-        <version>0.6.0</version>
+        <version>0.6.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
     <artifactId>jms-utils</artifactId>
     <packaging>jar</packaging>
     <name>JMS Utils</name>
