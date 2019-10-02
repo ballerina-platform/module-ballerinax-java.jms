@@ -28,7 +28,7 @@
     <groupId>org.wso2.ei.b7a</groupId>
     <artifactId>module-jms</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.1</version>
+    <version>0.6.1-SNAPSHOT</version>
     <name>Ballerina JMS Module</name>
 
     <modules>
@@ -36,6 +36,13 @@
         <module>compiler-plugin</module>
         <module>jms</module>
     </modules>
+
+    <scm>
+        <url>https://github.com/wso2-ballerina/module-jms.git</url>
+        <developerConnection>scm:git:https://github.com/wso2-ballerina/module-jms.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2-ballerina/module-jms.git</connection>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencyManagement>
         <dependencies>
