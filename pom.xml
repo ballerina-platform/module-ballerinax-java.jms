@@ -28,7 +28,7 @@
     <groupId>org.wso2.ei.b7a</groupId>
     <artifactId>module-jms</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.1-SNAPSHOT</version>
+    <version>0.6.1</version>
     <name>Ballerina JMS Module</name>
 
     <modules>
