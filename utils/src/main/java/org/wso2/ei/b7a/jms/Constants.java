@@ -33,8 +33,8 @@ import static org.ballerinalang.jvm.util.BLangConstants.VERSION_SEPARATOR;
  */
 public class Constants {
 
-    static final String ORG = "org";
-    static final String PACKAGE_NAME = "wso2/jms";
+    static final String ORG = "wso2";
+    static final String PACKAGE_NAME = "jms";
     public static final String VERSION = "0.6.1";
 
     public static final String PACKAGE_NAME_WITH_VERSION = PACKAGE_NAME + VERSION_SEPARATOR + VERSION;

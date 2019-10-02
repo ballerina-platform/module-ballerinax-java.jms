@@ -50,10 +50,11 @@ public class JmsMessageListenerUtils {
      * @param serviceObject Ballerina service object
      * @throws BallerinaJmsException in an error situation
      */
-    public static void setMessageListener(MessageConsumer consumer, ObjectValue serviceObject) throws BallerinaJmsException {
+    public static void setMessageListener(MessageConsumer consumer, Object serviceObject) throws BallerinaJmsException {
         BRuntime runtime = BRuntime.getCurrentRuntime();
         try {
-            consumer.setMessageListener(new ListenerImpl(serviceObject, runtime));
+            ObjectValue service = (ObjectValue) serviceObject;
+            consumer.setMessageListener(new ListenerImpl(service, runtime));
         } catch (JMSException e) {
             throw new BallerinaJmsException("Error occurred while setting the message listener");
         }
