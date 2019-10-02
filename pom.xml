@@ -37,6 +37,13 @@
         <module>jms</module>
     </modules>
 
+    <scm>
+        <url>https://github.com/wso2-ballerina/module-jms.git</url>
+        <developerConnection>scm:git:https://github.com/wso2-ballerina/module-jms.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2-ballerina/module-jms.git</connection>
+        <tag>HEAD</tag>
+    </scm>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
