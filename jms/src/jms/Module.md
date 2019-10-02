@@ -15,6 +15,17 @@ This module is created with minimal deviation from the JMS API to make it easy f
  - Message (TextMessage, MapMessage, BytesMessage, StreamMessage)
  - MessageConsumer
  - MessageProducer
+ 
+ The following sections provide you details on how to use the JMS connector.
+ 
+ - [Compatibility](#compatibility)
+ - [Samples](#samples)
+ 
+## Compatibility
+ 
+ |                             |           Version           |
+ |:---------------------------:|:---------------------------:|
+ | Ballerina Language          |            1.0.1            |
 
 ## Samples
 
