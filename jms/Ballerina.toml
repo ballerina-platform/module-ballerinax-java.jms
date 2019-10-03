@@ -1,6 +1,6 @@
 [project]
 org-name= "wso2"
-version= "0.6.1"
+version= "0.6.2"
 license= ["Apache-2.0"]
 authors = ["WSO2"]
 keywords = ["jms"]
@@ -13,9 +13,9 @@ target = "java8"
 
   [[platform.libraries]]
   module = "jms"
-  path = "../utils/target/jms-utils-0.6.1.jar"
+  path = "../utils/target/jms-utils-0.6.2.jar"
   artafactId = "jms-utils"
-  version = "0.6.1"
+  version = "0.6.2"
   groupId = "org.wso2.ei"
 
   [[platform.libraries]]

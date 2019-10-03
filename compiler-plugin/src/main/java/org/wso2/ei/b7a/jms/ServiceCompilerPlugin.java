@@ -48,7 +48,7 @@ import static org.ballerinalang.jvm.util.BLangConstants.VERSION_SEPARATOR;
 public class ServiceCompilerPlugin extends AbstractTransportCompilerPlugin {
 
     private static final String PACKAGE_NAME = "wso2/jms";
-    private static final String VERSION = "0.6.1";
+    private static final String VERSION = "0.6.2";
 
     private static final String PACKAGE_NAME_WITH_VERSION = PACKAGE_NAME + VERSION_SEPARATOR + VERSION;
     private static final String MESSAGE_NAME = "Message";
