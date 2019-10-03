@@ -143,6 +143,6 @@ function closeJmsConsumer(handle jmsConsumer) returns error? = @java:Method {
     class: "javax.jms.MessageConsumer"
 } external;
 
-function setMessageListener(handle jmsConsumer, any a) returns error? = @java:Method {
+function setMessageListener(handle jmsConsumer, service serviceObject) returns error? = @java:Method {
     class: "org.wso2.ei.b7a.jms.JmsMessageListenerUtils"
 } external;
