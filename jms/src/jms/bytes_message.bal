@@ -566,11 +566,19 @@ function readByte(handle message) returns byte | error = @java:Method {
     class: "javax.jms.BytesMessage"
 } external;
 
-function readBytes(handle message) returns byte[] | error = @java:Method {
+function readBytes(handle message) returns byte[] | error {
+    return trap readJavaBytes(message);
+}
+
+function readJavaBytes(handle message) returns byte[] = @java:Method {
     class: "org.wso2.ei.b7a.jms.JmsBytesMessageUtils"
 } external;
 
-function readPortionOfBytes(handle message, int length) returns byte[] | error = @java:Method {
+function readPortionOfBytes(handle message, int length) returns byte[] | error {
+    return trap readPortionOfJavaBytes(message, length);
+}
+
+function readPortionOfJavaBytes(handle message, int length) returns byte[] = @java:Method {
     class: "org.wso2.ei.b7a.jms.JmsBytesMessageUtils"
 } external;
 
