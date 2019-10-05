@@ -444,7 +444,11 @@ function getLongProperty(handle message, handle name) returns int | error = @jav
     class: "javax.jms.Message"
 } external;
 
-function getPropertyNames(handle message) returns string[] | error = @java:Method {
+function getPropertyNames(handle message) returns string[] | error {
+    return trap getJmsPropertyNames(message);
+}
+
+function getJmsPropertyNames(handle message) returns string[] = @java:Method {
     class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
 } external;
 

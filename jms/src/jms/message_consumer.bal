@@ -69,7 +69,11 @@ public type MessageConsumer client object {
     public remote function receive(int timeoutMillis = 0) returns Message|()|error {
         var response = receiveJmsMessage(self.jmsConsumer, timeoutMillis);
         if (response is handle) {
-            return self.getBallerinaMessage(response);
+            if (java:isNull(response)) {
+                return ();
+            } else {
+                return self.getBallerinaMessage(response);
+            }
         } else {
             return response;
         }

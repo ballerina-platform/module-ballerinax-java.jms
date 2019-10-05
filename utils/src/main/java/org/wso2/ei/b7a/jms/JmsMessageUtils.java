@@ -19,8 +19,7 @@
 
 package org.wso2.ei.b7a.jms;
 
-import org.ballerinalang.jvm.types.BArrayType;
-import org.ballerinalang.jvm.types.BTypes;
+import org.ballerinalang.jvm.util.exceptions.BallerinaException;
 import org.ballerinalang.jvm.values.ArrayValue;
 
 import javax.jms.BytesMessage;
@@ -84,15 +83,16 @@ public class JmsMessageUtils {
      *
      * @param message {@link javax.jms.Message} object
      * @return Ballerina array consist of property names
-     * @throws BallerinaJmsException in an error situation
+     * @throws BallerinaException throw a RuntimeException in an error situation
      */
-    public static ArrayValue getPropertyNames(Message message) throws BallerinaJmsException {
+    //TODO: Fix this workaround when Ballerina lang support to return primitive array and error as a union type
+    public static ArrayValue getJmsPropertyNames(Message message) {
         try {
             List<String> propertyNames = Collections.list(message.getPropertyNames());
-            return new ArrayValue(propertyNames.toArray(), new BArrayType(BTypes.typeString));
+            return new ArrayValue(propertyNames.toArray(new String[0]));
 
         } catch (JMSException e) {
-            throw new BallerinaJmsException("Error occurred while getting property names.", e);
+            throw new BallerinaException("Error occurred while getting property names.", e);
         }
     }
 

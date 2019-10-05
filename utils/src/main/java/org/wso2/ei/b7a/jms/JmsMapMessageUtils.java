@@ -19,14 +19,13 @@
 
 package org.wso2.ei.b7a.jms;
 
-import org.ballerinalang.jvm.types.BArrayType;
-import org.ballerinalang.jvm.types.BTypes;
+import org.ballerinalang.jvm.util.exceptions.BallerinaException;
 import org.ballerinalang.jvm.values.ArrayValue;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Representation of {@link javax.jms.MapMessage} with utility methods to invoke as inter-op functions.
@@ -38,15 +37,16 @@ public class JmsMapMessageUtils {
      *
      * @param message {@link javax.jms.MapMessage} object
      * @return Ballerina array consist of map names
-     * @throws BallerinaJmsException in an error situation
+     * @throws BallerinaException throw a RuntimeException in an error situation
      */
-    public static ArrayValue getMapNames(MapMessage message) throws BallerinaJmsException {
+    //TODO: Fix this workaround when Ballerina lang support to return primitive array and error as a union type
+    public static ArrayValue getJmsMapNames(MapMessage message) {
         try {
-            ArrayList propertyNames = Collections.list(message.getMapNames());
-            return new ArrayValue(propertyNames.toArray(), new BArrayType(BTypes.typeString));
+            List<String> propertyNames = Collections.list(message.getMapNames());
+            return new ArrayValue(propertyNames.toArray(new String[0]));
 
         } catch (JMSException e) {
-            throw new BallerinaJmsException("Error occurred while getting property names.", e);
+            throw new BallerinaException("Error occurred while getting property names.", e);
         }
     }
 }

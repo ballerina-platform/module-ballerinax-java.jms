@@ -19,6 +19,7 @@
 
 package org.wso2.ei.b7a.jms;
 
+import org.ballerinalang.jvm.util.exceptions.BallerinaException;
 import org.ballerinalang.jvm.values.ArrayValue;
 
 import javax.jms.BytesMessage;
@@ -34,16 +35,17 @@ public class JmsBytesMessageUtils {
      *
      * @param message {@link javax.jms.BytesMessage} object
      * @return Total number of bytes read into the buffer, or -1 if there is no more data
-     * @throws BallerinaJmsException in an error situation
+     * @throws BallerinaException throw a RuntimeException in an error situation
      */
-    public static ArrayValue readBytes(BytesMessage message) throws BallerinaJmsException {
+    //TODO: Fix this workaround when Ballerina lang support to return primitive array and error as a union type
+    public static ArrayValue readJavaBytes(BytesMessage message) {
         try {
             int bodyLength = (int)message.getBodyLength();
             byte[] bytes = new byte[bodyLength];
             message.readBytes(bytes);
             return new ArrayValue(bytes);
         } catch (JMSException e) {
-            throw new BallerinaJmsException("Error occurred while reading bytes message.", e);
+            throw new BallerinaException("Error occurred while reading bytes message.", e);
         }
     }
 
@@ -53,20 +55,20 @@ public class JmsBytesMessageUtils {
      * @param message {@link javax.jms.BytesMessage} object
      * @param length Number of bytes to read
      * @return Total number of bytes read into the buffer, or -1 if there is no more data
-     * @throws BallerinaJmsException in an error situation
+     * @throws BallerinaException throw a RuntimeException in an error situation
      */
-    public static ArrayValue readPortionOfBytes(BytesMessage message, int length)
-            throws BallerinaJmsException {
+    //TODO: Fix this workaround when Ballerina lang support to return primitive array and error as a union type
+    public static ArrayValue readPortionOfJavaBytes(BytesMessage message, int length) {
         try {
             long bodyLength = message.getBodyLength();
             if (length > bodyLength) {
-                throw new BallerinaJmsException("Length should be less than or equal to the message's body length.");
+                throw new BallerinaException("Length should be less than or equal to the message's body length.");
             }
             byte[] bytes = new byte[length];
             message.readBytes(bytes, length);
             return new ArrayValue(bytes);
         } catch (JMSException e) {
-            throw new BallerinaJmsException("Error occurred while reading portion of the bytes message.", e);
+            throw new BallerinaException("Error occurred while reading portion of the bytes message.", e);
         }
     }
 

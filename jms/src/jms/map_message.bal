@@ -594,7 +594,11 @@ function getLong(handle message, handle name) returns int | error = @java:Method
     class: "javax.jms.MapMessage"
 } external;
 
-function getMapNames(handle message) returns string[] | error = @java:Method {
+function getMapNames(handle message) returns string[] | error {
+    return getJmsMapNames(message);
+}
+
+function getJmsMapNames(handle message) returns string[] = @java:Method {
     class: "org.wso2.ei.b7a.jms.JmsMapMessageUtils"
 } external;
 
