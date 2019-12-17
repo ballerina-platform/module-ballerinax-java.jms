@@ -98,13 +98,9 @@ public class JmsMessageUtils {
 
     public static ArrayValue getBytes(Message message, String name) {
         try {
-            //List<String> propertyNames = Collections.list(message.getPropertyNames());
-            //return new ArrayValue(propertyNames.toArray(new String[0]));
             MapMessage m = (MapMessage) message;
             byte[] bytearray = m.getBytes(name);
             return new ArrayValue(bytearray);
-
-
         } catch (JMSException e) {
             throw new BallerinaException("Error occurred while getting property names.", e);
         }
@@ -112,19 +108,14 @@ public class JmsMessageUtils {
 
     public static ArrayValue getJMSCorrelationIDAsBytes(Message message) {
         try {
-            //List<String> propertyNames = Collections.list(message.getPropertyNames());
-            //return new ArrayValue(propertyNames.toArray(new String[0]));
             MapMessage m = (MapMessage) message;
             return new ArrayValue(m.getJMSCorrelationIDAsBytes());
-
-
         } catch (JMSException e) {
             throw new BallerinaException("Error occurred while getting property names.", e);
         }
     }
 
-
-    /**
+        /**
      * Set the JMS correlation id value as an array of byte
      *
      * @param message {@link javax.jms.Message} object
