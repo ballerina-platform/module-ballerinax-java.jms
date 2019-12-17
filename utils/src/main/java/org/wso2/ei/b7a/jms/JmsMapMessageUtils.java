@@ -24,6 +24,7 @@ import org.ballerinalang.jvm.values.ArrayValue;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+import javax.jms.Message;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,4 +50,15 @@ public class JmsMapMessageUtils {
             throw new BallerinaException("Error occurred while getting property names.", e);
         }
     }
+
+    public static ArrayValue getBytes(Message message, String name) {
+        try {
+            MapMessage m = (MapMessage) message;
+            byte[] bytearray = m.getBytes(name);
+            return new ArrayValue(bytearray);
+        } catch (JMSException e) {
+            throw new BallerinaException("Error occurred while getting property names.", e);
+        }
+    }
+
 }

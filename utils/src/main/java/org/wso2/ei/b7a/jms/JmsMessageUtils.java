@@ -96,16 +96,6 @@ public class JmsMessageUtils {
         }
     }
 
-    public static ArrayValue getBytes(Message message, String name) {
-        try {
-            MapMessage m = (MapMessage) message;
-            byte[] bytearray = m.getBytes(name);
-            return new ArrayValue(bytearray);
-        } catch (JMSException e) {
-            throw new BallerinaException("Error occurred while getting property names.", e);
-        }
-    }
-
     public static ArrayValue getJMSCorrelationIDAsBytes(Message message) {
         try {
             MapMessage m = (MapMessage) message;
