@@ -397,7 +397,7 @@ function getJMSCorrelationID(handle message) returns handle | error = @java:Meth
 } external;
 
 function getJMSCorrelationIDAsBytes(handle message) returns byte[] | error = @java:Method {
-    class: "javax.jms.Message"
+    class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
 } external;
 
 function getJMSDeliveryMode(handle message) returns int | error = @java:Method {

@@ -571,7 +571,7 @@ function getByte(handle message, handle name) returns byte | error = @java:Metho
 } external;
 
 function getBytes(handle message, handle name) returns byte[] | error = @java:Method {
-    class: "javax.jms.MapMessage"
+    class: "org.wso2.ei.b7a.jms.JmsMapMessageUtils"
 } external;
 
 //function getChar(handle message, handle name) returns int | error = @java:Method {

@@ -96,7 +96,16 @@ public class JmsMessageUtils {
         }
     }
 
-    /**
+    public static ArrayValue getJMSCorrelationIDAsBytes(Message message) {
+        try {
+            MapMessage m = (MapMessage) message;
+            return new ArrayValue(m.getJMSCorrelationIDAsBytes());
+        } catch (JMSException e) {
+            throw new BallerinaException("Error occurred while getting property names.", e);
+        }
+    }
+
+        /**
      * Set the JMS correlation id value as an array of byte
      *
      * @param message {@link javax.jms.Message} object
