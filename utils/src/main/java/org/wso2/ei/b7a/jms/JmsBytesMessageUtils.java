@@ -20,7 +20,8 @@
 package org.wso2.ei.b7a.jms;
 
 import org.ballerinalang.jvm.util.exceptions.BallerinaException;
-import org.ballerinalang.jvm.values.ArrayValue;
+import org.ballerinalang.jvm.values.api.BValueCreator;
+import org.ballerinalang.jvm.values.api.BArray;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
@@ -38,12 +39,12 @@ public class JmsBytesMessageUtils {
      * @throws BallerinaException throw a RuntimeException in an error situation
      */
     //TODO: Fix this workaround when Ballerina lang support to return primitive array and error as a union type
-    public static ArrayValue readJavaBytes(BytesMessage message) {
+    public static BArray readJavaBytes(BytesMessage message) {
         try {
             int bodyLength = (int)message.getBodyLength();
             byte[] bytes = new byte[bodyLength];
             message.readBytes(bytes);
-            return new ArrayValue(bytes);
+            return BValueCreator.createArrayValue(bytes);
         } catch (JMSException e) {
             throw new BallerinaException("Error occurred while reading bytes message.", e);
         }
@@ -58,7 +59,7 @@ public class JmsBytesMessageUtils {
      * @throws BallerinaException throw a RuntimeException in an error situation
      */
     //TODO: Fix this workaround when Ballerina lang support to return primitive array and error as a union type
-    public static ArrayValue readPortionOfJavaBytes(BytesMessage message, int length) {
+    public static BArray readPortionOfJavaBytes(BytesMessage message, int length) {
         try {
             long bodyLength = message.getBodyLength();
             if (length > bodyLength) {
@@ -66,7 +67,7 @@ public class JmsBytesMessageUtils {
             }
             byte[] bytes = new byte[length];
             message.readBytes(bytes, length);
-            return new ArrayValue(bytes);
+            return BValueCreator.createArrayValue(bytes);
         } catch (JMSException e) {
             throw new BallerinaException("Error occurred while reading portion of the bytes message.", e);
         }
@@ -76,10 +77,10 @@ public class JmsBytesMessageUtils {
      * Writes a byte array to the bytes message stream.
      *
      * @param message {@link javax.jms.BytesMessage} object
-     * @param value byte[] array as ballerina {@link ArrayValue}
+     * @param value byte[] array as ballerina {@link BArray}
      * @throws BallerinaJmsException in an error situation
      */
-    public static void writeBytes(BytesMessage message, ArrayValue value) throws BallerinaJmsException {
+    public static void writeBytes(BytesMessage message, BArray value) throws BallerinaJmsException {
         try {
             byte[] bytes = value.getBytes();
             message.writeBytes(bytes);
@@ -92,12 +93,12 @@ public class JmsBytesMessageUtils {
      * Writes a portion of a byte array to the bytes message stream.
      *
      * @param message {@link javax.jms.BytesMessage} object
-     * @param value byte[] array as ballerina {@link ArrayValue}
+     * @param value byte[] array as ballerina {@link BArray}
      * @param offset Initial offset within the byte array
      * @param length Number of bytes to use
      * @throws BallerinaJmsException in an error situation
      */
-    public static void writePortionOfBytes(BytesMessage message, ArrayValue value, int offset, int length)
+    public static void writePortionOfBytes(BytesMessage message, BArray value, int offset, int length)
             throws BallerinaJmsException {
         try {
             byte[] bytes = value.getBytes();

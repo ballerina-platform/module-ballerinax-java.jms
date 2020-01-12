@@ -19,7 +19,8 @@
 
 package org.wso2.ei.b7a.jms;
 
-import org.ballerinalang.jvm.values.MapValue;
+import org.ballerinalang.jvm.values.MapValueImpl;
+import org.ballerinalang.jvm.values.api.BMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,7 @@ public class JmsConnectionUtils {
      */
     public static Connection createJmsConnection(String initialContextFactory, String providerUrl,
                                                  String connectionFactoryName,
-                                                 MapValue<String, String> optionalConfigs) throws BallerinaJmsException {
+                                                 BMap<String, String> optionalConfigs) throws BallerinaJmsException {
         Connection connection = createConnection(initialContextFactory, providerUrl, connectionFactoryName,
                                                           optionalConfigs);
         try {
@@ -111,7 +112,7 @@ public class JmsConnectionUtils {
      */
     private static Connection createConnection(String initialContextFactory, String providerUrl,
                                               String connectionFactoryName ,
-                                              MapValue<String, String> optionalConfigs) throws BallerinaJmsException{
+                                              BMap<String, String> optionalConfigs) throws BallerinaJmsException{
         Map<String, String> configParams = new HashMap<>();
         configParams.put(Constants.ALIAS_INITIAL_CONTEXT_FACTORY, initialContextFactory);
         configParams.put(Constants.ALIAS_PROVIDER_URL, providerUrl);
@@ -122,13 +123,15 @@ public class JmsConnectionUtils {
 
         Properties properties = new Properties();
         configParams.forEach(properties::put);
-        optionalConfigs.forEach(properties::put);
+        optionalConfigs.entrySet().forEach(e -> {
+            properties.setProperty(e.getKey(), e.getValue());
+        });
 
         try {
             InitialContext initialContext = new InitialContext(properties);
             ConnectionFactory connectionFactory = (ConnectionFactory) initialContext.lookup(connectionFactoryName);
-            String username = optionalConfigs.getStringValue(Constants.ALIAS_USERNAME);
-            String password = optionalConfigs.getStringValue(Constants.ALIAS_PASSWORD);
+            String username = optionalConfigs.get(Constants.ALIAS_USERNAME);
+            String password = optionalConfigs.get(Constants.ALIAS_PASSWORD);
 
             if (JmsUtils.notNullOrEmptyAfterTrim(username) && password != null) {
                 return connectionFactory.createConnection(username, password);

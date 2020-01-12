@@ -20,7 +20,8 @@
 package org.wso2.ei.b7a.jms;
 
 import org.ballerinalang.jvm.util.exceptions.BallerinaException;
-import org.ballerinalang.jvm.values.ArrayValue;
+import org.ballerinalang.jvm.values.api.BArray;
+import org.ballerinalang.jvm.values.api.BValueCreator;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
@@ -86,20 +87,20 @@ public class JmsMessageUtils {
      * @throws BallerinaException throw a RuntimeException in an error situation
      */
     //TODO: Fix this workaround when Ballerina lang support to return primitive array and error as a union type
-    public static ArrayValue getJmsPropertyNames(Message message) {
+    public static BArray getJmsPropertyNames(Message message) {
         try {
             List<String> propertyNames = Collections.list(message.getPropertyNames());
-            return new ArrayValue(propertyNames.toArray(new String[0]));
+            return BValueCreator.createArrayValue(propertyNames.toArray(new String[0]));
 
         } catch (JMSException e) {
             throw new BallerinaException("Error occurred while getting property names.", e);
         }
     }
 
-    public static ArrayValue getJMSCorrelationIDAsBytes(Message message) {
+    public static BArray getJMSCorrelationIDAsBytes(Message message) {
         try {
             MapMessage m = (MapMessage) message;
-            return new ArrayValue(m.getJMSCorrelationIDAsBytes());
+            return BValueCreator.createArrayValue(m.getJMSCorrelationIDAsBytes());
         } catch (JMSException e) {
             throw new BallerinaException("Error occurred while getting property names.", e);
         }
@@ -112,7 +113,7 @@ public class JmsMessageUtils {
      * @param value correlation id value as an array of byte
      * @throws BallerinaJmsException in an error situation
      */
-    public static void setJMSCorrelationIDAsBytes(Message message,  ArrayValue value) throws BallerinaJmsException {
+    public static void setJMSCorrelationIDAsBytes(Message message,  BArray value) throws BallerinaJmsException {
         try {
             byte[] correlationId = value.getBytes();
             message.setJMSCorrelationIDAsBytes(correlationId);
