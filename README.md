@@ -23,9 +23,10 @@ The following sections provide details on how to use the JMS connector.
 
 ## Compatibility
 
-|                             |           Version           |
-|:---------------------------:|:---------------------------:|
-| Ballerina Language          |            1.0.1            |
+|  Ballerina Language Version |       JMS Module Version       |
+|:---------------------------:|:------------------------------:|
+|         1.0.x               |             0.6.x              |
+|         1.1.x               |             0.7.x              |
 
 ## Samples
 

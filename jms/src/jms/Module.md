@@ -23,9 +23,10 @@ Currently, the following JMS API Classes are supported through this module.
  
 ## Compatibility
  
- |                             |           Version           |
- |:---------------------------:|:---------------------------:|
- | Ballerina Language          |            1.0.1            |
+|  Ballerina Language Version |       JMS Module Version       |
+|:---------------------------:|:------------------------------:|
+|         1.0.x               |             0.6.x              |
+|         1.1.x               |             0.7.x              |
 
 ## Samples
 
