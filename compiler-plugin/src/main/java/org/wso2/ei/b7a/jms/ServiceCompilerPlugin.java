@@ -20,13 +20,16 @@
 package org.wso2.ei.b7a.jms;
 
 import org.ballerinalang.compiler.plugins.SupportedResourceParamTypes;
+import org.ballerinalang.compiler.plugins.AbstractCompilerPlugin;
 import org.ballerinalang.model.tree.AnnotationAttachmentNode;
+import org.ballerinalang.model.tree.FunctionNode;
 import org.ballerinalang.model.tree.ServiceNode;
 import org.ballerinalang.util.diagnostic.Diagnostic;
 import org.ballerinalang.util.diagnostic.DiagnosticLog;
+import org.wso2.ballerinalang.compiler.semantics.analyzer.Types;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BType;
 import org.wso2.ballerinalang.compiler.tree.BLangFunction;
 import org.wso2.ballerinalang.compiler.tree.BLangSimpleVariable;
-import org.wso2.ballerinalang.util.AbstractTransportCompilerPlugin;
 
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +48,7 @@ import static org.ballerinalang.jvm.util.BLangConstants.VERSION_SEPARATOR;
                                      @SupportedResourceParamTypes.Type(orgName = "wso2", packageName = "jms", name = "Message")
                              }
 )
-public class ServiceCompilerPlugin extends AbstractTransportCompilerPlugin {
+public class ServiceCompilerPlugin extends AbstractCompilerPlugin {
 
     private static final String PACKAGE_NAME = "wso2/jms";
     private static final String VERSION = "0.6.3";
@@ -83,6 +86,8 @@ public class ServiceCompilerPlugin extends AbstractTransportCompilerPlugin {
     private static final String INVALID_RESOURCE_SIGNATURE_FOR = "Invalid resource signature for ";
 
     private DiagnosticLog dlog = null;
+    private Types types = null;
+    private BType errorOrNil = null;
 
     @Override
     public void init(DiagnosticLog diagnosticLog) {
@@ -170,6 +175,10 @@ public class ServiceCompilerPlugin extends AbstractTransportCompilerPlugin {
         }
     }
 
+    public boolean isResourceReturnsErrorOrNil(FunctionNode functionNode) {
+        BLangFunction resource = (BLangFunction) functionNode;
+        return types.isAssignable(resource.symbol.getReturnType(), errorOrNil);
+    }
 }
 
 

@@ -20,7 +20,8 @@
 package org.wso2.ei.b7a.jms;
 
 import org.ballerinalang.jvm.util.exceptions.BallerinaException;
-import org.ballerinalang.jvm.values.ArrayValue;
+import org.ballerinalang.jvm.values.api.BArray;
+import org.ballerinalang.jvm.values.api.BValueCreator;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -41,21 +42,21 @@ public class JmsMapMessageUtils {
      * @throws BallerinaException throw a RuntimeException in an error situation
      */
     //TODO: Fix this workaround when Ballerina lang support to return primitive array and error as a union type
-    public static ArrayValue getJmsMapNames(MapMessage message) {
+    public static BArray getJmsMapNames(MapMessage message) {
         try {
             List<String> propertyNames = Collections.list(message.getMapNames());
-            return new ArrayValue(propertyNames.toArray(new String[0]));
+            return BValueCreator.createArrayValue(propertyNames.toArray(new String[0]));
 
         } catch (JMSException e) {
             throw new BallerinaException("Error occurred while getting property names.", e);
         }
     }
 
-    public static ArrayValue getBytes(Message message, String name) {
+    public static BArray getBytes(Message message, String name) {
         try {
             MapMessage m = (MapMessage) message;
             byte[] bytearray = m.getBytes(name);
-            return new ArrayValue(bytearray);
+            return BValueCreator.createArrayValue(bytearray);
         } catch (JMSException e) {
             throw new BallerinaException("Error occurred while getting property names.", e);
         }
