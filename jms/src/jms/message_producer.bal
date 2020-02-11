@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerinax/java;
+import ballerina/observe;
 
 # JMS Message Producer client object to send messages to both queues and topics.
 #
@@ -34,6 +35,7 @@ public type MessageProducer client object {
     # + message - Message to be sent to the JMS provider
     # + return - Error if unable to send the message to the queue
     public remote function send(Message message) returns error? {
+        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_MESSAGES_SENT));
         return send(self.jmsProducer, message.getJmsMessage());
     }
 

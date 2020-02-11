@@ -16,6 +16,7 @@
 
 import ballerinax/java;
 import ballerina/log;
+import ballerina/observe;
 
 # Represents JMS Connection
 #
@@ -42,6 +43,7 @@ public type Connection client object {
         handle|error value = createJmsConnection(icf, providerUrl, factoryName, self.config.properties);
         if (value is handle) {
             self.jmsConnection = value;
+            registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_CONNECTIONS));
             log:printDebug("Successfully connected to broker.");
             return;
         } else {

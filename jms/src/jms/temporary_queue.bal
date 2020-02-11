@@ -15,6 +15,9 @@
 // under the License.
 
 import ballerinax/java;
+import ballerina/observe;
+
+observe:Gauge temporaryQueueGuage = new(ACTIVE_JMS_TEMPORARY_QUEUES);
 
 # Represent the JMS temporary queue
 public type TemporaryQueue object {
@@ -26,6 +29,7 @@ public type TemporaryQueue object {
     #
     # + handle - The java reference to the jms text message.
     function __init(handle temporaryQueue) {
+        registerAndIncrementGuage(temporaryQueueGuage);
         self.jmsDestination = temporaryQueue;
     }
 
@@ -52,6 +56,7 @@ public type TemporaryQueue object {
     #
     # + return - Returns an error if it fails.
     public function delete() returns error? {
+        decrementGuage(temporaryQueueGuage);
         return deleteTemporaryQueue(self.jmsDestination);
     }
 
