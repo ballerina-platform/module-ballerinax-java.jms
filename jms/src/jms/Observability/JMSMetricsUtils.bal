@@ -23,7 +23,7 @@ import ballerina/log;
 function registerAndIncrementCounter(observe:Counter counter) {
     error? result = counter.register();
     if (result is error) {
-        log:printError("Error in registering counter : " + counter.name, err = result);
+        log:printError("Error in registering counter : " + counter.name, result);
     }
     counter.increment();
 }
@@ -34,7 +34,7 @@ function registerAndIncrementCounter(observe:Counter counter) {
 function registerAndIncrementGuage(observe:Gauge guage) {
     error? result = guage.register();
     if (result is error) {
-        log:printError("Error in registering guage : " + guage.name, err = result);
+        log:printError("Error in registering guage : " + guage.name, result);
     }
     guage.increment();
 }
