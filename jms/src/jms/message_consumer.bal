@@ -19,7 +19,7 @@ import ballerinax/java;
 import ballerina/'lang\.object as lang;
 import ballerina/observe;
 
-observe:Gauge consumerGuage = new(ACTIVE_JMS_CONSUMERS);
+observe:Gauge consumerGauge = new(ACTIVE_JMS_CONSUMERS);
 
 public type MessageConsumer client object {
 
@@ -28,7 +28,7 @@ public type MessageConsumer client object {
 
     function __init(handle jmsMessageConsumer) {
         self.jmsConsumer = jmsMessageConsumer;
-        registerAndIncrementGuage(consumerGuage);
+        registerAndIncrementGauge(consumerGauge);
     }
 
     # Binds the queue receiver endpoint to a service.
@@ -67,7 +67,7 @@ public type MessageConsumer client object {
     }
 
     private function closeConsumer() returns error? {
-        decrementGuage(consumerGuage);
+        decrementGauge(consumerGauge);
         return self->close();
     }
 

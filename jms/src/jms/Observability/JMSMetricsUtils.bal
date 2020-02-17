@@ -28,20 +28,20 @@ function registerAndIncrementCounter(observe:Counter counter) {
     counter.increment();
 }
 
-# Register and increment guage
+# Register and increment gauge
 #
-# + guage - guage to be registered and incremented
-function registerAndIncrementGuage(observe:Gauge guage) {
-    error? result = guage.register();
+# + gauge - gauge to be registered and incremented
+function registerAndIncrementGauge(observe:Gauge gauge) {
+    error? result = gauge.register();
     if (result is error) {
-        log:printError("Error in registering guage : " + guage.name, result);
+        log:printError("Error in registering gauge : " + gauge.name, result);
     }
-    guage.increment();
+    gauge.increment();
 }
 
-# Decrement guage
+# Decrement gauge
 #
-# + guage - guage to be decremented
-function decrementGuage(observe:Gauge guage) {
-    guage.decrement();
+# + gauge - gauge to be decremented
+function decrementGauge(observe:Gauge gauge) {
+    gauge.decrement();
 }

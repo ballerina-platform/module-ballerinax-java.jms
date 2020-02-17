@@ -17,7 +17,7 @@
 import ballerinax/java;
 import ballerina/observe;
 
-observe:Gauge temporaryTopicGuage = new(ACTIVE_JMS_TEMPORARY_TOPICS);
+observe:Gauge temporaryTopicGauge = new(ACTIVE_JMS_TEMPORARY_TOPICS);
 
 # Represent the JMS temporary topic
 public type TemporaryTopic object {
@@ -29,7 +29,7 @@ public type TemporaryTopic object {
     #
     # + handle - The java reference to the jms text message.
     function __init(handle temporaryTopic) {
-        registerAndIncrementGuage(temporaryTopicGuage);
+        registerAndIncrementGauge(temporaryTopicGauge);
         self.jmsDestination = temporaryTopic;
     }
 
@@ -56,7 +56,7 @@ public type TemporaryTopic object {
     #
     # + return - Returns an error if it fails.
     public function delete() returns error? {
-        decrementGuage(temporaryTopicGuage);
+        decrementGauge(temporaryTopicGauge);
         return deleteTemporaryTopic(self.jmsDestination);
     }
 
