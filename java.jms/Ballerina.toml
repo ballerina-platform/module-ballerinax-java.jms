@@ -1,10 +1,10 @@
 [project]
-org-name= "wso2"
-version= "0.7.0"
+org-name= "ballerina"
+version= "0.8.0"
 license= ["Apache-2.0"]
-authors = ["WSO2"]
+authors = ["Ballerina"]
 keywords = ["jms"]
-repository = "https://github.com/wso2-ballerina/module-jms"
+repository = "https://github.com/ballerina-platform/module-jms"
 
 [dependencies]
 
@@ -12,14 +12,14 @@ repository = "https://github.com/wso2-ballerina/module-jms"
 target = "java8"
 
   [[platform.libraries]]
-  module = "jms"
+  module = "java.jms"
   path = "../utils/target/jms-utils-0.7.0.jar"
   artifactId = "jms-utils"
   version = "0.7.0"
   groupId = "org.wso2.ei"
 
   [[platform.libraries]]
-  module = "jms"
+  module = "java.jms"
   path = "../utils/target/classes/lib/javax.jms-api-2.0.1.jar"
   artifactId = "javax.jms-api"
   version = "2.0.1"

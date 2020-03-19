@@ -2,7 +2,7 @@
 
 ## Module overview
 
-The `wso2/jms` module provides an API to connect to an external JMS provider like ActiveMQ from Ballerina.
+The `ballerina/java.jms` module provides an API to connect to an external JMS provider like ActiveMQ from Ballerina.
 
 This module is created with minimal deviation from the JMS API to make it easy for the developers who are used to working 
  with the JMS API. This module is written to support both JMS 2.0 and JMS 1.0 API. 
@@ -36,7 +36,7 @@ Following is a simple Ballerina program that sends and receives a message from a
 
 ```ballerina
 import ballerina/log;
-import wso2/jms;
+import ballerina/java.jms;
 
 public function main() returns error? {
 
@@ -75,7 +75,7 @@ implement the message listener. Following is a message listener example listenin
 
 ```ballerina
 import ballerina/log;
-import wso2/jms;
+import ballerina/java.jms;
 
 jms:Connection connection = check jms:createConnection({
                    initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",

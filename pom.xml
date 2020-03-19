@@ -34,7 +34,7 @@
     <modules>
         <module>utils</module>
         <module>compiler-plugin</module>
-        <module>jms</module>
+        <module>java.jms</module>
     </modules>
 
     <scm>

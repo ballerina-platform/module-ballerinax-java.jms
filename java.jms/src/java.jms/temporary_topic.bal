@@ -14,29 +14,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/java;
+import ballerina/java;
+import ballerina/observe;
 
-# Represent the JMS topic
-public type Topic object {
+observe:Gauge temporaryTopicGauge = new(ACTIVE_JMS_TEMPORARY_TOPICS);
+
+# Represent the JMS temporary topic
+public type TemporaryTopic object {
 
     // Add a reference to the `Destination` object type.
     *Destination;
 
-    # Initialized a `Topic` object.
+    # Initialized a `TemporaryTopic` object.
     #
     # + handle - The java reference to the jms text message.
-    function __init(handle topic) {
-        self.jmsDestination = topic;
+    function __init(handle temporaryTopic) {
+        registerAndIncrementGauge(temporaryTopicGauge);
+        self.jmsDestination = temporaryTopic;
     }
 
-    # Get the JMS topic
+    # Get the JMS temporary topic
     #
-    # + return - Returns the java reference to the jms topic
+    # + return - Returns the java reference to the jms temporary topic
     function getJmsDestination() returns handle {
         return self.jmsDestination;
     }
 
-    # Gets the name of this topic.
+    # Gets the name of this temporary topic.
     #
     # + return - Returns the string value or an error if it fails.
     public function getTopicName() returns string | error? {
@@ -48,8 +52,17 @@ public type Topic object {
         }
     }
 
+    # Deletes this temporary topic.
+    #
+    # + return - Returns an error if it fails.
+    public function delete() returns error? {
+        decrementGauge(temporaryTopicGauge);
+        return deleteTemporaryTopic(self.jmsDestination);
+    }
+
 };
 
-function getTopicName(handle destination) returns handle | error = @java:Method {
-    class: "javax.jms.Topic"
+function deleteTemporaryTopic(handle destination) returns error? = @java:Method {
+    name: "delete",
+    class: "javax.jms.TemporaryTopic"
 } external;
