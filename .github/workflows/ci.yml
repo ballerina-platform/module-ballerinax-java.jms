@@ -1,0 +1,21 @@
+name: CI
+
+on: [push]
+
+jobs:
+    build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            -  run: mvn clean install -pl !java.jms
+            -  run: cd java.jms
+            - name: Ballerina Build
+              uses: ballerina-platform/ballerina-action/@master
+              with:
+                  args:
+                      build -a -c --sourceroot java.jms 
+              env: 
+                  JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
+                
