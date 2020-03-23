@@ -38,9 +38,9 @@
     </modules>
 
     <scm>
-        <url>https://github.com/wso2-ballerina/module-jms.git</url>
-        <developerConnection>scm:git:https://github.com/wso2-ballerina/module-jms.git</developerConnection>
-        <connection>scm:git:https://github.com/wso2-ballerina/module-jms.git</connection>
+        <url>https://github.com/ballerina-platform/module-jms.git</url>
+        <developerConnection>scm:git:https://github.com/ballerina-platform/module-jms.git</developerConnection>
+        <connection>scm:git:https://github.com/ballerina-platform/module-jms.git</connection>
         <tag>HEAD</tag>
     </scm>
 
@@ -125,7 +125,7 @@
     <properties>
         <project-home>${project.basedir}</project-home>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ballerina.version>1.1.0</ballerina.version>
+        <ballerina.version>1.2.0</ballerina.version>
         <exec.maven.plugin.version>1.6.0</exec.maven.plugin.version>
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
         <maven.dependeny.plugin>3.1.1</maven.dependeny.plugin>
