@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/java;
+import ballerina/java;
 import ballerina/observe;
 
 observe:Gauge temporaryQueueGauge = new(ACTIVE_JMS_TEMPORARY_QUEUES);

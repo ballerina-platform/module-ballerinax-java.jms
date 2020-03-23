@@ -28,13 +28,13 @@
     <groupId>org.wso2.ei.b7a</groupId>
     <artifactId>module-jms</artifactId>
     <packaging>pom</packaging>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
     <name>Ballerina JMS Module</name>
 
     <modules>
         <module>utils</module>
         <module>compiler-plugin</module>
-        <module>jms</module>
+        <module>java.jms</module>
     </modules>
 
     <scm>

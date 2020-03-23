@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/log;
-import ballerinax/java;
+import ballerina/java;
 import ballerina/'lang\.object as lang;
 import ballerina/observe;
 

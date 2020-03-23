@@ -14,33 +14,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/java;
+import ballerina/java;
 
-# Represent the JMS queue
-public type Queue object {
+# Represent the JMS topic
+public type Topic object {
 
     // Add a reference to the `Destination` object type.
     *Destination;
 
-    # Initialized a `Queue` object.
+    # Initialized a `Topic` object.
     #
     # + handle - The java reference to the jms text message.
-    function __init(handle queue) {
-        self.jmsDestination = queue;
+    function __init(handle topic) {
+        self.jmsDestination = topic;
     }
 
-    # Get the JMS queue
+    # Get the JMS topic
     #
-    # + return - Returns the java reference to the jms queue
+    # + return - Returns the java reference to the jms topic
     function getJmsDestination() returns handle {
         return self.jmsDestination;
     }
 
-    # Gets the name of this queue.
+    # Gets the name of this topic.
     #
     # + return - Returns the string value or an error if it fails.
-    public function getQueueName() returns string | error? {
-        handle|error val = getQueueName(self.jmsDestination);
+    public function getTopicName() returns string | error? {
+        handle|error val = getTopicName(self.jmsDestination);
         if (val is handle) {
             return java:toString(val);
         } else {
@@ -50,6 +50,6 @@ public type Queue object {
 
 };
 
-function getQueueName(handle destination) returns handle | error = @java:Method {
-    class: "javax.jms.Queue"
+function getTopicName(handle destination) returns handle | error = @java:Method {
+    class: "javax.jms.Topic"
 } external;

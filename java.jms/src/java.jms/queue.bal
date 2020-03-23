@@ -14,37 +14,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/java;
-import ballerina/observe;
+import ballerina/java;
 
-observe:Gauge temporaryTopicGauge = new(ACTIVE_JMS_TEMPORARY_TOPICS);
-
-# Represent the JMS temporary topic
-public type TemporaryTopic object {
+# Represent the JMS queue
+public type Queue object {
 
     // Add a reference to the `Destination` object type.
     *Destination;
 
-    # Initialized a `TemporaryTopic` object.
+    # Initialized a `Queue` object.
     #
     # + handle - The java reference to the jms text message.
-    function __init(handle temporaryTopic) {
-        registerAndIncrementGauge(temporaryTopicGauge);
-        self.jmsDestination = temporaryTopic;
+    function __init(handle queue) {
+        self.jmsDestination = queue;
     }
 
-    # Get the JMS temporary topic
+    # Get the JMS queue
     #
-    # + return - Returns the java reference to the jms temporary topic
+    # + return - Returns the java reference to the jms queue
     function getJmsDestination() returns handle {
         return self.jmsDestination;
     }
 
-    # Gets the name of this temporary topic.
+    # Gets the name of this queue.
     #
     # + return - Returns the string value or an error if it fails.
-    public function getTopicName() returns string | error? {
-        handle|error val = getTopicName(self.jmsDestination);
+    public function getQueueName() returns string | error? {
+        handle|error val = getQueueName(self.jmsDestination);
         if (val is handle) {
             return java:toString(val);
         } else {
@@ -52,17 +48,8 @@ public type TemporaryTopic object {
         }
     }
 
-    # Deletes this temporary topic.
-    #
-    # + return - Returns an error if it fails.
-    public function delete() returns error? {
-        decrementGauge(temporaryTopicGauge);
-        return deleteTemporaryTopic(self.jmsDestination);
-    }
-
 };
 
-function deleteTemporaryTopic(handle destination) returns error? = @java:Method {
-    name: "delete",
-    class: "javax.jms.TemporaryTopic"
+function getQueueName(handle destination) returns handle | error = @java:Method {
+    class: "javax.jms.Queue"
 } external;
