@@ -1,9 +1,9 @@
-import wso2/jms;
+import ballerina/java.jms;
 
 public function main() returns error? {
 
     jms:Connection connection = check jms:createConnection({
-                        initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
+                        initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
                         providerUrl: "tcp://localhost:61616"
                     });
     jms:Session session = check connection->createSession({acknowledgementMode: "SESSION_TRANSACTED"});

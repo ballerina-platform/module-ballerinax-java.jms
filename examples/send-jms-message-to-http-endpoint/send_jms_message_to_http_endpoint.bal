@@ -1,9 +1,9 @@
 import ballerina/http;
 import ballerina/log;
-import wso2/jms;
+import ballerina/java.jms;
 
 jms:Connection connection = check jms:createConnection({
-                   initialContextFactory: "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory",
+                   initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
                    providerUrl: "tcp://localhost:61616"
               });
 jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
