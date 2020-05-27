@@ -27,6 +27,7 @@ The following sections provide details on how to use the JMS connector.
 |:---------------------------:|:------------------------------:|
 |         1.0.x               |             0.6.x              |
 |         1.1.x               |             0.7.x              |
+|         1.2.x               |             0.8.x              |
 
 ## Samples
 
