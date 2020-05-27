@@ -1,6 +1,6 @@
 [project]
 org-name= "ballerina"
-version= "0.8.0"
+version= "0.8.1"
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
 keywords = ["jms"]
@@ -13,10 +13,10 @@ target = "java8"
 
   [[platform.libraries]]
   module = "java.jms"
-  path = "../utils/target/jms-utils-0.8.0.jar"
+  path = "../utils/target/jms-utils-0.8.1.jar"
   artifactId = "jms-utils"
-  version = "0.8.0"
-  groupId = "org.wso2.ei"
+  version = "0.8.1"
+  groupId = "org.ballerinalang"
 
   [[platform.libraries]]
   module = "java.jms"

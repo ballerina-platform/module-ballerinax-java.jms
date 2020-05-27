@@ -23,12 +23,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>module-jms</artifactId>
-        <groupId>org.wso2.ei.b7a</groupId>
-        <version>0.8.0</version>
+        <groupId>org.ballerinalang</groupId>
+        <version>0.8.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <version>0.8.0</version>
+    <version>0.8.1</version>
     <artifactId>jms-utils</artifactId>
     <packaging>jar</packaging>
     <name>JMS Utils</name>

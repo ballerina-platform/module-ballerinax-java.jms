@@ -17,22 +17,18 @@
  *
  */
 
-package org.wso2.ei.b7a.jms;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.jms.ExceptionListener;
-import javax.jms.JMSException;
+package org.ballerinalang.java.jms;
 
 /**
- * Logging exception listener class for JMS {@link javax.jms.Connection}.
+ * Representation of the custom exception in the JMS module
  */
-public class LoggingExceptionListener implements ExceptionListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingExceptionListener.class);
+public class BallerinaJmsException extends Exception {
 
-    @Override
-    public void onException(JMSException exception) {
-        LOGGER.error("Connection exception received.", exception);
+    BallerinaJmsException(String message) {
+        super(message);
+    }
+
+    public BallerinaJmsException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

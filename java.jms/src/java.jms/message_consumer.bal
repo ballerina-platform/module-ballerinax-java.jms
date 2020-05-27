@@ -133,19 +133,19 @@ function receiveNoWaitJmsMessage(handle jmsMessageConsumer) returns handle|error
 } external;
 
 function isTextMessage(handle jmsMessage) returns boolean = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsMessageUtils"
 } external;
 
 function isMapMessage(handle jmsMessage) returns boolean = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsMessageUtils"
 } external;
 
 function isBytesMessage(handle jmsMessage) returns boolean = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsMessageUtils"
 } external;
 
 function isStreamMessage(handle jmsMessage) returns boolean = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsMessageUtils"
 } external;
 
 function closeJmsConsumer(handle jmsConsumer) returns error? = @java:Method {
@@ -154,5 +154,5 @@ function closeJmsConsumer(handle jmsConsumer) returns error? = @java:Method {
 } external;
 
 function setMessageListener(handle jmsConsumer, service serviceObject) returns error? = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsMessageListenerUtils"
+    class: "org.ballerinalang.java.jms.JmsMessageListenerUtils"
 } external;

@@ -571,7 +571,7 @@ function getByte(handle message, handle name) returns byte | error = @java:Metho
 } external;
 
 function getBytes(handle message, handle name) returns byte[] | error = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsMapMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsMapMessageUtils"
 } external;
 
 //function getChar(handle message, handle name) returns int | error = @java:Method {
@@ -599,7 +599,7 @@ function getMapNames(handle message) returns string[] | error {
 }
 
 function getJmsMapNames(handle message) returns string[] = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsMapMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsMapMessageUtils"
 } external;
 
 function getShort(handle message, handle name) returns int | error = @java:Method {

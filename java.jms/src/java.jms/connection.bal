@@ -107,7 +107,7 @@ public function createConnection(ConnectionConfiguration c) returns Connection|e
 
 function createJmsConnection(handle initialContextFactory, handle providerUrl, handle connectionFactoryName,
                              map<string> otherPropeties) returns handle | error = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsConnectionUtils"
+    class: "org.ballerinalang.java.jms.JmsConnectionUtils"
 } external;
 
 function startJmsConnection(handle jmsConnection) returns error? = @java:Method {

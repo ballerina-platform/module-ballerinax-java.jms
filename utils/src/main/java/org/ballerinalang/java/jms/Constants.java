@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.ei.b7a.jms;
+package org.ballerinalang.java.jms;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,9 +33,9 @@ import static org.ballerinalang.jvm.util.BLangConstants.VERSION_SEPARATOR;
  */
 public class Constants {
 
-    static final String ORG = "wso2";
-    static final String PACKAGE_NAME = "jms";
-    public static final String VERSION = "0.7.0";
+    static final String ORG = "ballerina";
+    static final String PACKAGE_NAME = "java.jms";
+    public static final String VERSION = "0.8.1";
 
     public static final String PACKAGE_NAME_WITH_VERSION = PACKAGE_NAME + VERSION_SEPARATOR + VERSION;
 
