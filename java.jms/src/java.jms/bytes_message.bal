@@ -571,7 +571,7 @@ function readBytes(handle message) returns byte[] | error {
 }
 
 function readJavaBytes(handle message) returns byte[] = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsBytesMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsBytesMessageUtils"
 } external;
 
 function readPortionOfBytes(handle message, int length) returns byte[] | error {
@@ -579,7 +579,7 @@ function readPortionOfBytes(handle message, int length) returns byte[] | error {
 }
 
 function readPortionOfJavaBytes(handle message, int length) returns byte[] = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsBytesMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsBytesMessageUtils"
 } external;
 
 //function readChar(handle message) returns int | error = @java:Method {
@@ -631,11 +631,11 @@ function writeByte(handle message, byte value) returns error? = @java:Method {
 } external;
 
 function writeBytes(handle message, byte[] value) returns error? = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsBytesMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsBytesMessageUtils"
 } external;
 
 function writePortionOfBytes(handle message, byte[] value, int offset, int length) returns error? = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsBytesMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsBytesMessageUtils"
 } external;
 
 //function writeChar(handle message, handle value) returns error? = @java:Method {

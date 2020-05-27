@@ -397,7 +397,7 @@ function getJMSCorrelationID(handle message) returns handle | error = @java:Meth
 } external;
 
 function getJMSCorrelationIDAsBytes(handle message) returns byte[] | error = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsMessageUtils"
 } external;
 
 function getJMSDeliveryMode(handle message) returns int | error = @java:Method {
@@ -449,7 +449,7 @@ function getPropertyNames(handle message) returns string[] | error {
 }
 
 function getJmsPropertyNames(handle message) returns string[] = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsMessageUtils"
 } external;
 
 function getShortProperty(handle message, handle name) returns int | error = @java:Method {
@@ -489,7 +489,7 @@ function setJMSCorrelationID(handle message, handle correlationId) returns error
 } external;
 
 function setJMSCorrelationIDAsBytes(handle message, byte[] correlationId) returns error? = @java:Method {
-    class: "org.wso2.ei.b7a.jms.JmsMessageUtils"
+    class: "org.ballerinalang.java.jms.JmsMessageUtils"
 } external;
 
 function setJMSReplyTo(handle message, handle destination) returns error? = @java:Method {

@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.ei.b7a.jms;
+package org.ballerinalang.java.jms;
 
 import org.ballerinalang.jvm.util.exceptions.BallerinaException;
 import org.ballerinalang.jvm.values.api.BArray;

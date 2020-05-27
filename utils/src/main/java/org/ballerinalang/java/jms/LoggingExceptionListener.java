@@ -17,31 +17,22 @@
  *
  */
 
-package org.wso2.ei.b7a.jms;
+package org.ballerinalang.java.jms;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jms.ExceptionListener;
+import javax.jms.JMSException;
+
 /**
- * Utility class for JMS related common operations.
+ * Logging exception listener class for JMS {@link javax.jms.Connection}.
  */
-public class JmsUtils {
+public class LoggingExceptionListener implements ExceptionListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingExceptionListener.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JmsUtils.class);
-
-    /**
-     * Utility class cannot be instantiated.
-     */
-    private JmsUtils() {
-    }
-
-    /**
-     * Check given string is not null or empty after trimming
-     * @param str String value
-     * @return true/false based on the input
-     */
-    static boolean notNullOrEmptyAfterTrim(String str) {
-        return !(str == null || str.trim().isEmpty());
+    @Override
+    public void onException(JMSException exception) {
+        LOGGER.error("Connection exception received.", exception);
     }
 }
-
