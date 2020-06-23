@@ -128,12 +128,17 @@ public class JmsConnectionUtils {
         });
 
         try {
+            String password = null;
+            String username = null;
             InitialContext initialContext = new InitialContext(properties);
             ConnectionFactory connectionFactory =
                     (ConnectionFactory) initialContext.lookup(connectionFactoryName.getValue());
-            String username = optionalConfigs.get(Constants.ALIAS_USERNAME).getValue();
-            String password = optionalConfigs.get(Constants.ALIAS_PASSWORD).getValue();
-
+            if (optionalConfigs.containsKey(Constants.ALIAS_USERNAME)) {
+                username = optionalConfigs.get(Constants.ALIAS_USERNAME).getValue();
+            }
+            if (optionalConfigs.containsKey(Constants.ALIAS_PASSWORD)) {
+                password = optionalConfigs.get(Constants.ALIAS_PASSWORD).getValue();
+            }
             if (JmsUtils.notNullOrEmptyAfterTrim(username) && password != null) {
                 return connectionFactory.createConnection(username, password);
             } else {
