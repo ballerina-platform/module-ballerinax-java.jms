@@ -21,6 +21,7 @@ package org.ballerinalang.java.jms;
 
 import org.ballerinalang.jvm.util.exceptions.BallerinaException;
 import org.ballerinalang.jvm.values.api.BArray;
+import org.ballerinalang.jvm.values.api.BString;
 import org.ballerinalang.jvm.values.api.BValueCreator;
 
 import javax.jms.JMSException;
@@ -45,7 +46,7 @@ public class JmsMapMessageUtils {
     public static BArray getJmsMapNames(MapMessage message) {
         try {
             List<String> propertyNames = Collections.list(message.getMapNames());
-            return BValueCreator.createArrayValue(propertyNames.toArray(new String[0]));
+            return BValueCreator.createArrayValue(propertyNames.toArray(new BString[0]));
 
         } catch (JMSException e) {
             throw new BallerinaException("Error occurred while getting property names.", e);

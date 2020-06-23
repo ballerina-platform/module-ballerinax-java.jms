@@ -40,7 +40,7 @@ public type AbstractMessage abstract client object {
 
     public function getIntProperty(string name) returns int | error;
 
-    public function getJMSCorrelationID() returns string | error;
+    public function getJMSCorrelationID() returns (string|error)?;
 
     public function getJMSCorrelationIDAsBytes() returns byte[] | error;
 
@@ -52,7 +52,7 @@ public type AbstractMessage abstract client object {
 
     public function getJMSExpiration() returns int | error;
 
-    public function getJMSMessageID() returns string | error;
+    public function getJMSMessageID() returns (string|error)?;
 
     public function getJMSPriority() returns int | error;
 
@@ -62,7 +62,7 @@ public type AbstractMessage abstract client object {
 
     public function getJMSTimestamp() returns int | error;
 
-    public function getJMSType() returns string | error;
+    public function getJMSType() returns (string|error)?;
 
     public function getLongProperty(string name) returns int | error;
 
@@ -70,7 +70,7 @@ public type AbstractMessage abstract client object {
 
     public function getShortProperty(string name) returns int | error;
 
-    public function getStringProperty(string name) returns string | error;
+    public function getStringProperty(string name) returns (string|error)?;
 
     public function propertyExists(string name) returns boolean | error;
 

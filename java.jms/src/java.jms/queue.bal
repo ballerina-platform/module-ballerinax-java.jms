@@ -25,7 +25,7 @@ public type Queue object {
     # Initialized a `Queue` object.
     #
     # + handle - The java reference to the jms text message.
-    function __init(handle queue) {
+    function init(handle queue) {
         self.jmsDestination = queue;
     }
 

@@ -27,7 +27,7 @@ public type Session client object {
     private handle jmsSession = JAVA_NULL;
 
     # The default constructor of the JMS session.
-    public function __init(handle connection, SessionConfiguration sessionConfig) returns error? {
+    public function init(handle connection, SessionConfiguration sessionConfig) returns error? {
         self.config = sessionConfig;
         return self.createSession(connection);
     }

@@ -19,8 +19,8 @@
 
 package org.ballerinalang.java.jms;
 
-import org.ballerinalang.jvm.values.MapValueImpl;
 import org.ballerinalang.jvm.values.api.BMap;
+import org.ballerinalang.jvm.values.api.BString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,11 +55,11 @@ public class JmsConnectionUtils {
      * @return  {@link javax.jms.Connection} object
      * @throws BallerinaJmsException in an error situation
      */
-    public static Connection createJmsConnection(String initialContextFactory, String providerUrl,
-                                                 String connectionFactoryName,
-                                                 BMap<String, String> optionalConfigs) throws BallerinaJmsException {
+    public static Connection createJmsConnection(BString initialContextFactory, BString providerUrl,
+                                                 BString connectionFactoryName,
+                                                 BMap<BString, BString> optionalConfigs) throws BallerinaJmsException {
         Connection connection = createConnection(initialContextFactory, providerUrl, connectionFactoryName,
-                                                          optionalConfigs);
+                                                 optionalConfigs);
         try {
             if (connection.getClientID() == null) {
                 connection.setClientID(UUID.randomUUID().toString());
@@ -110,13 +110,13 @@ public class JmsConnectionUtils {
      * @return  {@javax.jms.Connection} object
      * @throws BallerinaJmsException in an error situation
      */
-    private static Connection createConnection(String initialContextFactory, String providerUrl,
-                                              String connectionFactoryName ,
-                                              BMap<String, String> optionalConfigs) throws BallerinaJmsException{
+    private static Connection createConnection(BString initialContextFactory, BString providerUrl,
+                                              BString connectionFactoryName ,
+                                              BMap<BString, BString> optionalConfigs) throws BallerinaJmsException{
         Map<String, String> configParams = new HashMap<>();
-        configParams.put(Constants.ALIAS_INITIAL_CONTEXT_FACTORY, initialContextFactory);
-        configParams.put(Constants.ALIAS_PROVIDER_URL, providerUrl);
-        configParams.put(Constants.ALIAS_CONNECTION_FACTORY_NAME, connectionFactoryName);
+        configParams.put(Constants.ALIAS_INITIAL_CONTEXT_FACTORY, initialContextFactory.getValue());
+        configParams.put(Constants.ALIAS_PROVIDER_URL, providerUrl.getValue());
+        configParams.put(Constants.ALIAS_CONNECTION_FACTORY_NAME, connectionFactoryName.getValue());
 
         preProcessIfWso2MB(configParams);
         updateMappedParameters(configParams);
@@ -124,14 +124,15 @@ public class JmsConnectionUtils {
         Properties properties = new Properties();
         configParams.forEach(properties::put);
         optionalConfigs.entrySet().forEach(e -> {
-            properties.setProperty(e.getKey(), e.getValue());
+            properties.setProperty(e.getKey().getValue(), e.getValue().getValue());
         });
 
         try {
             InitialContext initialContext = new InitialContext(properties);
-            ConnectionFactory connectionFactory = (ConnectionFactory) initialContext.lookup(connectionFactoryName);
-            String username = optionalConfigs.get(Constants.ALIAS_USERNAME);
-            String password = optionalConfigs.get(Constants.ALIAS_PASSWORD);
+            ConnectionFactory connectionFactory =
+                    (ConnectionFactory) initialContext.lookup(connectionFactoryName.getValue());
+            String username = optionalConfigs.get(Constants.ALIAS_USERNAME).getValue();
+            String password = optionalConfigs.get(Constants.ALIAS_PASSWORD).getValue();
 
             if (JmsUtils.notNullOrEmptyAfterTrim(username) && password != null) {
                 return connectionFactory.createConnection(username, password);
@@ -155,7 +156,7 @@ public class JmsConnectionUtils {
     private static void preProcessIfWso2MB(Map<String, String> configParams) throws BallerinaJmsException {
         String initialConnectionFactoryName = configParams.get(Constants.ALIAS_INITIAL_CONTEXT_FACTORY);
         if (Constants.BMB_ICF_ALIAS.equalsIgnoreCase(initialConnectionFactoryName)
-            || Constants.MB_ICF_ALIAS.equalsIgnoreCase(initialConnectionFactoryName)) {
+                || Constants.MB_ICF_ALIAS.equalsIgnoreCase(initialConnectionFactoryName)) {
 
             configParams.put(Constants.ALIAS_INITIAL_CONTEXT_FACTORY, Constants.MB_ICF_NAME);
             String connectionFactoryName = configParams.get(Constants.ALIAS_CONNECTION_FACTORY_NAME);

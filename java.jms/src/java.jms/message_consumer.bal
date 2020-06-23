@@ -26,7 +26,7 @@ public type MessageConsumer client object {
     *lang:Listener;
     private handle jmsConsumer = JAVA_NULL;
 
-    function __init(handle jmsMessageConsumer) {
+    function init(handle jmsMessageConsumer) {
         self.jmsConsumer = jmsMessageConsumer;
         registerAndIncrementGauge(consumerGauge);
     }

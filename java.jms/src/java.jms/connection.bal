@@ -27,7 +27,7 @@ public type Connection client object {
     private handle jmsConnection = JAVA_NULL;
 
     # JMS Connection constructor
-    function __init(ConnectionConfiguration c) returns error?{
+    function init(ConnectionConfiguration c) returns error?{
         self.config = c;
         return self.createConnection();
     }
@@ -36,9 +36,9 @@ public type Connection client object {
     #
     # + return - Return error or nil
     function createConnection() returns error? {
-        handle icf = java:fromString(self.config.initialContextFactory);
-        handle providerUrl = java:fromString(self.config.providerUrl);
-        handle factoryName = java:fromString(self.config.connectionFactoryName);
+        string icf = self.config.initialContextFactory;
+        string providerUrl = self.config.providerUrl;
+        string factoryName = self.config.connectionFactoryName;
 
         handle|error value = createJmsConnection(icf, providerUrl, factoryName, self.config.properties);
         if (value is handle) {
@@ -62,7 +62,7 @@ public type Connection client object {
 
     # Starts (or restarts) a connection's delivery of incoming messages.
     # A call to start on a connection that has already been started is ignored.
-    public remote function start() {
+    public remote function 'start() {
         error? err = startJmsConnection(self.jmsConnection);
         if (err is error) {
             log:printError("Error starting connection", err);
@@ -105,7 +105,7 @@ public function createConnection(ConnectionConfiguration c) returns Connection|e
     return new Connection(c);
 }
 
-function createJmsConnection(handle initialContextFactory, handle providerUrl, handle connectionFactoryName,
+function createJmsConnection(string initialContextFactory, string providerUrl, string connectionFactoryName,
                              map<string> otherPropeties) returns handle | error = @java:Method {
     class: "org.ballerinalang.java.jms.JmsConnectionUtils"
 } external;

@@ -26,7 +26,7 @@ public type MessageProducer client object {
     # Initialize the Message Producer client object
     #
     # + jmsProducer - reference to java MessageProducer object
-    public function __init(handle jmsProducer) returns error? {
+    public function init(handle jmsProducer) returns error? {
         self.jmsProducer = jmsProducer;
     }
 

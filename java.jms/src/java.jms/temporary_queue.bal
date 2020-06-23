@@ -28,7 +28,7 @@ public type TemporaryQueue object {
     # Initialized a `TemporaryQueue` object.
     #
     # + handle - The java reference to the jms text message.
-    function __init(handle temporaryQueue) {
+    function init(handle temporaryQueue) {
         registerAndIncrementGauge(temporaryQueueGauge);
         self.jmsDestination = temporaryQueue;
     }
