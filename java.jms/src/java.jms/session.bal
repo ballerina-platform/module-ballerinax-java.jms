@@ -59,7 +59,7 @@ public type Session client object {
         if (val is handle) {
             return new TemporaryQueue(val);
         } else {
-            return val;
+            return JmsError("Error occurred while creating the JMS queue.", val);
         }
     }
 
@@ -72,7 +72,7 @@ public type Session client object {
         if (val is handle) {
             return new TemporaryTopic(val);
         } else {
-            return val;
+            return JmsError("Error occurred while creating the JMS topic.", val);
         }
     }
 
