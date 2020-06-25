@@ -5,10 +5,8 @@ jms:Connection connection = check jms:createConnection({
                    initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
                    providerUrl: "tcp://localhost:61616"
               });
-jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
-jms:Destination topic = check session->createTopic("MyTopic");
 
-listener jms:MessageConsumer jmsConsumer = check session->createDurableSubscriber(topic, "sub-1");
+listener jms:MessageConsumer jmsConsumer = createListener(connection);
 
 service messageListener on jmsConsumer {
 
@@ -24,4 +22,11 @@ service messageListener on jmsConsumer {
            log:printInfo("Message received.");
        }
    }
+}
+
+function createListener(jms:Connection connection) returns  jms:MessageConsumer {
+    jms:Session session = checkpanic connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+    jms:Destination topic = checkpanic session->createTopic("MyTopic");
+    jms:MessageConsumer jmsConsumer = check session->createDurableSubscriber(topic, "sub-1");
+    return jmsConsumer;
 }
