@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.naming.Context;
 
-import static org.ballerinalang.jvm.util.BLangConstants.VERSION_SEPARATOR;
-
 /**
  * Constants for jms.
  *
@@ -35,9 +33,7 @@ public class Constants {
 
     static final String ORG = "ballerina";
     static final String PACKAGE_NAME = "java.jms";
-    public static final String VERSION = "0.8.1";
-
-    public static final String PACKAGE_NAME_WITH_VERSION = PACKAGE_NAME + VERSION_SEPARATOR + VERSION;
+    public static final String VERSION = "0.9.0";
 
     // Destination types
     public static final String DESTINATION_TYPE_QUEUE = "queue";

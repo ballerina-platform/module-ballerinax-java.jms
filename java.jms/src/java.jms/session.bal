@@ -27,7 +27,7 @@ public type Session client object {
     private handle jmsSession = JAVA_NULL;
 
     # The default constructor of the JMS session.
-    public function __init(handle connection, SessionConfiguration sessionConfig) returns error? {
+    public function init(handle connection, SessionConfiguration sessionConfig) returns error? {
         self.config = sessionConfig;
         return self.createSession(connection);
     }
@@ -59,7 +59,7 @@ public type Session client object {
         if (val is handle) {
             return new TemporaryQueue(val);
         } else {
-            return val;
+            return JmsError("Error occurred while creating the JMS queue.", val);
         }
     }
 
@@ -72,7 +72,7 @@ public type Session client object {
         if (val is handle) {
             return new TemporaryTopic(val);
         } else {
-            return val;
+            return JmsError("Error occurred while creating the JMS topic.", val);
         }
     }
 

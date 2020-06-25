@@ -28,7 +28,7 @@ public type TemporaryTopic object {
     # Initialized a `TemporaryTopic` object.
     #
     # + handle - The java reference to the jms text message.
-    function __init(handle temporaryTopic) {
+    function init(handle temporaryTopic) {
         registerAndIncrementGauge(temporaryTopicGauge);
         self.jmsDestination = temporaryTopic;
     }

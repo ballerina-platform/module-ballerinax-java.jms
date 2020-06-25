@@ -29,7 +29,7 @@ public type MapMessage client object {
     # Initialized a `MapMessage` object.
     #
     # + handle - The java reference to the jms text message.
-    function __init(handle mapMessage) {
+    function init(handle mapMessage) {
         self.jmsMessage = mapMessage;
     }
 
@@ -396,7 +396,7 @@ public type MapMessage client object {
     # Get the message type identifier.
     #
     # + return - Returns the message type or an error if it fails.
-    public function getJMSType() returns string? | error {
+    public function getJMSType() returns (string|error)? {
         handle|error val = getJMSType(self.jmsMessage);
         if (val is handle) {
             return java:toString(val);
@@ -432,7 +432,7 @@ public type MapMessage client object {
     #
     # + name - The name of the string property
     # + return - Returns the string value or an error if it fails.
-    public function getStringProperty(string name) returns string? | error {
+    public function getStringProperty(string name) returns (string|error)? {
         handle|error val = getStringProperty(self.jmsMessage, java:fromString(name));
         if (val is handle) {
             return java:toString(val);

@@ -25,7 +25,7 @@ public type Topic object {
     # Initialized a `Topic` object.
     #
     # + handle - The java reference to the jms text message.
-    function __init(handle topic) {
+    function init(handle topic) {
         self.jmsDestination = topic;
     }
 
