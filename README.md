@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/wso2-ballerina/module-jms.svg?branch=master)](https://travis-ci.org/wso2-ballerina/module-jms)
+[![Build Status](https://travis-ci.com/ballerina-platform/module-ballerina-java.jms.svg?branch=master)](https://travis-ci.com/ballerina-platform/module-ballerina-java.jms)
 
 ## Module overview
 
@@ -28,6 +28,7 @@ The following sections provide details on how to use the JMS connector.
 |         1.0.x               |             0.6.x              |
 |         1.1.x               |             0.7.x              |
 |         1.2.x               |             0.8.x              |
+|    Swan Lake Preview1       |             0.9.x              |
 
 ## Samples
 
@@ -82,10 +83,8 @@ jms:Connection connection = check jms:createConnection({
                    initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
                    providerUrl: "tcp://localhost:61616"
               });
-jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
-jms:Destination topic = check session->createTopic("MyTopic");
 
-listener jms:MessageConsumer jmsConsumer = check session->createDurableSubscriber(topic, "sub-1");
+listener jms:MessageConsumer jmsConsumer = createListener(connection);
 
 service messageListener on jmsConsumer {
 
@@ -102,4 +101,38 @@ service messageListener on jmsConsumer {
        }
    }
 }
+
+function createListener(jms:Connection connection) returns  jms:MessageConsumer {
+    jms:Session session = checkpanic connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+    jms:Destination queue = checkpanic session->createQueue("MyQueue");
+    jms:MessageConsumer consumer = checkpanic session->createConsumer(queue);
+    return consumer;
+}
+```
+## Adding necessary dependencies 
+
+Add the required dependencies to `Ballerina.toml` based on the broker that you're trying to connect to. 
+To run the given examples using `Apache ActiveMQ` please add the following. 
+
+```
+  [[platform.libraries]]
+  module = "jms"
+  path = "<path>/activemq-client-5.15.12.jar"
+  artifactId = "activemq-client"
+  version = "5.15.12"
+  groupId = "org.apache.activemq"
+
+  [[platform.libraries]]
+  module = "jms"
+  path = "<path>/geronimo-j2ee-management_1.1_spec-1.0.1.jar"
+  artifactId = "geronimo-j2ee-management_1.1_spec"
+  version = "1.0.1"
+  groupId = "org.apache.geronimo.specs"
+
+  [[platform.libraries]]
+  module = "jms"
+  path = "<path>/libs/hawtbuf-1.11.jar"
+  artifactId = "hawtbuf"
+  version = "1.11"
+  groupId = "org.fusesource.hawtbuf"
 ```
