@@ -24,12 +24,12 @@
     <parent>
         <groupId>org.ballerinalang</groupId>
         <artifactId>module-jms</artifactId>
-        <version>0.9.0</version>
+        <version>0.99.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jms-compiler-plugin</artifactId>
-    <version>0.9.0</version>
+    <version>0.99.0</version>
     <packaging>jar</packaging>
     <name>JMS Compiler Plugin</name>
 

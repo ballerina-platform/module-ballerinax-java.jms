@@ -33,7 +33,7 @@ public class Constants {
 
     static final String ORG = "ballerina";
     static final String PACKAGE_NAME = "java.jms";
-    public static final String VERSION = "0.9.0";
+    public static final String VERSION = "0.99.0";
 
     // Destination types
     public static final String DESTINATION_TYPE_QUEUE = "queue";
