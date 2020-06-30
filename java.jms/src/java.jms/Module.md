@@ -28,7 +28,7 @@ Currently, the following JMS API Classes are supported through this module.
 |         1.0.x               |             0.6.x              |
 |         1.1.x               |             0.7.x              |
 |         1.2.x               |             0.8.x              |
-|    Swan Lake Preview1       |             0.9.x              |
+|    Swan Lake Preview1       |            0.99.x              |
 
 ## Samples
 
