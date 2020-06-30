@@ -1,5 +1,5 @@
 org_name = "ballerina"
-version = "0.9.0"
+version = "0.99.0"
 lockfile_version = "1.0.0"
 ballerina_version = "slp1"
 
@@ -13,22 +13,22 @@ org_name = "ballerina"
 name = "java"
 version = "0.9.0"
 
-[[imports."ballerina/java.jms:0.9.0"]]
+[[imports."ballerina/java.jms:0.99.0"]]
 org_name = "ballerina"
 name = "observe"
 version = "0.8.0"
 
-[[imports."ballerina/java.jms:0.9.0"]]
+[[imports."ballerina/java.jms:0.99.0"]]
 org_name = "ballerina"
 name = "log"
 version = "1.0.0"
 
-[[imports."ballerina/java.jms:0.9.0"]]
+[[imports."ballerina/java.jms:0.99.0"]]
 org_name = "ballerina"
 name = "java"
 version = "0.9.0"
 
-[[imports."ballerina/java.jms:0.9.0"]]
+[[imports."ballerina/java.jms:0.99.0"]]
 org_name = "ballerina"
 name = "lang.object"
 version = "1.0.0"

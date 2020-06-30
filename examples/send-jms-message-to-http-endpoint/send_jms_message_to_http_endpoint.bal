@@ -6,10 +6,8 @@ jms:Connection connection = check jms:createConnection({
                    initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
                    providerUrl: "tcp://localhost:61616"
               });
-jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
-jms:Destination queue = check session->createQueue("MyQueue");
 
-listener jms:MessageConsumer jmsConsumer = check session->createConsumer(queue);
+listener jms:MessageConsumer jmsConsumer = createListener(connection);
 
 service messageListener on jmsConsumer {
 
@@ -80,4 +78,11 @@ service backend on new http:Listener(9090) {
             log:printError("Error while reading payload", err = stringPayload);
         }
     }
+}
+
+function createListener(jms:Connection connection) returns  jms:MessageConsumer {
+    jms:Session session = checkpanic connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+    jms:Destination queue = checkpanic session->createQueue("MyQueue");
+    jms:MessageConsumer jmsConsumer = checkpanic session->createConsumer(queue);
+    return jmsConsumer;
 }
