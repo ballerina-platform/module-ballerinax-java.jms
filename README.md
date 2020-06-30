@@ -109,10 +109,10 @@ function createListener(jms:Connection connection) returns  jms:MessageConsumer 
     return consumer;
 }
 ```
-## Adding necessary dependencies 
+## Adding the required dependencies 
 
-Add the required dependencies to `Ballerina.toml` based on the broker that you're trying to connect to. 
-To run the given examples using `Apache ActiveMQ` please add the following. 
+Add the required dependencies to the `Ballerina.toml` file based on the broker that you're trying to connect to. 
+ Add the configurations below to run the given examples using `Apache ActiveMQ`. 
 
 ```
   [[platform.libraries]]
