@@ -133,11 +133,11 @@ public class JmsConnectionUtils {
             InitialContext initialContext = new InitialContext(properties);
             ConnectionFactory connectionFactory =
                     (ConnectionFactory) initialContext.lookup(connectionFactoryName.getValue());
-            if (optionalConfigs.containsKey(Constants.ALIAS_USERNAME)) {
-                username = optionalConfigs.get(Constants.ALIAS_USERNAME).getValue();
+            if (configParams.containsKey(Constants.ALIAS_USERNAME)) {
+                username = configParams.get(Constants.ALIAS_USERNAME).getValue();
             }
-            if (optionalConfigs.containsKey(Constants.ALIAS_PASSWORD)) {
-                password = optionalConfigs.get(Constants.ALIAS_PASSWORD).getValue();
+            if (configParams.containsKey(Constants.ALIAS_PASSWORD)) {
+                password = configParams.get(Constants.ALIAS_PASSWORD).getValue();
             }
             if (JmsUtils.notNullOrEmptyAfterTrim(username) && password != null) {
                 return connectionFactory.createConnection(username, password);
