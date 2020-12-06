@@ -38,6 +38,11 @@ public type Session client object {
         registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_SESSIONS));
     }
 
+    public remote function close() returns error? {
+        //TODO: unregister and decrementCounter
+        return closeJmsSession(self.jmsSession);
+    }
+
     # Unsubscribe a durable subscription that has been created by a client.
     # It is erroneous for a client to delete a durable subscription while there is an active (not closed) consumer
     # for the subscription, or while a consumed message being part of a pending transaction or has not been
@@ -349,6 +354,11 @@ function createJmsConsumer(handle jmsSession, handle jmsDestination,
 
 function createJmsSession(handle connection, handle acknowledgmentMode) returns handle | error = @java:Method {
     class: "org.ballerinalang.java.jms.JmsSessionUtils"
+} external;
+
+function closeJmsSession(handle session) returns error? = @java:Method {
+    name: "close",
+    class: "javax.jms.Session"
 } external;
 
 function unsubscribeJmsSubscription(handle session, handle subscriptionId) returns error? = @java:Method {
