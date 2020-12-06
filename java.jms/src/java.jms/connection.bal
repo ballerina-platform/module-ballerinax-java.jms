@@ -52,6 +52,10 @@ public type Connection client object {
         }
     }
 
+    public remote function close() returns error? {
+        return closeJmsConnection(self.jmsConnection);
+    }
+
     # Create a Session object, specifying transacted and acknowledgeMode
     #
     # + sessionConfig - SessionConfiguration record consist with JMS session config
@@ -118,5 +122,10 @@ function startJmsConnection(handle jmsConnection) returns error? = @java:Method 
 
 function stopJmsConnection(handle jmsConnection) returns error? = @java:Method {
     name: "stop",
+    class: "javax.jms.Connection"
+} external;
+
+function closeJmsConnection(handle jmsConnection) returns error? = @java:Method {
+    name: "close",
     class: "javax.jms.Connection"
 } external;
