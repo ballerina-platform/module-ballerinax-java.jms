@@ -12,7 +12,7 @@ jobs:
             -  run: mvn clean install -pl !java.jms
             -  run: cd java.jms
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@master
+              uses: ballerina-platform/ballerina-action/@1.2.x
               with:
                   args:
                       build -a -c --sourceroot java.jms 

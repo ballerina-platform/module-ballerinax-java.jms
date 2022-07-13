@@ -14,14 +14,14 @@ jobs:
     -  run: mvn clean install -pl !java.jms 
     -  run: cd java.jms
     - name: Ballerina Build
-      uses: ballerina-platform/ballerina-action/@master
+      uses: ballerina-platform/ballerina-action/@1.2.x
       with:
         args:
           build -a -c --sourceroot java.jms
       env: 
         JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
     - name: Ballerina Push
-      uses: ballerina-platform/ballerina-action/@master
+      uses: ballerina-platform/ballerina-action/@1.2.x
       with:
         args: 
           push -a
