@@ -9,7 +9,7 @@ jobs:
 
         steps:
             - uses: actions/checkout@v2
-            -  run: mvn clean install -pl !java.jms
+            -  run: mvn clean install
             -  run: cd java.jms
             - name: Ballerina Build
               uses: ballerina-platform/ballerina-action/@1.2.x
