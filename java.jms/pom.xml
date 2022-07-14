@@ -45,7 +45,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <executable>bal</executable>
+                    <executable>ballerina</executable>
                     <arguments>
                         <argument>build</argument>
                         <argument>-c</argument>
