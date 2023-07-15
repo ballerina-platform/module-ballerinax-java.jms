@@ -405,7 +405,7 @@ function externGetJMSCorrelationID(handle message) returns handle|error = @java:
 
 function externGetJMSCorrelationIDAsBytes(handle message) returns byte[]|error = @java:Method {
     name: "getJMSCorrelationIDAsBytes",
-    'class: "org.ballerinalang.java.jms.JmsMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
 } external;
 
 function externGetJMSDeliveryMode(handle message) returns int|error = @java:Method {
@@ -465,12 +465,8 @@ function externGetLongProperty(handle message, handle name) returns int|error = 
 
 function externGetPropertyNames(handle message) returns string[]|error = @java:Method {
     name: "getJmsPropertyNames",
-    'class: "org.ballerinalang.java.jms.JmsMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
 } external;
-
-// function getJmsPropertyNames(handle message) returns string[] = @java:Method {
-//     'class: "org.ballerinalang.java.jms.JmsMessageUtils"
-// } external;
 
 function externGetShortProperty(handle message, handle name) returns int|error = @java:Method {
     name: "getShortProperty",
@@ -519,7 +515,7 @@ function externSetJMSCorrelationID(handle message, handle correlationId) returns
 
 function externSetJMSCorrelationIDAsBytes(handle message, byte[] correlationId) returns error? = @java:Method {
     name: "setJMSCorrelationIDAsBytes",
-    'class: "org.ballerinalang.java.jms.JmsMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
 } external;
 
 function externSetJMSReplyTo(handle message, handle destination) returns error? = @java:Method {

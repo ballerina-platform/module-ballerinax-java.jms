@@ -549,7 +549,7 @@ function externGetByte(handle message, handle name) returns byte | error = @java
 
 function externGetBytes(handle message, handle name) returns byte[] | error = @java:Method {
     name: "getBytes",
-    'class: "org.ballerinalang.java.jms.JmsMapMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsMapMessageUtils"
 } external;
 
 function externGetDouble(handle message, handle name) returns float | error = @java:Method {
@@ -574,12 +574,8 @@ function externGetLong(handle message, handle name) returns int | error = @java:
 
 function externGetMapNames(handle message) returns string[] | error = @java:Method {
     name: "getJmsMapNames",
-    'class: "org.ballerinalang.java.jms.JmsMapMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsMapMessageUtils"
 } external;
-
-// function getJmsMapNames(handle message) returns string[] = @java:Method {
-//     'class: "org.ballerinalang.java.jms.JmsMapMessageUtils"
-// } external;
 
 function externGetShort(handle message, handle name) returns int | error = @java:Method {
     name: "getShort",

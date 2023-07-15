@@ -133,19 +133,19 @@ function receiveNoWaitJmsMessage(handle jmsMessageConsumer) returns handle|error
 } external;
 
 function isTextMessage(handle jmsMessage) returns boolean = @java:Method {
-    'class: "org.ballerinalang.java.jms.JmsMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
 } external;
 
 function isMapMessage(handle jmsMessage) returns boolean = @java:Method {
-    'class: "org.ballerinalang.java.jms.JmsMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
 } external;
 
 function isBytesMessage(handle jmsMessage) returns boolean = @java:Method {
-    'class: "org.ballerinalang.java.jms.JmsMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
 } external;
 
 function isStreamMessage(handle jmsMessage) returns boolean = @java:Method {
-    'class: "org.ballerinalang.java.jms.JmsMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
 } external;
 
 function closeJmsConsumer(handle jmsConsumer) returns error? = @java:Method {

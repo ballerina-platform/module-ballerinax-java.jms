@@ -45,5 +45,5 @@ function getDestination(handle jmsDestination) returns Destination|error {
 }
 
 function getDestinationType(handle destination) returns handle = @java:Method {
-    'class: "org.ballerinalang.java.jms.JmsDestinationUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsDestinationUtils"
 } external;

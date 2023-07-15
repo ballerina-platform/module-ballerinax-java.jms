@@ -39,7 +39,8 @@ public client class Connection {
         string providerUrl = self.config.providerUrl;
         string factoryName = self.config.connectionFactoryName;
 
-        handle|error value = createJmsConnection(icf, providerUrl, factoryName, self.config.properties);
+        handle|error value = createJmsConnection(
+            icf, providerUrl, factoryName, self.config.properties);
         if (value is handle) {
             self.jmsConnection = value;
             registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_CONNECTIONS));
@@ -105,7 +106,7 @@ public function createConnection(ConnectionConfiguration c) returns Connection|e
 
 function createJmsConnection(string initialContextFactory, string providerUrl, string connectionFactoryName,
         map<string> otherPropeties) returns handle|error = @java:Method {
-    'class: "org.ballerinalang.java.jms.JmsConnectionUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsConnectionUtils"
 } external;
 
 function startJmsConnection(handle jmsConnection) returns error? = @java:Method {

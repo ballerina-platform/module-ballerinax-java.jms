@@ -555,21 +555,13 @@ function externReadByte(handle message) returns byte | error = @java:Method {
 
 function externReadBytes(handle message) returns byte[] | error = @java:Method {
     name: "readJavaBytes",
-    'class: "org.ballerinalang.java.jms.JmsBytesMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsBytesMessageUtils"
 } external;
-
-// function readJavaBytes(handle message) returns byte[] = @java:Method {
-//     'class: "org.ballerinalang.java.jms.JmsBytesMessageUtils"
-// } external;
 
 function externReadPortionOfBytes(handle message, int length) returns byte[] | error = @java:Method {
     name: "readPortionOfJavaBytes",
-    'class: "org.ballerinalang.java.jms.JmsBytesMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsBytesMessageUtils"
 } external;
-
-// function readPortionOfJavaBytes(handle message, int length) returns byte[] = @java:Method {
-//     'class: "org.ballerinalang.java.jms.JmsBytesMessageUtils"
-// } external;
 
 function externReadDouble(handle message) returns float | error = @java:Method {
     name: "readDouble",
@@ -628,12 +620,12 @@ function externWriteByte(handle message, byte value) returns error? = @java:Meth
 
 function externWriteBytes(handle message, byte[] value) returns error? = @java:Method {
     name: "writeBytes",
-    'class: "org.ballerinalang.java.jms.JmsBytesMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsBytesMessageUtils"
 } external;
 
 function externWritePortionOfBytes(handle message, byte[] value, int offset, int length) returns error? = @java:Method {
     name: "writePortionOfBytes",
-    'class: "org.ballerinalang.java.jms.JmsBytesMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsBytesMessageUtils"
 } external;
 
 function externWriteDouble(handle message, float value) returns error? = @java:Method {
