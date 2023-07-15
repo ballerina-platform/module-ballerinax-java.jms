@@ -1,4 +1,8 @@
-[![Build Status](https://travis-ci.com/ballerina-platform/module-ballerina-java.jms.svg?branch=master)](https://travis-ci.com/ballerina-platform/module-ballerina-java.jms)
+[![Build](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/build-timestamped-master.yml)
+[![codecov](https://codecov.io/gh/ballerina-platform/module-ballerinax-kafka/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerinax-kafka)
+[![Trivy](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/trivy-scan.yml)
+[![GraalVM Check](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/build-with-bal-test-graalvm.yml)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerinax-kafka.svg)](https://github.com/ballerina-platform/module-ballerina-java.jms/commits/master)
 
 ## Module overview
 
