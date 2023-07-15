@@ -16,6 +16,12 @@ version = "@toml.version@"
 path = "../native/build/libs/java.jms-native-@project.version@.jar"
 
 [[platform.java11.dependency]]
+groupId = "org.slf4j"
+artifactId = "slf4j-api"
+version = "@slf4j.version@"
+path = "./lib/slf4j-api-@slf4j.version@.jar"
+
+[[platform.java11.dependency]]
 groupId = "javax.jms"
 artifactId = "javax.jms-api"
 version = "@javax.jms.version@"

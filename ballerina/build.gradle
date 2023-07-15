@@ -51,7 +51,11 @@ configurations {
 }
 
 dependencies {
-    /* Azure dependencies */
+    /* SLF4J dependencies */
+    externalJars(group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}") {
+        transitive = false
+    }
+    /* JMS dependencies */
     externalJars(group: 'javax.jms', name: 'javax.jms-api', version: "${javaxJmsVersion}") {
         transitive = false
     }
@@ -60,8 +64,10 @@ dependencies {
 task updateTomlFiles {
     doLast {
         def stdlibDependentJavaxJmsVersion = project.javaxJmsVersion
+        def stdlibDependentSlf4jVersion = project.slf4jVersion
         def newConfig = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
+        newConfig = newConfig.replace("@slf4j.version@", stdlibDependentSlf4jVersion)
         newConfig = newConfig.replace("@javax.jms.version@", stdlibDependentJavaxJmsVersion)
         ballerinaTomlFile.text = newConfig
     }
