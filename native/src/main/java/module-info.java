@@ -18,5 +18,7 @@
 
 module io.ballerina.stdlib.java.jms {
     requires io.ballerina.runtime;
+    requires org.slf4j;
+    requires java.naming;
     requires javax.jms.api;
 }
