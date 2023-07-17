@@ -1,5 +1,5 @@
 [package]
-org = "ballerina"
+org = "ballerinax"
 name = "java.jms"
 version = "0.0.1"
 authors = ["Ballerina"]

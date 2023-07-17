@@ -18,19 +18,6 @@ dependencies = [
 
 [[package]]
 org = "ballerina"
-name = "java.jms"
-version = "0.0.1"
-dependencies = [
-	{org = "ballerina", name = "jballerina.java"},
-	{org = "ballerina", name = "log"},
-	{org = "ballerina", name = "observe"}
-]
-modules = [
-	{org = "ballerina", packageName = "java.jms", moduleName = "java.jms"}
-]
-
-[[package]]
-org = "ballerina"
 name = "jballerina.java"
 version = "0.0.0"
 modules = [
@@ -69,5 +56,18 @@ dependencies = [
 modules = [
 	{org = "ballerina", packageName = "observe", moduleName = "observe"},
 	{org = "ballerina", packageName = "observe", moduleName = "observe.mockextension"}
+]
+
+[[package]]
+org = "ballerinax"
+name = "java.jms"
+version = "0.0.1"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "log"},
+	{org = "ballerina", name = "observe"}
+]
+modules = [
+	{org = "ballerinax", packageName = "java.jms", moduleName = "java.jms"}
 ]
 
