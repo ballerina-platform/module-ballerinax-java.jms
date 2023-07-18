@@ -56,7 +56,10 @@ public isolated client class MessageConsumer {
 
     remote isolated function close() returns JmsError? {
         // decrementGauge(consumerGauge);
-        return closeJmsConsumer(self.jmsConsumer);
+        error? result = closeJmsConsumer(self.jmsConsumer);
+        if result is error {
+            return error JmsError(result.message());
+        }
     }
 
     isolated function getJmsConsumer() returns handle {
@@ -105,7 +108,7 @@ isolated function isStreamMessage(handle jmsMessage) returns boolean = @java:Met
     'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
 } external;
 
-isolated function closeJmsConsumer(handle jmsConsumer) returns JmsError? = @java:Method {
+isolated function closeJmsConsumer(handle jmsConsumer) returns error? = @java:Method {
     name: "close",
     'class: "javax.jms.MessageConsumer"
 } external;
