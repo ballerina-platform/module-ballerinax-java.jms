@@ -41,7 +41,7 @@ function getDestination(handle jmsDestination) returns Destination|error {
             return new TemporaryTopic(jmsDestination);
         }
     }
-    return error JmsError("Invalid destination type");
+    return error Error("Invalid destination type");
 }
 
 function getDestinationType(handle destination) returns handle = @java:Method {

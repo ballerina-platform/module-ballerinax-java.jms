@@ -15,4 +15,4 @@
 // under the License.
 
 # Represents a JMS distinct error.
-public type JmsError distinct error;
+public type Error distinct error;

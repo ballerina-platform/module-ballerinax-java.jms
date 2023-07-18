@@ -54,11 +54,11 @@ public isolated client class MessageConsumer {
         }
     }
 
-    remote isolated function close() returns JmsError? {
+    remote isolated function close() returns Error? {
         // decrementGauge(consumerGauge);
         error? result = closeJmsConsumer(self.jmsConsumer);
         if result is error {
-            return error JmsError(result.message());
+            return error Error(result.message());
         }
     }
 

@@ -40,7 +40,7 @@ public isolated class Listener {
     # + 'service - The service instance.
     # + name - Name of the service.
     # + return - Returns nil or an error upon failure to register the listener.
-    public isolated function attach(Service 'service, string[]|string? name = ()) returns JmsError? {
+    public isolated function attach(Service 'service, string[]|string? name = ()) returns Error? {
         return setMessageListener(self.consumer.getJmsConsumer(), 'service);
     }
 
@@ -51,12 +51,12 @@ public isolated class Listener {
     #
     # + 'service - The service to be detached
     # + return - A `kafka:Error` if an error is encountered while detaching a service or else `()`
-    public isolated function detach(Service 'service) returns JmsError? {}
+    public isolated function detach(Service 'service) returns Error? {}
 
     # Starts the endpoint.
     #
     # + return - Returns nil or an error upon failure to start.
-    public isolated function 'start() returns JmsError? {}
+    public isolated function 'start() returns Error? {}
 
 
     # Stops the JMS listener gracefully.
@@ -65,7 +65,7 @@ public isolated class Listener {
     # ```
     #
     # + return - A `jms:JmsError` if an error is encountered during the listener-stopping process or else `()`
-    public isolated function gracefulStop() returns JmsError? {
+    public isolated function gracefulStop() returns Error? {
         return self.consumer->close();
     }
 
@@ -75,11 +75,11 @@ public isolated class Listener {
     # ```
     #
     # + return - A `jms:JmsError` if an error is encountered during the listener-stopping process or else `()`
-    public isolated function immediateStop() returns JmsError? {
+    public isolated function immediateStop() returns Error? {
         return self.consumer->close();
     }
 }
 
-isolated function setMessageListener(handle jmsConsumer, Service 'service) returns JmsError? = @java:Method {
+isolated function setMessageListener(handle jmsConsumer, Service 'service) returns Error? = @java:Method {
     'class: "io.ballerina.stdlib.java.jms.JmsMessageListenerUtils"
 } external;

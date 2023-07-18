@@ -52,26 +52,26 @@ public client class Session {
     # Creates a JMS Queue, which can be used as temporary response destination.
     #
     # + return - Returns the JMS destination for a temporary queue or an error if it fails.
-    remote function createTemporaryQueue() returns Destination|JmsError {
+    remote function createTemporaryQueue() returns Destination|Error {
         handle|error val = createTemporaryJmsQueue(self.jmsSession);
         registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TEMPORARY_QUEUES));
         if (val is handle) {
             return new TemporaryQueue(val);
         } else {
-            return error JmsError("Error occurred while creating the JMS queue.", val);
+            return error Error("Error occurred while creating the JMS queue.", val);
         }
     }
 
     # Creates a JMS Topic, which can be used as a temporary response destination.
     #
     # + return - Returns the JMS destination for a temporary topic or an error if it fails.
-    public function createTemporaryTopic() returns Destination|JmsError {
+    public function createTemporaryTopic() returns Destination|Error {
         handle|error val = createTemporaryJmsTopic(self.jmsSession);
         registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TEMPORARY_TOPICS));
         if (val is handle) {
             return new TemporaryTopic(val);
         } else {
-            return error JmsError("Error occurred while creating the JMS topic.", val);
+            return error Error("Error occurred while creating the JMS topic.", val);
         }
     }
 
