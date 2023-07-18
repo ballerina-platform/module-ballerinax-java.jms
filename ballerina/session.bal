@@ -209,94 +209,94 @@ public client class Session {
         }
     }
 
-    // # Creates a MessageConsumer for the specified destination. Both Queue and Topic can be used in 
-    // # the destination parameter to create a MessageConsumer.
-    // #
-    // # + destination - the Destination to access 
-    // # + messageSelector - only messages with properties matching the message selector expression are delivered. 
-    // #                     An empty string indicates that there is no message selector for the message consumer.
-    // # + noLocal - if true, and the destination is a topic, then the MessageConsumer will not receive messages published to the topic by its own connection.
-    // # + return - Returns a jms:MessageConsumer
-    // remote function createConsumer(Destination destination, string messageSelector = "",
-    //                                       boolean noLocal = false) returns MessageConsumer|error {
-    //     var val = createJmsConsumer(self.jmsSession, destination.getJmsDestination(),
-    //                                 java:fromString(messageSelector), noLocal);
-    //     registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_CONSUMERS));
-    //     if (val is handle) {
-    //         MessageConsumer consumer = new(val);
-    //         return consumer;
-    //     } else {
-    //         return val;
-    //     }
-    // }
+    # Creates a MessageConsumer for the specified destination. Both Queue and Topic can be used in 
+    # the destination parameter to create a MessageConsumer.
+    #
+    # + destination - the Destination to access 
+    # + messageSelector - only messages with properties matching the message selector expression are delivered. 
+    #                     An empty string indicates that there is no message selector for the message consumer.
+    # + noLocal - if true, and the destination is a topic, then the MessageConsumer will not receive messages published to the topic by its own connection.
+    # + return - Returns a jms:MessageConsumer
+    remote function createConsumer(Destination destination, string messageSelector = "",
+                                          boolean noLocal = false) returns MessageConsumer|error {
+        var val = createJmsConsumer(self.jmsSession, destination.getJmsDestination(),
+                                    java:fromString(messageSelector), noLocal);
+        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_CONSUMERS));
+        if (val is handle) {
+            MessageConsumer consumer = new(val);
+            return consumer;
+        } else {
+            return val;
+        }
+    }
 
-    // # Creates an unshared durable subscription on the specified topic (if one does not already exist), 
-    // # specifying a message selector and the noLocal parameter, and creates a consumer on that durable subscription. 
-    // #
-    // # + topic - the non-temporary Topic to subscribe to 
-    // # + subscriberName - the name used to identify this subscription
-    // # + messageSelector - only messages with properties matching the message selector expression are added to the durable subscription. 
-    // #                     An empty string indicates that there is no message selector for the durable subscription.
-    // # + noLocal - if true then any messages published to the topic using this session's connection, or any other connection 
-    // #             with the same client identifier, will not be added to the durable subscription.
-    // # + return - Returns a jms:MessageConsumer
-    // remote function createDurableSubscriber(Destination topic, string subscriberName,
-    //                                                string messageSelector = "",
-    //                                                boolean noLocal = false) returns MessageConsumer|error {
-    //     var val = createJmsDurableSubscriber(self.jmsSession, topic.getJmsDestination(),
-    //                                          java:fromString(subscriberName),
-    //                                          java:fromString(messageSelector), noLocal);
-    //     registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_DURABLE_SUBSCRIBERS));
-    //     if (val is handle) {
-    //         MessageConsumer consumer = new(val);
-    //         return consumer;
-    //     } else {
-    //         return val;
-    //     }
-    // }
+    # Creates an unshared durable subscription on the specified topic (if one does not already exist), 
+    # specifying a message selector and the noLocal parameter, and creates a consumer on that durable subscription. 
+    #
+    # + topic - the non-temporary Topic to subscribe to 
+    # + subscriberName - the name used to identify this subscription
+    # + messageSelector - only messages with properties matching the message selector expression are added to the durable subscription. 
+    #                     An empty string indicates that there is no message selector for the durable subscription.
+    # + noLocal - if true then any messages published to the topic using this session's connection, or any other connection 
+    #             with the same client identifier, will not be added to the durable subscription.
+    # + return - Returns a jms:MessageConsumer
+    remote function createDurableSubscriber(Destination topic, string subscriberName,
+                                                   string messageSelector = "",
+                                                   boolean noLocal = false) returns MessageConsumer|error {
+        var val = createJmsDurableSubscriber(self.jmsSession, topic.getJmsDestination(),
+                                             java:fromString(subscriberName),
+                                             java:fromString(messageSelector), noLocal);
+        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_DURABLE_SUBSCRIBERS));
+        if (val is handle) {
+            MessageConsumer consumer = new(val);
+            return consumer;
+        } else {
+            return val;
+        }
+    }
 
-    // # Creates a shared non-durable subscription with the specified name on the specified topic 
-    // # (if one does not already exist) specifying a message selector, and creates a consumer on that subscription. 
-    // #
-    // # + topic - the Topic to subscribe to
-    // # + subscriberName - the name used to identify the shared non-durable subscription 
-    // # + messageSelector - only messages with properties matching the message selector expression are added to the shared 
-    // #                     non-durable subscription. A value of null or an empty string indicates that there is no message 
-    // #                     selector for the shared non-durable subscription. 
-    // # + return - Returns a jms:MessageConsumer
-    // remote function createSharedConsumer(Destination topic, string subscriberName,
-    //                                             string messageSelector = "") returns MessageConsumer|error {
-    //      var val = createJmsSharedConsumer(self.jmsSession, topic.getJmsDestination(),
-    //                                        java:fromString(subscriberName), java:fromString(messageSelector));
-    //     registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_SHARED_CONSUMERS));
-    //      if (val is handle) {
-    //          MessageConsumer consumer = new(val);
-    //          return consumer;
-    //      } else {
-    //          return val;
-    //      }
-    // }
+    # Creates a shared non-durable subscription with the specified name on the specified topic 
+    # (if one does not already exist) specifying a message selector, and creates a consumer on that subscription. 
+    #
+    # + topic - the Topic to subscribe to
+    # + subscriberName - the name used to identify the shared non-durable subscription 
+    # + messageSelector - only messages with properties matching the message selector expression are added to the shared 
+    #                     non-durable subscription. A value of null or an empty string indicates that there is no message 
+    #                     selector for the shared non-durable subscription. 
+    # + return - Returns a jms:MessageConsumer
+    remote function createSharedConsumer(Destination topic, string subscriberName,
+                                                string messageSelector = "") returns MessageConsumer|error {
+         var val = createJmsSharedConsumer(self.jmsSession, topic.getJmsDestination(),
+                                           java:fromString(subscriberName), java:fromString(messageSelector));
+        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_SHARED_CONSUMERS));
+         if (val is handle) {
+             MessageConsumer consumer = new(val);
+             return consumer;
+         } else {
+             return val;
+         }
+    }
 
-    // # Creates a shared durable subscription on the specified topic (if one does not already exist), 
-    // # specifying a message selector, and creates a consumer on that durable subscription. 
-    // #
-    // # + topic - the non-temporary Topic to subscribe to
-    // # + subscriberName - the name used to identify this subscription
-    // # + messageSelector - only messages with properties matching the message selector expression are added to the durable subscription. 
-    // #                     A value of null or an empty string indicates that there is no message selector for the durable subscription. 
-    // # + return - Returns a jms:MessageConsumer
-    // remote function createSharedDurableConsumer(Destination topic, string subscriberName,
-    //                                             string messageSelector = "") returns MessageConsumer|error {
-    //      var val = createJmsSharedDurableConsumer(self.jmsSession, topic.getJmsDestination(),
-    //                                               java:fromString(subscriberName), java:fromString(messageSelector));
-    //     registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_SHARED_DURABLE_CONSUMERS));
-    //      if (val is handle) {
-    //          MessageConsumer consumer = new(val);
-    //          return consumer;
-    //      } else {
-    //          return val;
-    //      }
-    // }
+    # Creates a shared durable subscription on the specified topic (if one does not already exist), 
+    # specifying a message selector, and creates a consumer on that durable subscription. 
+    #
+    # + topic - the non-temporary Topic to subscribe to
+    # + subscriberName - the name used to identify this subscription
+    # + messageSelector - only messages with properties matching the message selector expression are added to the durable subscription. 
+    #                     A value of null or an empty string indicates that there is no message selector for the durable subscription. 
+    # + return - Returns a jms:MessageConsumer
+    remote function createSharedDurableConsumer(Destination topic, string subscriberName,
+                                                string messageSelector = "") returns MessageConsumer|error {
+         var val = createJmsSharedDurableConsumer(self.jmsSession, topic.getJmsDestination(),
+                                                  java:fromString(subscriberName), java:fromString(messageSelector));
+        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_SHARED_DURABLE_CONSUMERS));
+         if (val is handle) {
+             MessageConsumer consumer = new(val);
+             return consumer;
+         } else {
+             return val;
+         }
+    }
 }
 
 # The Configurations that are related to a JMS session.
