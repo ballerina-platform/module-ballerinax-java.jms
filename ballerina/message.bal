@@ -27,7 +27,7 @@ public client class Message {
     # Initialized a `Message` object.
     # 
     # + handle - The java reference to the jms message.
-    public function init(handle message) {
+    public isolated function init(handle message) {
         self.jmsMessage = message;
     }
 

@@ -27,7 +27,7 @@ public client class MapMessage {
     # Initialized a `MapMessage` object.
     #
     # + handle - The java reference to the jms text message.
-    function init(handle mapMessage) {
+    isolated function init(handle mapMessage) {
         self.jmsMessage = mapMessage;
     }
 

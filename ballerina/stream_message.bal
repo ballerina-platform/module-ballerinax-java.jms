@@ -27,7 +27,7 @@ public client class StreamMessage {
     # Initialized a `StreamMessage` object.
     #
     # + handle - The java reference to the jms text message.
-    function init(handle streamMessage) {
+    isolated function init(handle streamMessage) {
         self.jmsMessage = streamMessage;
     }
 

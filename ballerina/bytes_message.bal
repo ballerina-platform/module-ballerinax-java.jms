@@ -28,7 +28,7 @@ public client class BytesMessage {
     # Initialized a `BytesMessage` object.
     #
     # + handle - The java reference to the jms text message.
-    function init(handle bytesMessage) {
+    isolated function init(handle bytesMessage) {
         self.jmsMessage = bytesMessage;
     }
 
