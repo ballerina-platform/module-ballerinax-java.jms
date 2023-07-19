@@ -28,8 +28,12 @@ import io.ballerina.runtime.api.types.ObjectType;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BObject;
 
+import javax.jms.BytesMessage;
+import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.StreamMessage;
+import javax.jms.TextMessage;
 
 /**
  * A {@link javax.jms.MessageListener} implementation.
@@ -47,8 +51,9 @@ public class JmsListener implements MessageListener {
     @Override
     public void onMessage(Message message) {
         Module module = ModuleUtils.getModule();
+        String messageType = getMessageType(message);
         BObject jmsMessage = ValueCreator.createObjectValue(
-                module, Constants.MESSAGE_BAL_OBJECT_NAME, ValueCreator.createHandleValue(message));
+                module, messageType, ValueCreator.createHandleValue(message));
         StrandMetadata metadata = new StrandMetadata(
                 module.getOrg(), module.getName(), module.getVersion(), Constants.SERVICE_RESOURCE_ON_MESSAGE);
         Object[] params = {jmsMessage, true};
@@ -61,6 +66,20 @@ public class JmsListener implements MessageListener {
             ballerinaRuntime.invokeMethodAsyncSequentially(
                     consumerService, Constants.SERVICE_RESOURCE_ON_MESSAGE, null, metadata, callback,
                     null, PredefinedTypes.TYPE_NULL, params);
+        }
+    }
+
+    private String getMessageType(Message message) {
+        if (message instanceof TextMessage) {
+            return Constants.TEXT_MESSAGE_BAL_OBJECT_NAME;
+        } else if (message instanceof MapMessage) {
+            return Constants.MAP_MESSAGE_BAL_OBJECT_NAME;
+        } else if (message instanceof BytesMessage) {
+            return Constants.BYTE_MESSAGE_BAL_OBJECT_NAME;
+        } else if (message instanceof StreamMessage) {
+            return Constants.STREAM_MESSAGE_BAL_OBJECT_NAME;
+        } else {
+            return Constants.MESSAGE_BAL_OBJECT_NAME;
         }
     }
 }
