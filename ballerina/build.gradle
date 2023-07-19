@@ -34,7 +34,7 @@ buildscript {
 description = 'Ballerina - JMS Package'
 
 def packageName = "java.jms"
-def packageOrg = "ballerina"
+def packageOrg = "ballerinax"
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def ballerinaTomlFilePlaceHolder = new File("${project.rootDir}/build-config/resources/Ballerina.toml")
 def ballerinaTomlFile = new File("$project.projectDir/Ballerina.toml")
