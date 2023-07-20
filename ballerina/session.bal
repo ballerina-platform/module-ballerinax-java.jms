@@ -21,20 +21,15 @@ import ballerina/observe;
 # Represents the JMS session.
 #
 # + config - Stores the configurations related to a JMS session.
-public client class Session {
-    private SessionConfiguration config;
-    private handle jmsSession = JAVA_NULL;
+public isolated client class Session {
+    private final readonly & SessionConfiguration config;
+    private final handle jmsSession;
 
 # The default constructor of the JMS session.
-    public function init(handle connection, SessionConfiguration sessionConfig) returns error? {
-        self.config = sessionConfig;
-        return self.createSession(connection);
-    }
-
-    private function createSession(handle jmsConnection) returns error? {
+    public isolated function init(handle jmsConnection, SessionConfiguration sessionConfig) returns error? {
+        self.config = sessionConfig.cloneReadOnly();
         handle ackModeJString = java:fromString(self.config.acknowledgementMode);
         self.jmsSession = check createJmsSession(jmsConnection, ackModeJString);
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_SESSIONS));
     }
 
     # Unsubscribe a durable subscription that has been created by a client.
@@ -44,17 +39,17 @@ public client class Session {
     #
     # + subscriptionId - The name, which is used to identify the subscription.
     # + return - Cancels the subscription.
-    remote function unsubscribe(string subscriptionId) returns error? {
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_UNSUBSCRIBES));
+    isolated remote function unsubscribe(string subscriptionId) returns error? {
+        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_UNSUBSCRIBES));
         return unsubscribeJmsSubscription(self.jmsSession, java:fromString(subscriptionId));
     }
 
     # Creates a JMS Queue, which can be used as temporary response destination.
     #
     # + return - Returns the JMS destination for a temporary queue or an error if it fails.
-    remote function createTemporaryQueue() returns Destination|Error {
+    isolated remote function createTemporaryQueue() returns Destination|Error {
         handle|error val = createTemporaryJmsQueue(self.jmsSession);
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TEMPORARY_QUEUES));
+        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TEMPORARY_QUEUES));
         if (val is handle) {
             return new TemporaryQueue(val);
         } else {
@@ -65,9 +60,9 @@ public client class Session {
     # Creates a JMS Topic, which can be used as a temporary response destination.
     #
     # + return - Returns the JMS destination for a temporary topic or an error if it fails.
-    public function createTemporaryTopic() returns Destination|Error {
+    isolated remote function createTemporaryTopic() returns Destination|Error {
         handle|error val = createTemporaryJmsTopic(self.jmsSession);
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TEMPORARY_TOPICS));
+        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TEMPORARY_TOPICS));
         if (val is handle) {
             return new TemporaryTopic(val);
         } else {
@@ -79,9 +74,9 @@ public client class Session {
     #
     # + queueName - The name of the Queue.
     # + return - Returns the JMS destination for a queue or an error if it fails.
-    remote function createQueue(string queueName) returns Destination|error {
+    isolated remote function createQueue(string queueName) returns Destination|error {
         handle|error val = createJmsQueue(self.jmsSession, java:fromString(queueName));
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_QUEUES));
+        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_QUEUES));
         if (val is handle) {
             return new Queue(val);
         } else {
@@ -93,9 +88,9 @@ public client class Session {
     #
     # + topicName - The name of the Topic.
     # + return - Returns the JMS destination for a topic or an error if it fails.
-    remote function createTopic(string topicName) returns Destination|error {
+    isolated remote function createTopic(string topicName) returns Destination|error {
         handle|error val = createJmsTopic(self.jmsSession, java:fromString(topicName));
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TOPICS));
+        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TOPICS));
         if (val is handle) {
             return new Topic(val);
         } else {
@@ -217,11 +212,11 @@ public client class Session {
     #                     An empty string indicates that there is no message selector for the message consumer.
     # + noLocal - if true, and the destination is a topic, then the MessageConsumer will not receive messages published to the topic by its own connection.
     # + return - Returns a jms:MessageConsumer
-    remote function createConsumer(Destination destination, string messageSelector = "",
+    isolated remote function createConsumer(Destination destination, string messageSelector = "",
                                           boolean noLocal = false) returns MessageConsumer|error {
         var val = createJmsConsumer(self.jmsSession, destination.getJmsDestination(),
                                     java:fromString(messageSelector), noLocal);
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_CONSUMERS));
+        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_CONSUMERS));
         if (val is handle) {
             MessageConsumer consumer = new(val);
             return consumer;
@@ -338,18 +333,18 @@ function createJmsBytesMessage(handle session) returns handle|error = @java:Meth
     'class: "javax.jms.Session"
 } external;
 
-function createJmsConsumer(handle jmsSession, handle jmsDestination,
+isolated function createJmsConsumer(handle jmsSession, handle jmsDestination,
         handle selectorString, boolean noLocal) returns handle|error = @java:Method {
     name: "createConsumer",
     paramTypes: ["javax.jms.Destination", "java.lang.String", "boolean"],
     'class: "javax.jms.Session"
 } external;
 
-function createJmsSession(handle connection, handle acknowledgmentMode) returns handle|error = @java:Method {
+isolated function createJmsSession(handle connection, handle acknowledgmentMode) returns handle|error = @java:Method {
     'class: "io.ballerina.stdlib.java.jms.JmsSessionUtils"
 } external;
 
-function unsubscribeJmsSubscription(handle session, handle subscriptionId) returns error? = @java:Method {
+isolated function unsubscribeJmsSubscription(handle session, handle subscriptionId) returns error? = @java:Method {
     name: "unsubscribe",
     'class: "javax.jms.Session"
 } external;
@@ -380,20 +375,20 @@ function createJmsSharedDurableConsumer(handle jmsSession, handle subscriberName
     'class: "javax.jms.Session"
 } external;
 
-function createJmsQueue(handle session, handle queueName) returns handle|error = @java:Method {
+isolated function createJmsQueue(handle session, handle queueName) returns handle|error = @java:Method {
     name: "createQueue",
     'class: "javax.jms.Session"
 } external;
 
-function createJmsTopic(handle session, handle topicName) returns handle|error = @java:Method {
+isolated function createJmsTopic(handle session, handle topicName) returns handle|error = @java:Method {
     name: "createTopic",
     'class: "javax.jms.Session"
 } external;
 
-function createTemporaryJmsQueue(handle session) returns handle|error = @java:Method {
+isolated function createTemporaryJmsQueue(handle session) returns handle|error = @java:Method {
     'class: "io.ballerina.stdlib.java.jms.JmsSessionUtils"
 } external;
 
-function createTemporaryJmsTopic(handle session) returns handle|error = @java:Method {
+isolated function createTemporaryJmsTopic(handle session) returns handle|error = @java:Method {
     'class: "io.ballerina.stdlib.java.jms.JmsSessionUtils"
 } external;

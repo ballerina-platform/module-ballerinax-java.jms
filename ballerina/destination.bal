@@ -18,7 +18,7 @@ import ballerina/jballerina.java;
 
 # Represent the JMS destination
 public type Destination distinct object {
-    function getJmsDestination() returns handle;
+    isolated function getJmsDestination() returns handle;
 
 };
 

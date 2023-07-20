@@ -15,16 +15,16 @@
 // under the License.
 
 import ballerina/jballerina.java;
-import ballerina/observe;
+// import ballerina/observe;
 
-observe:Gauge consumerGauge = new(ACTIVE_JMS_CONSUMERS);
+// observe:Gauge consumerGauge = new(ACTIVE_JMS_CONSUMERS);
 
 public isolated client class MessageConsumer {
     private final handle jmsConsumer;
 
-    function init(handle jmsMessageConsumer) {
+    isolated function init(handle jmsMessageConsumer) {
         self.jmsConsumer = jmsMessageConsumer;
-        registerAndIncrementGauge(consumerGauge);
+        // registerAndIncrementGauge(consumerGauge);
     }
 
     remote isolated function receive(int timeoutMillis = 0) returns Message|()|error {

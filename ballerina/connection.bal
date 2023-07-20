@@ -84,7 +84,7 @@ public type ConnectionConfiguration record {|
     map<string> properties = {};
 |};
 
-public function createConnection(ConnectionConfiguration c) returns Connection|error{
+public isolated function createConnection(ConnectionConfiguration c) returns Connection|error{
     return new Connection(c);
 }
 
