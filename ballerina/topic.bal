@@ -17,32 +17,34 @@
 import ballerina/jballerina.java;
 
 # Represent the JMS topic.
-public class Topic {
+public isolated class Topic {
     *Destination;
+    
+    private final handle jmsDestination;
 
     # Initialized a `Topic` object.
     #
     # + handle - The java reference to the jms text message.
-    function init(handle topic) {
+    isolated function init(handle topic) {
         self.jmsDestination = topic;
     }
 
     # Get the JMS topic
     #
     # + return - Returns the java reference to the jms topic
-    function getJmsDestination() returns handle {
+    isolated function getJmsDestination() returns handle {
         return self.jmsDestination;
     }
 
     # Gets the name of this topic.
     #
     # + return - Returns the string value or an error if it fails.
-    public function getTopicName() returns string|error? {
+    public isolated function getTopicName() returns string|error? {
         handle topic = check getTopicName(self.jmsDestination);
         return java:toString(topic);
     }
 }
 
-function getTopicName(handle destination) returns handle|error = @java:Method {
+isolated function getTopicName(handle destination) returns handle|error = @java:Method {
     'class: "javax.jms.Topic"
 } external;

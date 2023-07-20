@@ -15,33 +15,35 @@
 // under the License.
 
 import ballerina/jballerina.java;
-import ballerina/observe;
+// import ballerina/observe;
 
-observe:Gauge temporaryQueueGauge = new(ACTIVE_JMS_TEMPORARY_QUEUES);
+// observe:Gauge temporaryQueueGauge = new(ACTIVE_JMS_TEMPORARY_QUEUES);
 
 # Represent the JMS temporary queue.
-public class TemporaryQueue {
+public isolated class TemporaryQueue {
     *Destination;
+    
+    private final handle jmsDestination;
     
     # Initialized a `TemporaryQueue` object.
     #
     # + handle - The java reference to the jms text message.
-    function init(handle temporaryQueue) {
-        registerAndIncrementGauge(temporaryQueueGauge);
+    isolated function init(handle temporaryQueue) {
+        // registerAndIncrementGauge(temporaryQueueGauge);
         self.jmsDestination = temporaryQueue;
     }
 
     # Get the JMS temporary queue
     #
     # + return - Returns the java reference to the jms temporary queue
-    function getJmsDestination() returns handle {
+    isolated function getJmsDestination() returns handle {
         return self.jmsDestination;
     }
 
     # Gets the name of this temporary queue.
     #
     # + return - Returns the string value or an error if it fails.
-    public function getQueueName() returns string | error? {
+    public isolated function getQueueName() returns string | error? {
         handle|error val = getQueueName(self.jmsDestination);
         if (val is handle) {
             return java:toString(val);
@@ -53,13 +55,13 @@ public class TemporaryQueue {
     # Deletes this temporary queue.
     #
     # + return - Returns an error if it fails.
-    public function delete() returns error? {
-        decrementGauge(temporaryQueueGauge);
+    public isolated function delete() returns error? {
+        // decrementGauge(temporaryQueueGauge);
         return deleteTemporaryQueue(self.jmsDestination);
     }
 }
 
-function deleteTemporaryQueue(handle destination) returns error? = @java:Method {
+isolated function deleteTemporaryQueue(handle destination) returns error? = @java:Method {
     name: "delete",
     'class: "javax.jms.TemporaryQueue"
 } external;

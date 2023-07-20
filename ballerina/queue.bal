@@ -17,32 +17,34 @@
 import ballerina/jballerina.java;
 
 # Represent the JMS queue.
-public class Queue {
+public isolated class Queue {
     *Destination;
+    
+    private final handle jmsDestination;
 
     # Initialized a `Queue` object.
     #
     # + handle - The java reference to the jms text message.
-    function init(handle queue) {
+    isolated function init(handle queue) {
         self.jmsDestination = queue;
     }
 
     # Get the JMS queue
     #
     # + return - Returns the java reference to the jms queue
-    function getJmsDestination() returns handle {
+    isolated function getJmsDestination() returns handle {
         return self.jmsDestination;
     }
 
     # Gets the name of this queue.
     #
     # + return - Returns the string value or an error if it fails.
-    public function getQueueName() returns string|error? {
+    public isolated function getQueueName() returns string|error? {
         handle queue = check getQueueName(self.jmsDestination);
         return java:toString(queue);
     }
 }
 
-function getQueueName(handle destination) returns handle|error = @java:Method {
+isolated function getQueueName(handle destination) returns handle|error = @java:Method {
     'class: "javax.jms.Queue"
 } external;

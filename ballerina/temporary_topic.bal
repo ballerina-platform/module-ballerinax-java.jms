@@ -15,33 +15,35 @@
 // under the License.
 
 import ballerina/jballerina.java;
-import ballerina/observe;
+// import ballerina/observe;
 
-observe:Gauge temporaryTopicGauge = new(ACTIVE_JMS_TEMPORARY_TOPICS);
+// observe:Gauge temporaryTopicGauge = new(ACTIVE_JMS_TEMPORARY_TOPICS);
 
 # Represent the JMS temporary topic.
-public class TemporaryTopic {
+public isolated class TemporaryTopic {
     *Destination;
+
+    private final handle jmsDestination;
 
     # Initialized a `TemporaryTopic` object.
     #
     # + handle - The java reference to the jms text message.
-    function init(handle temporaryTopic) {
-        registerAndIncrementGauge(temporaryTopicGauge);
+    isolated function init(handle temporaryTopic) {
+        // registerAndIncrementGauge(temporaryTopicGauge);
         self.jmsDestination = temporaryTopic;
     }
 
     # Get the JMS temporary topic
     #
     # + return - Returns the java reference to the jms temporary topic
-    function getJmsDestination() returns handle {
+    isolated function getJmsDestination() returns handle {
         return self.jmsDestination;
     }
 
     # Gets the name of this temporary topic.
     #
     # + return - Returns the string value or an error if it fails.
-    public function getTopicName() returns string|error? {
+    public isolated function getTopicName() returns string|error? {
         handle|error val = getTopicName(self.jmsDestination);
         if (val is handle) {
             return java:toString(val);
@@ -53,13 +55,13 @@ public class TemporaryTopic {
     # Deletes this temporary topic.
     #
     # + return - Returns an error if it fails.
-    public function delete() returns error? {
-        decrementGauge(temporaryTopicGauge);
+    public isolated function delete() returns error? {
+        // decrementGauge(temporaryTopicGauge);
         return deleteTemporaryTopic(self.jmsDestination);
     }
 }
 
-function deleteTemporaryTopic(handle destination) returns error? = @java:Method {
+isolated function deleteTemporaryTopic(handle destination) returns error? = @java:Method {
     name: "delete",
     'class: "javax.jms.TemporaryTopic"
 } external;
