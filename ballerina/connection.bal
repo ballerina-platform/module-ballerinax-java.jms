@@ -26,7 +26,7 @@ public isolated client class Connection {
     private final handle jmsConnection;
 
     # JMS Connection constructor
-    isolated function init(*ConnectionConfiguration connectionConfig) returns error? {
+    public isolated function init(*ConnectionConfiguration connectionConfig) returns error? {
         self.config = connectionConfig.cloneReadOnly();
         string icf = self.config.initialContextFactory;
         string providerUrl = self.config.providerUrl;
