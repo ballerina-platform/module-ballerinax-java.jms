@@ -23,18 +23,25 @@ import io.ballerina.runtime.api.PredefinedTypes;
 import io.ballerina.runtime.api.Runtime;
 import io.ballerina.runtime.api.async.Callback;
 import io.ballerina.runtime.api.async.StrandMetadata;
+import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.types.MethodType;
 import io.ballerina.runtime.api.types.ObjectType;
+import io.ballerina.runtime.api.types.Parameter;
+import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.TypeUtils;
-import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
-import io.ballerina.runtime.api.values.BString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
+import static io.ballerina.runtime.api.TypeTags.OBJECT_TYPE_TAG;
+import static io.ballerina.runtime.api.TypeTags.RECORD_TYPE_TAG;
 import static io.ballerina.stdlib.java.jms.ConsumerUtils.getBallerinaMessage;
 
 /**
@@ -56,11 +63,10 @@ public class JmsListener implements MessageListener {
     public void onMessage(Message message) {
         try {
             Module module = ModuleUtils.getModule();
-            BMap<BString, Object> ballerinaMessage = getBallerinaMessage(message);
             StrandMetadata metadata = new StrandMetadata(
                     module.getOrg(), module.getName(), module.getVersion(), Constants.SERVICE_RESOURCE_ON_MESSAGE);
-            Object[] params = {ballerinaMessage, true};
             ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(consumerService));
+            Object[] params = methodParameters(serviceType, message);
             if (serviceType.isIsolated() && serviceType.isIsolated(Constants.SERVICE_RESOURCE_ON_MESSAGE)) {
                 ballerinaRuntime.invokeMethodAsyncConcurrently(
                         consumerService, Constants.SERVICE_RESOURCE_ON_MESSAGE, null, metadata, callback,
@@ -73,5 +79,36 @@ public class JmsListener implements MessageListener {
         } catch (JMSException | BallerinaJmsException e) {
             LOGGER.error("Unexpected error occurred while async message processing", e);
         }
+    }
+
+    private Object[] methodParameters(ObjectType serviceType, Message message)
+            throws JMSException, BallerinaJmsException {
+        Optional<MethodType> onMessageFuncOpt = Stream.of(serviceType.getMethods())
+                .filter(methodType -> Constants.SERVICE_RESOURCE_ON_MESSAGE.equals(methodType.getName()))
+                .findFirst();
+        if (onMessageFuncOpt.isPresent()) {
+            MethodType onMessageFunction = onMessageFuncOpt.get();
+            Parameter[] parameters = onMessageFunction.getParameters();
+            Object[] args = new Object[parameters.length * 2];
+            int idx = 0;
+            for (Parameter param: parameters) {
+                Type referredType = TypeUtils.getReferredType(param.type);
+                switch (referredType.getTag()) {
+                    case OBJECT_TYPE_TAG:
+                        args[idx++] = ValueCreator.createObjectValue(ModuleUtils.getModule(), Constants.CALLER);
+                        args[idx++] = true;
+                        break;
+                    case RECORD_TYPE_TAG:
+                        args[idx++] = getBallerinaMessage(message);
+                        args[idx++] = true;
+                        break;
+                    default:
+                        throw new BallerinaJmsException(
+                                String.format("Unknown service method parameter type: %s", referredType));
+                }
+            }
+            return args;
+        }
+        throw new BallerinaJmsException("Required method `onMessage` not found in the service");
     }
 }

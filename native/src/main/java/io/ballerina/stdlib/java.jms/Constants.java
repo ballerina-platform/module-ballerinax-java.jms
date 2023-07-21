@@ -130,6 +130,7 @@ public class Constants {
     static final String BYTE_MESSAGE_BAL_RECORD_NAME = "JmsBytesMessage";
     static final String STREAM_MESSAGE_BAL_RECORD_NAME = "JmsStreamMessage";
 
+    // JMS message parameters
     static final BString MESSAGE_ID = StringUtils.fromString("messageId");
     static final BString TIMESTAMP = StringUtils.fromString("timestamp");
     static final BString CORRELATION_ID = StringUtils.fromString("correlationId");
@@ -157,6 +158,8 @@ public class Constants {
     static final String SERVICE_RESOURCE_ON_BYTES_MESSAGE = "onBytesMessage";
     static final String SERVICE_RESOURCE_ON_STREAM_MESSAGE = "onStreamMessage";
     static final String SERVICE_RESOURCE_ON_OTHER_MESSAGE = "onOtherMessage";
+
+    static final String CALLER = "Caller";
 
     private Constants() {
     }
