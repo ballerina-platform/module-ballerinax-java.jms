@@ -111,7 +111,7 @@ public class ConsumerUtils {
         return null;
     }
 
-    private static BMap<BString, Object> getBallerinaMessage(Message message)
+    public static BMap<BString, Object> getBallerinaMessage(Message message)
             throws JMSException, BallerinaJmsException {
         String messageType = getMessageType(message);
         BMap<BString, Object> ballerinaMessage = ValueCreator.createRecordValue(ModuleUtils.getModule(), messageType);
