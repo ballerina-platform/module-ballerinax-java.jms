@@ -19,7 +19,7 @@ import ballerina/log;
 
 # The JMS service type.
 public type Service distinct service object {
-    // remote function onMessage(jms:JmsMessage message, jms:Caller caller) returns error?;
+    // remote function onMessage(jms:Message message, jms:Caller caller) returns error?;
 };
 
 # Defines the supported JMS destinations.
