@@ -16,4 +16,4 @@
 
 import ballerina/jballerina.java;
 
-handle JAVA_NULL = java:createNull();
+final handle JAVA_NULL = java:createNull();

@@ -66,7 +66,7 @@ public isolated class Listener {
         Session session = check connection->createSession(consumerConfig.sessionConfig);
         Destination destination = check createJmsDestination(
             session, consumerConfig.destination.'type, consumerConfig.destination?.name);
-        self.consumer = check session->createConsumer(
+        self.consumer = check session.createConsumer(
             destination, consumerConfig.messageSelector, consumerConfig.noLocal);
     }
 

@@ -103,9 +103,8 @@ public isolated client class Session {
     #
     # + destination - the Destination to send to, or nil if this is a producer which does not have a specified destination
     # + return - Returns jms:MessageProducer
-    public function createProducer(Destination? destination = ()) returns MessageProducer|error {
-
-        handle jmsDestination = (destination is Destination) ? destination.getJmsDestination(): JAVA_NULL;
+    public isolated function createProducer(Destination? destination = ()) returns MessageProducer|error {
+        handle jmsDestination = (destination is Destination) ? destination.getJmsDestination() : JAVA_NULL;
         handle|error v = createJmsProducer(self.jmsSession, jmsDestination);
         if (v is handle) {
             return new MessageProducer(v, self.jmsSession);
@@ -123,12 +122,13 @@ public isolated client class Session {
     #                     An empty string indicates that there is no message selector for the message consumer.
     # + noLocal - if true, and the destination is a topic, then the MessageConsumer will not receive messages published to the topic by its own connection.
     # + return - Returns a jms:MessageConsumer
-    isolated remote function createConsumer(Destination destination, string messageSelector = "",
-                                          boolean noLocal = false) returns MessageConsumer|error {
-        var val = createJmsConsumer(self.jmsSession, destination.getJmsDestination(),
-                                    java:fromString(messageSelector), noLocal);
+    public isolated function createConsumer(Destination destination, 
+        string messageSelector = "", boolean noLocal = false) returns MessageConsumer|error {
+        var val = createJmsConsumer(
+            self.jmsSession, destination.getJmsDestination(), 
+            java:fromString(messageSelector), noLocal);
         if (val is handle) {
-            MessageConsumer consumer = new(val);
+            MessageConsumer consumer = new (val);
             return consumer;
         } else {
             return val;
@@ -145,14 +145,13 @@ public isolated client class Session {
     # + noLocal - if true then any messages published to the topic using this session's connection, or any other connection 
     #             with the same client identifier, will not be added to the durable subscription.
     # + return - Returns a jms:MessageConsumer
-    remote function createDurableSubscriber(Destination topic, string subscriberName,
-                                                   string messageSelector = "",
-                                                   boolean noLocal = false) returns MessageConsumer|error {
-        var val = createJmsDurableSubscriber(self.jmsSession, topic.getJmsDestination(),
-                                             java:fromString(subscriberName),
-                                             java:fromString(messageSelector), noLocal);
+    public isolated function createDurableSubscriber(Destination topic, string subscriberName, 
+        string messageSelector = "", boolean noLocal = false) returns MessageConsumer|error {
+        var val = createJmsDurableSubscriber(
+            self.jmsSession, topic.getJmsDestination(), 
+            java:fromString(subscriberName), java:fromString(messageSelector), noLocal);
         if (val is handle) {
-            MessageConsumer consumer = new(val);
+            MessageConsumer consumer = new (val);
             return consumer;
         } else {
             return val;
@@ -168,16 +167,17 @@ public isolated client class Session {
     #                     non-durable subscription. A value of null or an empty string indicates that there is no message 
     #                     selector for the shared non-durable subscription. 
     # + return - Returns a jms:MessageConsumer
-    remote function createSharedConsumer(Destination topic, string subscriberName,
-                                                string messageSelector = "") returns MessageConsumer|error {
-         var val = createJmsSharedConsumer(self.jmsSession, topic.getJmsDestination(),
-                                           java:fromString(subscriberName), java:fromString(messageSelector));
-         if (val is handle) {
-             MessageConsumer consumer = new(val);
-             return consumer;
-         } else {
-             return val;
-         }
+    public isolated function createSharedConsumer(Destination topic, string subscriberName, 
+        string messageSelector = "") returns MessageConsumer|error {
+        var val = createJmsSharedConsumer(
+            self.jmsSession, topic.getJmsDestination(), 
+            java:fromString(subscriberName), java:fromString(messageSelector));
+        if (val is handle) {
+            MessageConsumer consumer = new (val);
+            return consumer;
+        } else {
+            return val;
+        }
     }
 
     # Creates a shared durable subscription on the specified topic (if one does not already exist), 
@@ -188,16 +188,17 @@ public isolated client class Session {
     # + messageSelector - only messages with properties matching the message selector expression are added to the durable subscription. 
     #                     A value of null or an empty string indicates that there is no message selector for the durable subscription. 
     # + return - Returns a jms:MessageConsumer
-    remote function createSharedDurableConsumer(Destination topic, string subscriberName,
-                                                string messageSelector = "") returns MessageConsumer|error {
-         var val = createJmsSharedDurableConsumer(self.jmsSession, topic.getJmsDestination(),
-                                                  java:fromString(subscriberName), java:fromString(messageSelector));
-         if (val is handle) {
-             MessageConsumer consumer = new(val);
-             return consumer;
-         } else {
-             return val;
-         }
+    public isolated function createSharedDurableConsumer(Destination topic, string subscriberName, 
+        string messageSelector = "") returns MessageConsumer|error {
+        var val = createJmsSharedDurableConsumer(
+            self.jmsSession, topic.getJmsDestination(), 
+            java:fromString(subscriberName), java:fromString(messageSelector));
+        if (val is handle) {
+            MessageConsumer consumer = new (val);
+            return consumer;
+        } else {
+            return val;
+        }
     }
 }
 
@@ -209,16 +210,6 @@ public type SessionConfiguration record {|
     string acknowledgementMode = "AUTO_ACKNOWLEDGE";
 |};
 
-function createJmsMessage(handle session) returns handle|error = @java:Method {
-    name: "createMessage",
-    'class: "javax.jms.Session"
-} external;
-
-function createJmsTextMessage(handle session) returns handle|error = @java:Method {
-    name: "createTextMessage",
-    'class: "javax.jms.Session"
-} external;
-
 isolated function createJmsTextMessageWithText(handle session, handle text) returns handle|error = @java:Method {
     name: "createTextMessage",
     paramTypes: ["java.lang.String"],
@@ -227,11 +218,6 @@ isolated function createJmsTextMessageWithText(handle session, handle text) retu
 
 isolated function createJmsMapMessage(handle session) returns handle|error = @java:Method {
     name: "createMapMessage",
-    'class: "javax.jms.Session"
-} external;
-
-function createJmsStreamMessage(handle session) returns handle|error = @java:Method {
-    name: "createStreamMessage",
     'class: "javax.jms.Session"
 } external;
 
@@ -256,26 +242,26 @@ isolated function unsubscribeJmsSubscription(handle session, handle subscription
     'class: "javax.jms.Session"
 } external;
 
-function createJmsProducer(handle session, handle jmsDestination) returns handle|error = @java:Method {
+isolated function createJmsProducer(handle session, handle jmsDestination) returns handle|error = @java:Method {
     name: "createProducer",
     'class: "javax.jms.Session"
 } external;
 
-function createJmsDurableSubscriber(handle jmsSession, handle subscriberName, handle jmsDestination,
+isolated function createJmsDurableSubscriber(handle jmsSession, handle subscriberName, handle jmsDestination,
         handle selectorString, boolean noLocal) returns handle|error = @java:Method {
     name: "createDurableSubscriber",
     paramTypes: ["javax.jms.Topic", "java.lang.String", "java.lang.String", "boolean"],
     'class: "javax.jms.Session"
 } external;
 
-function createJmsSharedConsumer(handle jmsSession, handle subscriberName, handle jmsDestination,
+isolated function createJmsSharedConsumer(handle jmsSession, handle subscriberName, handle jmsDestination,
         handle selectorString) returns handle|error = @java:Method {
     name: "createSharedConsumer",
     paramTypes: ["javax.jms.Topic", "java.lang.String", "java.lang.String"],
     'class: "javax.jms.Session"
 } external;
 
-function createJmsSharedDurableConsumer(handle jmsSession, handle subscriberName, handle jmsDestination,
+isolated function createJmsSharedDurableConsumer(handle jmsSession, handle subscriberName, handle jmsDestination,
         handle selectorString) returns handle|error = @java:Method {
     name: "createSharedDurableConsumer",
     paramTypes: ["javax.jms.Topic", "java.lang.String", "java.lang.String"],
