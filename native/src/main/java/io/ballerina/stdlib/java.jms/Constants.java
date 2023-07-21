@@ -18,6 +18,9 @@
 
 package io.ballerina.stdlib.java.jms;
 
+import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BString;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -126,6 +129,27 @@ public class Constants {
     static final String MAP_MESSAGE_BAL_RECORD_NAME = "JmsMapMessage";
     static final String BYTE_MESSAGE_BAL_RECORD_NAME = "JmsBytesMessage";
     static final String STREAM_MESSAGE_BAL_RECORD_NAME = "JmsStreamMessage";
+
+    static final BString MESSAGE_ID = StringUtils.fromString("messageId");
+    static final BString TIMESTAMP = StringUtils.fromString("timestamp");
+    static final BString CORRELATION_ID = StringUtils.fromString("correlationId");
+    static final BString TYPE = StringUtils.fromString("'type");
+    static final BString NAME = StringUtils.fromString("name");
+    static final BString REPLY_TO = StringUtils.fromString("replyTo");
+    static final BString DESTINATION = StringUtils.fromString("destination");
+    static final BString DELIVERY_MODE = StringUtils.fromString("deliveryMode");
+    static final BString REDELIVERED = StringUtils.fromString("redelivered");
+    static final BString JMS_TYPE = StringUtils.fromString("jmsType");
+    static final BString EXPIRATION = StringUtils.fromString("expiration");
+    static final BString DELIVERED_TIME = StringUtils.fromString("deliveredTime");
+    static final BString PRIORITY = StringUtils.fromString("priority");
+    static final BString PROPERTIES = StringUtils.fromString("properties");
+    static final BString CONTENT = StringUtils.fromString("content");
+
+    static final BString QUEUE = StringUtils.fromString("QUEUE");
+    static final BString TEMPORARY_QUEUE = StringUtils.fromString("TEMPORARY_QUEUE");
+    static final BString TOPIC = StringUtils.fromString("TOPIC");
+    static final BString TEMPORARY_TOPIC = StringUtils.fromString("TEMPORARY_TOPIC");
 
     static final String SERVICE_RESOURCE_ON_MESSAGE = "onMessage";
     static final String SERVICE_RESOURCE_ON_TEXT_MESSAGE = "onTextMessage";

@@ -33,13 +33,16 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import javax.jms.BytesMessage;
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.Queue;
+import javax.jms.TemporaryQueue;
+import javax.jms.TemporaryTopic;
 import javax.jms.TextMessage;
-
-import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
+import javax.jms.Topic;
 
 /**
  * Represents {@code javax.jms.MessageConsumer} related utility functions.
@@ -54,16 +57,16 @@ public class ConsumerUtils {
             return getBallerinaMessage(message);
         } catch (JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
                     StringUtils.fromString("Error occurred while receiving messages"), cause, null);
         } catch (BallerinaJmsException exception) {
             BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
                     StringUtils.fromString("Error occurred while processing the received messages"),
                     cause, null);
         } catch (Exception exception) {
             BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
                     StringUtils.fromString("Unknown error occurred while processing the received messages"),
                     cause, null);
         }
@@ -78,16 +81,16 @@ public class ConsumerUtils {
             return getBallerinaMessage(message);
         } catch (JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
                     StringUtils.fromString("Error occurred while receiving messages"), cause, null);
         } catch (BallerinaJmsException exception) {
             BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
                     StringUtils.fromString("Error occurred while processing the received messages"),
                     cause, null);
         } catch (Exception exception) {
             BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
                     StringUtils.fromString("Unknown error occurred while processing the received messages"),
                     cause, null);
         }
@@ -101,7 +104,7 @@ public class ConsumerUtils {
             }
         } catch (JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
                     StringUtils.fromString("Error occurred while sending acknowledgement for the message"),
                     cause, null);
         }
@@ -112,13 +115,24 @@ public class ConsumerUtils {
             throws JMSException, BallerinaJmsException {
         String messageType = getMessageType(message);
         BMap<BString, Object> ballerinaMessage = ValueCreator.createRecordValue(ModuleUtils.getModule(), messageType);
-        ballerinaMessage.put(StringUtils.fromString("messageId"), StringUtils.fromString(message.getJMSMessageID()));
-        ballerinaMessage.put(
-                StringUtils.fromString("correlationId"), StringUtils.fromString(message.getJMSCorrelationID()));
-        ballerinaMessage.put(StringUtils.fromString("jmsType"), StringUtils.fromString(message.getJMSType()));
-        ballerinaMessage.put(StringUtils.fromString("priority"), message.getJMSPriority());
+        ballerinaMessage.put(Constants.MESSAGE_ID, StringUtils.fromString(message.getJMSMessageID()));
+        ballerinaMessage.put(Constants.TIMESTAMP, message.getJMSTimestamp());
+        ballerinaMessage.put(Constants.CORRELATION_ID, StringUtils.fromString(message.getJMSCorrelationID()));
+        if (Objects.nonNull(message.getJMSReplyTo())) {
+            ballerinaMessage.put(Constants.REPLY_TO, getJmsDestinationField(message.getJMSReplyTo()));
+        }
+        if (Objects.nonNull(message.getJMSDestination())) {
+            ballerinaMessage.put(Constants.DESTINATION, getJmsDestinationField(message.getJMSDestination()));
+        }
+        ballerinaMessage.put(Constants.DELIVERY_MODE, message.getJMSDeliveryMode());
+        ballerinaMessage.put(Constants.REDELIVERED, message.getJMSRedelivered());
+        ballerinaMessage.put(Constants.JMS_TYPE, StringUtils.fromString(message.getJMSType()));
+        ballerinaMessage.put(Constants.EXPIRATION, message.getJMSExpiration());
+        ballerinaMessage.put(Constants.DELIVERED_TIME, message.getJMSDeliveryTime());
+        ballerinaMessage.put(Constants.PRIORITY, message.getJMSPriority());
+
         Object content = getMessageContent(message);
-        ballerinaMessage.put(StringUtils.fromString("content"), content);
+        ballerinaMessage.put(Constants.CONTENT, content);
         ballerinaMessage.addNativeData(Constants.NATIVE_MESSAGE, message);
         return ballerinaMessage;
     }
@@ -133,6 +147,24 @@ public class ConsumerUtils {
         } else {
             return Constants.MESSAGE_BAL_RECORD_NAME;
         }
+    }
+
+    private static BMap<BString, Object> getJmsDestinationField(Destination destination) throws JMSException {
+        BMap<BString, Object> destRecord = ValueCreator.createMapValue();
+        if (destination instanceof TemporaryQueue) {
+            destRecord.put(Constants.TYPE, Constants.TEMPORARY_QUEUE);
+        } else if (destination instanceof Queue) {
+            String queueName = ((Queue) destination).getQueueName();
+            destRecord.put(Constants.TYPE, Constants.QUEUE);
+            destRecord.put(Constants.NAME, StringUtils.fromString(queueName));
+        } else if (destination instanceof TemporaryTopic) {
+            destRecord.put(Constants.TYPE, Constants.TEMPORARY_TOPIC);
+        } else {
+            String topicName = ((Topic) destination).getTopicName();
+            destRecord.put(Constants.TYPE, Constants.TOPIC);
+            destRecord.put(Constants.NAME, StringUtils.fromString(topicName));
+        }
+        return destRecord;
     }
 
     @SuppressWarnings("unchecked")

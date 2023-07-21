@@ -14,23 +14,60 @@
 // specific language governing permissions and limitations
 // under the License.
 
+# Represent the JMS Message used to send and receive content from the a JMS provider.
+#
+# + messageId - Unique identifier for a JMS message  
+# + timestamp - Time a message was handed off to a provider to be sent 
+# + correlationId - Id which can be use to correlate multiple messages 
+# + replyTo - JMS destination to which a reply to this message should be sent
+# + destination - JMS destination of this message 
+# + deliveryMode - Delivery mode of this message  
+# + redelivered - Indication of whether this message is being redelivered
+# + jmsType - Message type identifier supplied by the client when the message was sent  
+# + expiration - Message expiration time  
+# + deliveredTime - The earliest time when a JMS provider may deliver the message to a consumer  
+# + priority - Message priority level  
+# + properties - Additional message properties
 public type JmsMessage record {
     string messageId?;
+    int timestamp?;
     string correlationId?;
+    record {|
+        JmsDestinationType 'type;
+        string name?;
+    |} replyTo?;
+    record {|
+        JmsDestinationType 'type;
+        string name?;
+    |} destination?;
+    int deliveryMode?;
+    boolean redelivered?;
     string jmsType?;
+    int expiration?;
+    int deliveredTime?;
     int priority?;
+    map<anydata> properties?;
 };
 
+# Represent the JMS Text Message.
+# 
+# + content - Message content  
 public type JmsTextMessage record {|
     *JmsMessage;
     string content;
 |};
 
+# Represent the JMS Map Message.
+# 
+# + content - Message content 
 public type JmsMapMessage record {|
     *JmsMessage;
     map<anydata> content;
 |};
 
+# Represent the JMS Bytes Message.
+# 
+# + content - Message content 
 public type JmsBytesMessage record {|
     *JmsMessage;
     byte[] content;
