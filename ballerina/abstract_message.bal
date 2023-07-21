@@ -14,6 +14,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
+public type JmsMessage record {|
+    string messageId?;
+    string correlationId?;
+    string jmsType?;
+    int priority?;
+|};
+
+public type JmsTextMessage record {|
+    *JmsMessage;
+    string content;
+|};
+
+public type JmsMapMessage record {|
+    *JmsMessage;
+    map<anydata> content;
+|};
+
+public type JmsBytesMessage record {|
+    *JmsMessage;
+    byte[] content;
+|};
+
 # The abstract message object is the root of all message objects. It defines message headers, properties, and
 # acknowledge methods used for all message objects.
 #

@@ -15,48 +15,46 @@
 // under the License.
 
 import ballerina/jballerina.java;
-// import ballerina/observe;
 
-// observe:Gauge consumerGauge = new(ACTIVE_JMS_CONSUMERS);
-
+# JMS Message Consumer client object to receive messages from both queues and topics.
 public isolated client class MessageConsumer {
     private final handle jmsConsumer;
 
+    # Initialize the Message Consumer client object.
+    #
+    # + jmsProducer - reference to java MessageConsumer object
     isolated function init(handle jmsMessageConsumer) {
         self.jmsConsumer = jmsMessageConsumer;
-        // registerAndIncrementGauge(consumerGauge);
     }
 
-    remote isolated function receive(int timeoutMillis = 0) returns Message|()|error {
-        var response = receiveJmsMessage(self.jmsConsumer, timeoutMillis);
-        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_MESSAGES_RECEIVED));
-        if (response is handle) {
-            if (java:isNull(response)) {
-                return ();
-            } else {
-                return getBallerinaMessage(response);
-            }
-        } else {
-            return response;
-        }
+    # Receives the next message that arrives within the specified timeout interval.
+    #
+    # + timeoutMillis - Message receive timeout
+    # + return - `jms:JmsMessage` or `jsm:Error` if there is an error in the execution
+    isolated remote function receive(int timeoutMillis = 0) returns JmsMessage|Error? {
+        return externReceive(self.jmsConsumer, timeoutMillis);
+    };
+
+    # Receives the next message if one is immediately available.
+    #
+    # + return - `jms:JmsMessage` or `jsm:Error` if there is an error in the execution
+    isolated remote function receiveNoWait() returns JmsMessage|Error? {
+        return externReceiveNoWait(self.jmsConsumer);
     }
 
-    remote isolated function receiveNoWait() returns Message|()|error {
-        handle|error response = receiveNoWaitJmsMessage(self.jmsConsumer);
-        if (response is handle) {
-            if (java:isNull(response)) {
-                return ();
-            } else {
-                return getBallerinaMessage(response);
-            }
-        } else {
-            return response;
-        }
+    # Mark a JMS message as received.
+    #
+    # + message - JMS message record
+    # + return - `jms:Error` if there is an error in the execution or else nil
+    isolated remote function acknowledge(JmsMessage message) returns Error? {
+        return externConsumerAcknowledge(message);
     }
 
-    remote isolated function close() returns Error? {
-        // decrementGauge(consumerGauge);
-        error? result = closeJmsConsumer(self.jmsConsumer);
+    # Closes the message consumer.
+    # 
+    # + return - `jms:Error` if there is an error or else nil
+    isolated remote function close() returns Error? {
+        error? result = externClose(self.jmsConsumer);
         if result is error {
             return error Error(result.message());
         }
@@ -67,48 +65,22 @@ public isolated client class MessageConsumer {
     }
 }
 
-isolated function getBallerinaMessage(handle jmsMessage) returns Message|error {
-    if isTextMessage(jmsMessage) {
-        return new TextMessage(jmsMessage);
-    } else if isMapMessage(jmsMessage) {
-        return new MapMessage(jmsMessage);
-    } else if isBytesMessage(jmsMessage) {
-        return new BytesMessage(jmsMessage);
-    } else if isStreamMessage(jmsMessage) {
-        return new StreamMessage(jmsMessage);
-    } else {
-        return new Message(jmsMessage);
-    }
-}
-
-isolated function receiveJmsMessage(handle jmsMessageConsumer, int timeout) returns handle|error = @java:Method {
+isolated function externReceive(handle jmsMessageConsumer, int timeout) returns JmsMessage|Error? = @java:Method {
     name: "receive",
-    paramTypes: ["long"],
-    'class: "javax.jms.MessageConsumer"
+    'class: "io.ballerina.stdlib.java.jms.ConsumerUtils"
 } external;
 
-isolated function receiveNoWaitJmsMessage(handle jmsMessageConsumer) returns handle|error = @java:Method {
+isolated function externReceiveNoWait(handle jmsMessageConsumer) returns JmsMessage|Error? = @java:Method {
     name: "receiveNoWait",
-    'class: "javax.jms.MessageConsumer"
+    'class: "io.ballerina.stdlib.java.jms.ConsumerUtils"
 } external;
 
-isolated function isTextMessage(handle jmsMessage) returns boolean = @java:Method {
-    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
+isolated function externConsumerAcknowledge(JmsMessage message) returns Error? = @java:Method {
+    name: "acknowledge",
+    'class: "io.ballerina.stdlib.java.jms.ConsumerUtils"
 } external;
 
-isolated function isMapMessage(handle jmsMessage) returns boolean = @java:Method {
-    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
-} external;
-
-isolated function isBytesMessage(handle jmsMessage) returns boolean = @java:Method {
-    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
-} external;
-
-isolated function isStreamMessage(handle jmsMessage) returns boolean = @java:Method {
-    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
-} external;
-
-isolated function closeJmsConsumer(handle jmsConsumer) returns error? = @java:Method {
+isolated function externClose(handle jmsConsumer) returns error? = @java:Method {
     name: "close",
     'class: "javax.jms.MessageConsumer"
 } external;

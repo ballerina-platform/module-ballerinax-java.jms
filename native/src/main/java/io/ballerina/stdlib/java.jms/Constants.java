@@ -119,6 +119,14 @@ public class Constants {
     static final String BYTE_MESSAGE_BAL_OBJECT_NAME = "BytesMessage";
     static final String STREAM_MESSAGE_BAL_OBJECT_NAME = "StreamMessage";
 
+
+    static final String NATIVE_MESSAGE = "message";
+    static final String MESSAGE_BAL_RECORD_NAME = "JmsMessage";
+    static final String TEXT_MESSAGE_BAL_RECORD_NAME = "JmsTextMessage";
+    static final String MAP_MESSAGE_BAL_RECORD_NAME = "JmsMapMessage";
+    static final String BYTE_MESSAGE_BAL_RECORD_NAME = "JmsBytesMessage";
+    static final String STREAM_MESSAGE_BAL_RECORD_NAME = "JmsStreamMessage";
+
     static final String SERVICE_RESOURCE_ON_MESSAGE = "onMessage";
     static final String SERVICE_RESOURCE_ON_TEXT_MESSAGE = "onTextMessage";
     static final String SERVICE_RESOURCE_ON_MAP_MESSAGE = "onMapMessage";
