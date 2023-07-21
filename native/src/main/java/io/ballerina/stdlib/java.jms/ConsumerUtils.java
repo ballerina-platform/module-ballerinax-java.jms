@@ -130,7 +130,7 @@ public class ConsumerUtils {
         ballerinaMessage.put(Constants.EXPIRATION, message.getJMSExpiration());
         ballerinaMessage.put(Constants.DELIVERED_TIME, message.getJMSDeliveryTime());
         ballerinaMessage.put(Constants.PRIORITY, message.getJMSPriority());
-
+        ballerinaMessage.put(Constants.PROPERTIES, getMessageProperties(message));
         Object content = getMessageContent(message);
         ballerinaMessage.put(Constants.CONTENT, content);
         ballerinaMessage.addNativeData(Constants.NATIVE_MESSAGE, message);
@@ -168,6 +168,20 @@ public class ConsumerUtils {
     }
 
     @SuppressWarnings("unchecked")
+    private static BMap<BString, Object> getMessageProperties(Message message)
+            throws JMSException, BallerinaJmsException {
+        BMap<BString, Object> messageProperties = ValueCreator.createMapValue();
+        Enumeration<String> propertyNames = message.getPropertyNames();
+        Iterator<String> iterator = propertyNames.asIterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            Object value = ((MapMessage) message).getObject(key);
+            messageProperties.put(StringUtils.fromString(key), getMapValue(value));
+        }
+        return messageProperties;
+    }
+
+    @SuppressWarnings("unchecked")
     private static Object getMessageContent(Message message) throws JMSException, BallerinaJmsException {
         if (message instanceof TextMessage) {
             return StringUtils.fromString(((TextMessage) message).getText());
@@ -175,7 +189,7 @@ public class ConsumerUtils {
             BMap<BString, Object> content = ValueCreator.createMapValue();
             Enumeration<String> mapNames = (((MapMessage) message)).getMapNames();
             Iterator<String> iterator = mapNames.asIterator();
-            if (iterator.hasNext()) {
+            while (iterator.hasNext()) {
                 String key = iterator.next();
                 Object value = ((MapMessage) message).getObject(key);
                 content.put(StringUtils.fromString(key), getMapValue(value));
