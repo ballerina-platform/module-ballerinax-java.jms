@@ -31,14 +31,14 @@ public isolated client class MessageConsumer {
     #
     # + timeoutMillis - Message receive timeout
     # + return - `jms:JmsMessage` or `jsm:Error` if there is an error in the execution
-    isolated remote function receive(int timeoutMillis = 0) returns JmsMessage|Error? {
+    isolated remote function receive(int timeoutMillis = 0) returns Message|Error? {
         return externReceive(self.jmsConsumer, timeoutMillis);
     };
 
     # Receives the next message if one is immediately available.
     #
     # + return - `jms:JmsMessage` or `jsm:Error` if there is an error in the execution
-    isolated remote function receiveNoWait() returns JmsMessage|Error? {
+    isolated remote function receiveNoWait() returns Message|Error? {
         return externReceiveNoWait(self.jmsConsumer);
     }
 
@@ -46,7 +46,7 @@ public isolated client class MessageConsumer {
     #
     # + message - JMS message record
     # + return - `jms:Error` if there is an error in the execution or else nil
-    isolated remote function acknowledge(JmsMessage message) returns Error? {
+    isolated remote function acknowledge(Message message) returns Error? {
         return externConsumerAcknowledge(message);
     }
 
@@ -65,17 +65,17 @@ public isolated client class MessageConsumer {
     }
 }
 
-isolated function externReceive(handle jmsMessageConsumer, int timeout) returns JmsMessage|Error? = @java:Method {
+isolated function externReceive(handle jmsMessageConsumer, int timeout) returns Message|Error? = @java:Method {
     name: "receive",
     'class: "io.ballerina.stdlib.java.jms.ConsumerUtils"
 } external;
 
-isolated function externReceiveNoWait(handle jmsMessageConsumer) returns JmsMessage|Error? = @java:Method {
+isolated function externReceiveNoWait(handle jmsMessageConsumer) returns Message|Error? = @java:Method {
     name: "receiveNoWait",
     'class: "io.ballerina.stdlib.java.jms.ConsumerUtils"
 } external;
 
-isolated function externConsumerAcknowledge(JmsMessage message) returns Error? = @java:Method {
+isolated function externConsumerAcknowledge(Message message) returns Error? = @java:Method {
     name: "acknowledge",
     'class: "io.ballerina.stdlib.java.jms.ConsumerUtils"
 } external;

@@ -33,7 +33,7 @@ public isolated client class MessageProducer {
     #
     # + message - Message to be sent to the JMS provider
     # + return - Error if unable to send the message to the queue
-    isolated remote function send(JmsMessage message) returns error? {
+    isolated remote function send(Message message) returns error? {
         handle jmsMessage = check getJmsMessage(self.jmsSession, message);
         return externSend(self.jmsProducer, jmsMessage);
     }
@@ -43,20 +43,20 @@ public isolated client class MessageProducer {
     # + destination - Destination used for the message sender
     # + message - Message to be sent to the JMS provider
     # + return - Error if sending to the given destination fails
-    isolated remote function sendTo(Destination destination, JmsMessage message) returns error? {
+    isolated remote function sendTo(Destination destination, Message message) returns error? {
         handle jmsMessage = check getJmsMessage(self.jmsSession, message);
         return externSendTo(self.jmsProducer, destination.getJmsDestination(), jmsMessage);
     }
 };
 
-isolated function getJmsMessage(handle session, JmsMessage message) returns handle|error {
-    if message is JmsTextMessage {
+isolated function getJmsMessage(handle session, Message message) returns handle|error {
+    if message is TextMessage {
         return createJmsTextMessageWithText(session, java:fromString(message.content));
-    } else if message is JmsBytesMessage {
+    } else if message is BytesMessage {
         handle jmsMessage = check createJmsBytesMessage(session);
         check externWriteBytes(jmsMessage, message.content);
         return jmsMessage;
-    } else if message is JmsMapMessage {
+    } else if message is MapMessage {
         handle jmsMessage = check createJmsMapMessage(session);
         check populateMapMessage(jmsMessage, message.content);
         return jmsMessage;

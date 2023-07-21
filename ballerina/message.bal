@@ -30,7 +30,7 @@ import ballerina/jballerina.java;
 # + deliveredTime - The earliest time when a JMS provider may deliver the message to a consumer  
 # + priority - Message priority level  
 # + properties - Additional message properties
-public type JmsMessage record {
+public type Message record {
     string messageId?;
     int timestamp?;
     string correlationId?;
@@ -54,24 +54,24 @@ public type JmsMessage record {
 # Represent the JMS Text Message.
 # 
 # + content - Message content  
-public type JmsTextMessage record {|
-    *JmsMessage;
+public type TextMessage record {|
+    *Message;
     string content;
 |};
 
 # Represent the JMS Map Message.
 # 
 # + content - Message content 
-public type JmsMapMessage record {|
-    *JmsMessage;
+public type MapMessage record {|
+    *Message;
     map<anydata> content;
 |};
 
 # Represent the JMS Bytes Message.
 # 
 # + content - Message content 
-public type JmsBytesMessage record {|
-    *JmsMessage;
+public type BytesMessage record {|
+    *Message;
     byte[] content;
 |};
 

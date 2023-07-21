@@ -124,11 +124,10 @@ public class Constants {
 
 
     static final String NATIVE_MESSAGE = "message";
-    static final String MESSAGE_BAL_RECORD_NAME = "JmsMessage";
-    static final String TEXT_MESSAGE_BAL_RECORD_NAME = "JmsTextMessage";
-    static final String MAP_MESSAGE_BAL_RECORD_NAME = "JmsMapMessage";
-    static final String BYTE_MESSAGE_BAL_RECORD_NAME = "JmsBytesMessage";
-    static final String STREAM_MESSAGE_BAL_RECORD_NAME = "JmsStreamMessage";
+    static final String MESSAGE_BAL_RECORD_NAME = "Message";
+    static final String TEXT_MESSAGE_BAL_RECORD_NAME = "TextMessage";
+    static final String MAP_MESSAGE_BAL_RECORD_NAME = "MapMessage";
+    static final String BYTE_MESSAGE_BAL_RECORD_NAME = "BytesMessage";
 
     // JMS message parameters
     static final BString MESSAGE_ID = StringUtils.fromString("messageId");
