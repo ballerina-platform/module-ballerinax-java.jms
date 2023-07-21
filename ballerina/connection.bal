@@ -16,7 +16,6 @@
 
 import ballerina/jballerina.java;
 import ballerina/log;
-// import ballerina/observe;
 
 # Represents JMS Connection.
 #

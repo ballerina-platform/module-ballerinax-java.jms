@@ -15,9 +15,6 @@
 // under the License.
 
 import ballerina/jballerina.java;
-// import ballerina/observe;
-
-// observe:Gauge temporaryTopicGauge = new(ACTIVE_JMS_TEMPORARY_TOPICS);
 
 # Represent the JMS temporary topic.
 public isolated class TemporaryTopic {
@@ -29,7 +26,6 @@ public isolated class TemporaryTopic {
     #
     # + handle - The java reference to the jms text message.
     isolated function init(handle temporaryTopic) {
-        // registerAndIncrementGauge(temporaryTopicGauge);
         self.jmsDestination = temporaryTopic;
     }
 
@@ -56,7 +52,6 @@ public isolated class TemporaryTopic {
     #
     # + return - Returns an error if it fails.
     public isolated function delete() returns error? {
-        // decrementGauge(temporaryTopicGauge);
         return deleteTemporaryTopic(self.jmsDestination);
     }
 }

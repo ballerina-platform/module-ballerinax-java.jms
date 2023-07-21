@@ -15,9 +15,6 @@
 // under the License.
 
 import ballerina/jballerina.java;
-// import ballerina/observe;
-
-// observe:Gauge temporaryQueueGauge = new(ACTIVE_JMS_TEMPORARY_QUEUES);
 
 # Represent the JMS temporary queue.
 public isolated class TemporaryQueue {
@@ -29,7 +26,6 @@ public isolated class TemporaryQueue {
     #
     # + handle - The java reference to the jms text message.
     isolated function init(handle temporaryQueue) {
-        // registerAndIncrementGauge(temporaryQueueGauge);
         self.jmsDestination = temporaryQueue;
     }
 
@@ -56,7 +52,6 @@ public isolated class TemporaryQueue {
     #
     # + return - Returns an error if it fails.
     public isolated function delete() returns error? {
-        // decrementGauge(temporaryQueueGauge);
         return deleteTemporaryQueue(self.jmsDestination);
     }
 }

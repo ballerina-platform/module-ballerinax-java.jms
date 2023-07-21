@@ -16,7 +16,6 @@
 
 import ballerina/log;
 import ballerina/jballerina.java;
-import ballerina/observe;
 
 # Represents the JMS session.
 #
@@ -40,7 +39,6 @@ public isolated client class Session {
     # + subscriptionId - The name, which is used to identify the subscription.
     # + return - Cancels the subscription.
     isolated remote function unsubscribe(string subscriptionId) returns error? {
-        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_UNSUBSCRIBES));
         return unsubscribeJmsSubscription(self.jmsSession, java:fromString(subscriptionId));
     }
 
@@ -49,7 +47,6 @@ public isolated client class Session {
     # + return - Returns the JMS destination for a temporary queue or an error if it fails.
     isolated remote function createTemporaryQueue() returns Destination|Error {
         handle|error val = createTemporaryJmsQueue(self.jmsSession);
-        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TEMPORARY_QUEUES));
         if (val is handle) {
             return new TemporaryQueue(val);
         } else {
@@ -62,7 +59,6 @@ public isolated client class Session {
     # + return - Returns the JMS destination for a temporary topic or an error if it fails.
     isolated remote function createTemporaryTopic() returns Destination|Error {
         handle|error val = createTemporaryJmsTopic(self.jmsSession);
-        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TEMPORARY_TOPICS));
         if (val is handle) {
             return new TemporaryTopic(val);
         } else {
@@ -76,7 +72,6 @@ public isolated client class Session {
     # + return - Returns the JMS destination for a queue or an error if it fails.
     isolated remote function createQueue(string queueName) returns Destination|error {
         handle|error val = createJmsQueue(self.jmsSession, java:fromString(queueName));
-        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_QUEUES));
         if (val is handle) {
             return new Queue(val);
         } else {
@@ -90,7 +85,6 @@ public isolated client class Session {
     # + return - Returns the JMS destination for a topic or an error if it fails.
     isolated remote function createTopic(string topicName) returns Destination|error {
         handle|error val = createJmsTopic(self.jmsSession, java:fromString(topicName));
-        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TOPICS));
         if (val is handle) {
             return new Topic(val);
         } else {
@@ -110,7 +104,6 @@ public isolated client class Session {
     # + return - Returns the JMS message or an error if it fails.
     public function createMessage() returns Message|error {
         handle|error val = createJmsMessage(self.jmsSession);
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_MESSAGES_CREATED));
         if (val is handle) {
             Message message = new(val);
             return message;
@@ -126,7 +119,6 @@ public isolated client class Session {
     public function createTextMessage(string? text = ()) returns TextMessage|error {
         if (text is string) {
             handle|error val = createJmsTextMessageWithText(self.jmsSession, java:fromString(text));
-            registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TEXT_MESSAGES_WITH_TEXT_CREATED));
             if (val is handle) {
                 TextMessage textMessage = new(val);
                 return textMessage;
@@ -135,7 +127,6 @@ public isolated client class Session {
             }
         } else {
             handle|error val = createJmsTextMessage(self.jmsSession);
-            registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_TEXT_MESSAGES_CREATED));
             if (val is handle) {
                 TextMessage textMessage = new(val);
                 return textMessage;
@@ -150,7 +141,6 @@ public isolated client class Session {
     # + return - Returns the JMS map message or an error if it fails.
     public function createMapMessage() returns MapMessage|error {
         handle|error val = createJmsMapMessage(self.jmsSession);
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_MAP_MESSAGES_CREATED));
         if (val is handle) {
             MapMessage message = new(val);
             return message;
@@ -164,7 +154,6 @@ public isolated client class Session {
     # + return - Returns the JMS stream message or an error if it fails.
     public function createStreamMessage() returns StreamMessage|error {
         handle|error val = createJmsStreamMessage(self.jmsSession);
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_STREAM_MESSAGES_CREATED));
         if (val is handle) {
             StreamMessage message = new(val);
             return message;
@@ -178,7 +167,6 @@ public isolated client class Session {
     # + return - Returns the JMS byte message or an error if it fails.
     public function createByteMessage() returns BytesMessage|error {
         handle|error val = createJmsBytesMessage(self.jmsSession);
-        registerAndIncrementCounter(new observe:Counter("JMS_ByteMessage_total"));
         if (val is handle) {
             BytesMessage message = new(val);
             return message;
@@ -195,7 +183,6 @@ public isolated client class Session {
 
         handle jmsDestination = (destination is Destination) ? destination.getJmsDestination(): JAVA_NULL;
         handle|error v = createJmsProducer(self.jmsSession, jmsDestination);
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_PRODUCERS));
         if (v is handle) {
             return new MessageProducer(v, self.jmsSession);
         } else {
@@ -216,7 +203,6 @@ public isolated client class Session {
                                           boolean noLocal = false) returns MessageConsumer|error {
         var val = createJmsConsumer(self.jmsSession, destination.getJmsDestination(),
                                     java:fromString(messageSelector), noLocal);
-        // registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_CONSUMERS));
         if (val is handle) {
             MessageConsumer consumer = new(val);
             return consumer;
@@ -241,7 +227,6 @@ public isolated client class Session {
         var val = createJmsDurableSubscriber(self.jmsSession, topic.getJmsDestination(),
                                              java:fromString(subscriberName),
                                              java:fromString(messageSelector), noLocal);
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_DURABLE_SUBSCRIBERS));
         if (val is handle) {
             MessageConsumer consumer = new(val);
             return consumer;
@@ -263,7 +248,6 @@ public isolated client class Session {
                                                 string messageSelector = "") returns MessageConsumer|error {
          var val = createJmsSharedConsumer(self.jmsSession, topic.getJmsDestination(),
                                            java:fromString(subscriberName), java:fromString(messageSelector));
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_SHARED_CONSUMERS));
          if (val is handle) {
              MessageConsumer consumer = new(val);
              return consumer;
@@ -284,7 +268,6 @@ public isolated client class Session {
                                                 string messageSelector = "") returns MessageConsumer|error {
          var val = createJmsSharedDurableConsumer(self.jmsSession, topic.getJmsDestination(),
                                                   java:fromString(subscriberName), java:fromString(messageSelector));
-        registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_SHARED_DURABLE_CONSUMERS));
          if (val is handle) {
              MessageConsumer consumer = new(val);
              return consumer;
