@@ -592,7 +592,7 @@ function externItemExists(handle message, handle name) returns boolean | error =
     'class: "javax.jms.MapMessage"
 } external;
 
-function externSetBoolean(handle message, handle name, boolean value) returns error? = @java:Method {
+isolated function externSetBoolean(handle message, handle name, boolean value) returns error? = @java:Method {
     name: "setBoolean",
     'class: "javax.jms.MapMessage"
 } external;
@@ -602,7 +602,7 @@ function externSetByte(handle message, handle name, byte value) returns error? =
     'class: "javax.jms.MapMessage"
 } external;
 
-function externSetDouble(handle message, handle name, float value) returns error? = @java:Method {
+isolated function externSetDouble(handle message, handle name, float value) returns error? = @java:Method {
     name: "setDouble",
     'class: "javax.jms.MapMessage"
 } external;
@@ -617,7 +617,7 @@ function externSetInt(handle message, handle name, int value) returns error? = @
     'class: "javax.jms.MapMessage"
 } external;
 
-function externSetLong(handle message, handle name, int value) returns error? = @java:Method {
+isolated function externSetLong(handle message, handle name, int value) returns error? = @java:Method {
     name: "setLong",
     'class: "javax.jms.MapMessage"
 } external;
@@ -627,7 +627,7 @@ function externSetShort(handle message, handle name, int value) returns error? =
     'class: "javax.jms.MapMessage"
 } external;
 
-function externSetString(handle message, handle name, handle value) returns error? = @java:Method {
+isolated function externSetString(handle message, handle name, handle value) returns error? = @java:Method {
     name: "setString",
     'class: "javax.jms.MapMessage"
 } external;

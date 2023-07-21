@@ -618,7 +618,7 @@ function externWriteByte(handle message, byte value) returns error? = @java:Meth
     'class: "javax.jms.BytesMessage"
 } external;
 
-function externWriteBytes(handle message, byte[] value) returns error? = @java:Method {
+isolated function externWriteBytes(handle message, byte[] value) returns error? = @java:Method {
     name: "writeBytes",
     'class: "io.ballerina.stdlib.java.jms.JmsBytesMessageUtils"
 } external;

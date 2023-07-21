@@ -197,7 +197,7 @@ public isolated client class Session {
         handle|error v = createJmsProducer(self.jmsSession, jmsDestination);
         registerAndIncrementCounter(new observe:Counter(TOTAL_JMS_PRODUCERS));
         if (v is handle) {
-            return new MessageProducer(v);
+            return new MessageProducer(v, self.jmsSession);
         } else {
             log:printError("Error occurred while creating producer");
             return v;
@@ -312,13 +312,13 @@ function createJmsTextMessage(handle session) returns handle|error = @java:Metho
     'class: "javax.jms.Session"
 } external;
 
-function createJmsTextMessageWithText(handle session, handle text) returns handle|error = @java:Method {
+isolated function createJmsTextMessageWithText(handle session, handle text) returns handle|error = @java:Method {
     name: "createTextMessage",
     paramTypes: ["java.lang.String"],
     'class: "javax.jms.Session"
 } external;
 
-function createJmsMapMessage(handle session) returns handle|error = @java:Method {
+isolated function createJmsMapMessage(handle session) returns handle|error = @java:Method {
     name: "createMapMessage",
     'class: "javax.jms.Session"
 } external;
@@ -328,7 +328,7 @@ function createJmsStreamMessage(handle session) returns handle|error = @java:Met
     'class: "javax.jms.Session"
 } external;
 
-function createJmsBytesMessage(handle session) returns handle|error = @java:Method {
+isolated function createJmsBytesMessage(handle session) returns handle|error = @java:Method {
     name: "createBytesMessage",
     'class: "javax.jms.Session"
 } external;
