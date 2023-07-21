@@ -14,12 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-public type JmsMessage record {|
+public type JmsMessage record {
     string messageId?;
     string correlationId?;
     string jmsType?;
     int priority?;
-|};
+};
 
 public type JmsTextMessage record {|
     *JmsMessage;

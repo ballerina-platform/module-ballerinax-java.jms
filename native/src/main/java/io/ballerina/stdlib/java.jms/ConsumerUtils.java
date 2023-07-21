@@ -28,15 +28,16 @@ import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Objects;
+
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.TextMessage;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Objects;
 
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 
@@ -136,22 +137,22 @@ public class ConsumerUtils {
 
     @SuppressWarnings("unchecked")
     private static Object getMessageContent(Message message) throws JMSException, BallerinaJmsException {
-        if (message instanceof TextMessage textMessage) {
-            return StringUtils.fromString(textMessage.getText());
-        } else if (message instanceof MapMessage mapMessage) {
+        if (message instanceof TextMessage) {
+            return StringUtils.fromString(((TextMessage) message).getText());
+        } else if (message instanceof MapMessage) {
             BMap<BString, Object> content = ValueCreator.createMapValue();
-            Enumeration<String> mapNames = (mapMessage).getMapNames();
+            Enumeration<String> mapNames = (((MapMessage) message)).getMapNames();
             Iterator<String> iterator = mapNames.asIterator();
             if (iterator.hasNext()) {
                 String key = iterator.next();
-                Object value = mapMessage.getObject(key);
+                Object value = ((MapMessage) message).getObject(key);
                 content.put(StringUtils.fromString(key), getMapValue(value));
             }
             return content;
-        } else if (message instanceof BytesMessage bytesMessage) {
-            long bodyLength = bytesMessage.getBodyLength();
+        } else if (message instanceof BytesMessage) {
+            long bodyLength = ((BytesMessage) message).getBodyLength();
             byte[] payload = new byte[(int) bodyLength];
-            bytesMessage.readBytes(payload);
+            ((BytesMessage) message).readBytes(payload);
             return ValueCreator.createArrayValue(payload);
         }
         throw new BallerinaJmsException(
@@ -163,11 +164,11 @@ public class ConsumerUtils {
             Type type = TypeUtils.getType(value);
             return ValueUtils.convert(value, type);
         }
-        if (value instanceof String stringValue) {
-            return StringUtils.fromString(stringValue);
+        if (value instanceof String) {
+            return StringUtils.fromString((String) value);
         }
-        if (value instanceof byte[] bytes) {
-            return ValueCreator.createArrayValue(bytes);
+        if (value instanceof byte[]) {
+            return ValueCreator.createArrayValue((byte[]) value);
         }
         throw new BallerinaJmsException(
                 String.format("Unidentified map value type: %s", value.getClass().getTypeName()));
