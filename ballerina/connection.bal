@@ -83,10 +83,6 @@ public type ConnectionConfiguration record {|
     map<string> properties = {};
 |};
 
-public isolated function createConnection(ConnectionConfiguration c) returns Connection|error{
-    return new Connection(c);
-}
-
 isolated function createJmsConnection(string initialContextFactory, string providerUrl, 
     string connectionFactoryName, map<string> otherPropeties) returns handle|error = @java:Method {
     'class: "io.ballerina.stdlib.java.jms.JmsConnectionUtils"
