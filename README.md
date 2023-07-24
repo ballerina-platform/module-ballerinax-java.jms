@@ -1,12 +1,12 @@
 # Ballerina `java.jms` Library
 
-[![Build](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/build-timestamped-master.yml)
+[![Build](https://github.com/ballerina-platform/module-ballerinax-java.jms/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-java.jms/actions/workflows/build-timestamped-master.yml)
 [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-java.jms/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-java.jms)
-[![Trivy](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/trivy-scan.yml)
-[![GraalVM Check](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-java.jms/actions/workflows/build-with-bal-test-graalvm.yml)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-java.jms.svg)](https://github.com/ballerina-platform/module-ballerina-java.jms/commits/master)
+[![Trivy](https://github.com/ballerina-platform/module-ballerinax-java.jms/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-java.jms/actions/workflows/trivy-scan.yml)
+[![GraalVM Check](https://github.com/ballerina-platform/module-ballerinax-java.jms/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-java.jms/actions/workflows/build-with-bal-test-graalvm.yml)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-java.jms.svg)](https://github.com/ballerina-platform/module-ballerinax-java.jms/commits/master)
 
-The `ballerina/java.jms` library provides an API to connect to an external JMS provider like ActiveMQ from Ballerina.
+The `ballerinax/java.jms` library provides an API to connect to an external JMS provider like ActiveMQ from Ballerina.
 
 This library is created with minimal deviation from the JMS API to make it easy for the developers who are used to working with the JMS API. This library is written to support both JMS 2.0 and JMS 1.0 API. 
  
