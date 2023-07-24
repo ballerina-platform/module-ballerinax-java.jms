@@ -1,6 +1,6 @@
 ## Package overview
 
-The `ballerina/java.jms` package provides an API to connect to an external JMS provider like ActiveMQ from Ballerina.
+The `ballerinax/java.jms` package provides an API to connect to an external JMS provider like ActiveMQ from Ballerina.
 
 This package is created with minimal deviation from the JMS API to make it easy for the developers who are used to working with the JMS API. This package is written to support both JMS 2.0 and JMS 1.0 API. 
  
