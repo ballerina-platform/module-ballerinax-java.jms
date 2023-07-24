@@ -1,16 +1,18 @@
-# Compiled class file
-*.class
+# Ignore Gradle project-specific cache directory
+.gradle
 
-# Log file
-*.log
+# Build Files
+target
+build
 
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# IDEA Files
+.idea/
+*.iml
+*.ipr
+*.iws
 
 # Package Files #
+!gradle/wrapper/gradle-wrapper.jar
 *.jar
 *.war
 *.nar
@@ -19,20 +21,25 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# MacOS
+*.DS_Store
 
-# ignore Intellij-IDEA files
-*.iml
-.idea/
-.DS_Store
-.classpath
-.settings
+# Ballerina
+velocity.log*
+*Ballerina.lock
 
-# Eclipse files
+# VSCode
+.vscode
 .project
-
-#VSCode
-.vscode/
-# Temporary directories
-target/
+.settings/
+ballerina/.project
+ballerina/.settings/
+build-config/checkstyle/.classpath
+build-config/checkstyle/.project
+build-config/checkstyle/.settings/
+native/.classpath
+native/.project
+native/.settings/
+test-utils/.classpath
+test-utils/.project
+test-utils/.settings/
