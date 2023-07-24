@@ -27,10 +27,10 @@ The following Ballerina program sends messages to a queue named *MyQueue*.
 import ballerinax/java.jms;
 
 public function main() returns error? {
-    jms:Connection connection = check jms:createConnection({
-        initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-        providerUrl: "tcp://localhost:61616"
-    });
+    jms:Connection connection = check new (
+        initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+        providerUrl = "tcp://localhost:61616"
+    );
     jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
     jms:Destination queue = check session->createQueue("MyQueue");
     jms:MessageProducer producer = check session.createProducer(queue);
@@ -48,10 +48,10 @@ import ballerinax/java.jms;
 import ballerina/log;
 
 public function main() returns error? {
-    jms:Connection connection = check jms:createConnection({
-        initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-        providerUrl: "tcp://localhost:61616"
-    });
+    jms:Connection connection = check new (
+        initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+        providerUrl = "tcp://localhost:61616"
+    );
     jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
     jms:Destination queue = check session->createQueue("MyQueue");
     jms:MessageConsumer consumer = check session.createConsumer(queue);
