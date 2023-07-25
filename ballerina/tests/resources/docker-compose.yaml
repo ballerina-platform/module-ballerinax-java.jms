@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+    activemq:
+        image: 'apache/activemq-classic:latest'
+        container_name: activemq-test-server
+        ports:
+            - '61616:61616'
