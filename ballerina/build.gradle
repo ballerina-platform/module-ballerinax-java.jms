@@ -75,6 +75,19 @@ dependencies {
     externalJars(group: 'javax.jms', name: 'javax.jms-api', version: "${javaxJmsVersion}") {
         transitive = false
     }
+
+    /**
+        Test related dependencies
+     */
+    externalJars(group: 'org.apache.activemq', name: 'activemq-client', version: "${activemqClientVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'org.apache.geronimo.specs', name: 'geronimo-j2ee-management_1.1_spec', version: "${geronimoJ2eeMng11SpecVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'org.fusesource.hawtbuf', name: 'hawtbuf', version: "${hawtbufVersion}") {
+        transitive = false
+    }
 }
 
 task updateTomlFiles {
@@ -85,6 +98,9 @@ task updateTomlFiles {
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         newConfig = newConfig.replace("@slf4j.version@", stdlibDependentSlf4jVersion)
         newConfig = newConfig.replace("@javax.jms.version@", stdlibDependentJavaxJmsVersion)
+        newConfig = newConfig.replace('@activemq.client.version@', project.activemqClientVersion)
+        newConfig = newConfig.replace('@geronimoj2ee.spec.version@', project.geronimoJ2eeMng11SpecVersion)
+        newConfig = newConfig.replace('@hawtbuf.version@', project.hawtbufVersion)
         ballerinaTomlFile.text = newConfig
     }
 }
