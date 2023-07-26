@@ -24,6 +24,7 @@ Currently, the following JMS API Classes are supported through this package.
 The following Ballerina program sends messages to a queue named *MyQueue*.
 
 ```ballerina
+import ballerinax/activemq.driver as _;
 import ballerinax/java.jms;
 
 public function main() returns error? {
@@ -44,6 +45,7 @@ public function main() returns error? {
 ## JMS message consumer
 The following Ballerina program receives messages from a queue named *MyQueue*.
 ```ballerina
+import ballerinax/activemq.driver as _;
 import ballerinax/java.jms;
 import ballerina/log;
 
@@ -72,6 +74,7 @@ Ballerina transport listener concept is covered with **service** type, hence we 
 implement the message listener. Following is a message listener example listening on a queue named *MyQueue*.
 
 ```ballerina
+import ballerinax/activemq.driver as _;
 import ballerina/log;
 import ballerinax/java.jms;
 
@@ -94,26 +97,4 @@ service "consumer-service" on new jms:Listener(
         }
     }
 }
-```
-
-## Adding the required dependencies 
-
-Add the required dependencies to the `Ballerina.toml` file based on the broker that you're trying to connect to. 
-Add the configurations below to run the given examples using `Apache ActiveMQ`. 
-
-```
-[[platform.java11.dependency]]
-groupId = "org.apache.activemq"
-artifactId = "activemq-client"
-version = "5.18.2"
-
-[[platform.java11.dependency]]
-groupId = "org.apache.geronimo.specs"
-artifactId = "geronimo-j2ee-management_1.1_spec"
-version = "1.0.1"
-
-[[platform.java11.dependency]]
-groupId = "org.fusesource.hawtbuf"
-artifactId = "hawtbuf"
-version = "1.11"
 ```
