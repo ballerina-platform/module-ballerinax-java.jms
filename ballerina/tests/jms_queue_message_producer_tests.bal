@@ -1,5 +1,3 @@
-import ballerina/test;
-import ballerina/io;
 // Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 LLC. licenses this file to you under the Apache License,
@@ -16,6 +14,19 @@ import ballerina/io;
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/test;
+import ballerina/io;
+
+final Connection connection = check new (
+    initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+    providerUrl = "tcp://localhost:61616"
+);
+
+isolated function createProducer() returns MessageProducer|error {
+    Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+    Destination queue = check session->createQueue("MyQueue");
+    return session.createProducer(queue);
+}
 
 @test:Config {}
 isolated function testCase() returns error? {
