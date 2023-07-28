@@ -20,7 +20,7 @@ import ballerina/jballerina.java;
 public isolated client class Connection {
     private final readonly & ConnectionConfiguration config;
 
-    # JMS Connection constructor
+    # Initialize and starts a JMS connection.
     #
     # + connectionConfig - The configurations to be used when initializing the JMS connection
     # + return - The `jms:Connection` or an `jms:Error` if the initialization failed
