@@ -82,7 +82,6 @@ public class JmsConnection {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private static Connection createJmsConnection(BMap<BString, BObject> connectionConfigs)
             throws BallerinaJmsException {
         String connectionFactoryName = connectionConfigs.getStringValue(CONNECTION_FACTORY_NAME).getValue();
