@@ -15,20 +15,64 @@
 // under the License.
 
 import ballerina/test;
-import ballerina/io;
 
-final Connection connection = check new (
-    initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-    providerUrl = "tcp://localhost:61616"
-);
+final MessageProducer queueProducer = check createQueueProducer(autoAckSession, "test-queue-1");
 
-isolated function createProducer() returns MessageProducer|error {
-    Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
-    Destination queue = check session->createQueue("MyQueue");
-    return session.createProducer(queue);
+@test:Config {}
+isolated function testQueueProducerSendTextMessage() returns error? {
+    TextMessage message = {
+        content: "This is a sample message"
+    };
+    check queueProducer->send(message);
 }
 
 @test:Config {}
-isolated function testCase() returns error? {
-    io:println("Log");
+isolated function testQueueProducerSendMapMessage() returns error? {
+    MapMessage message = {
+        content: {
+            "user": "John Doe",
+            "message": "This is a sample message"
+        }
+    };
+    check queueProducer->send(message);
+}
+
+@test:Config {}
+isolated function testQueueProducerSendBytesMessage() returns error? {
+    BytesMessage message = {
+        content: "This is a sample message".toBytes()
+    };
+    check queueProducer->send(message);
+}
+
+final MessageProducer producerWithoutDefaultDestination = check createProducerWithoutDefaultDestination(autoAckSession);
+
+@test:Config {}
+isolated function testQueueProducerSendToTextMessage() returns error? {
+    TextMessage message = {
+        content: "This is a sample message"
+    };
+    Destination queue = check createJmsDestination(autoAckSession, QUEUE, "test-queue-2");
+    check producerWithoutDefaultDestination->sendTo(queue, message);
+}
+
+@test:Config {}
+isolated function testQueueProducerSendToMapMessage() returns error? {
+    MapMessage message = {
+        content: {
+            "user": "John Doe",
+            "message": "This is a sample message"
+        }
+    };
+    Destination queue = check createJmsDestination(autoAckSession, QUEUE, "test-queue-2");
+    check producerWithoutDefaultDestination->sendTo(queue, message);
+}
+
+@test:Config {}
+isolated function testQueueProducerSendToBytesMessage() returns error? {
+    BytesMessage message = {
+        content: "This is a sample message".toBytes()
+    };
+    Destination queue = check createJmsDestination(autoAckSession, QUEUE, "test-queue-2");
+    check producerWithoutDefaultDestination->sendTo(queue, message);
 }
