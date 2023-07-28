@@ -14,6 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/test;
+
 final Connection connection = check new (
     initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
     providerUrl = "tcp://localhost:61616"
@@ -32,4 +34,11 @@ isolated function createQueueProducer(Session session, string queueName) returns
 
 isolated function createProducerWithoutDefaultDestination(Session session) returns MessageProducer|error {
     return session.createProducer();
+}
+
+@test:AfterSuite {
+    alwaysRun: true
+}
+isolated function afterSuite() returns error? {
+    connection->stop();
 }
