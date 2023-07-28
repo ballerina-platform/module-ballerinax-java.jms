@@ -123,6 +123,12 @@ public class Constants {
     static final String STREAM_MESSAGE_BAL_OBJECT_NAME = "StreamMessage";
 
 
+    // Native properties in respective ballerina objects
+    static final String NATIVE_CONNECTION = "connection";
+    static final String NATIVE_SESSION = "session";
+    static final String NATIVE_PRODUCER = "producer";
+    static final String NATIVE_CONSUMER = "consumer";
+
     static final String NATIVE_MESSAGE = "message";
     static final String MESSAGE_BAL_RECORD_NAME = "Message";
     static final String TEXT_MESSAGE_BAL_RECORD_NAME = "TextMessage";
