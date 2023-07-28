@@ -18,8 +18,6 @@ import ballerina/log;
 import ballerina/jballerina.java;
 
 # Represents the JMS session.
-#
-# + config - Stores the configurations related to a JMS session.
 public isolated client class Session {
     private final readonly & AcknowledgementMode acknowledgementMode;
     private final handle jmsSession;
