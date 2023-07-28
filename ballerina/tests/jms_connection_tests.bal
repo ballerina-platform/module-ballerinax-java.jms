@@ -32,7 +32,7 @@ isolated function testCreateConnectionSuccess() returns error? {
     groups: ["connection"]
 }
 isolated function testCreateConnectionInvalidInitialContextFactory() returns error? {
-    Connection|error connection = trap new (
+    Connection|error connection = new (
         initialContextFactory = "io.sample.SampleMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
@@ -43,7 +43,7 @@ isolated function testCreateConnectionInvalidInitialContextFactory() returns err
     groups: ["connection"]
 }
 isolated function testCreateConnectionInvalidProviderUrl() returns error? {
-    Connection|error connection = trap new (
+    Connection|error connection = new (
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61615"
     );
