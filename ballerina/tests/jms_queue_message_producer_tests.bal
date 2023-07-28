@@ -51,6 +51,18 @@ isolated function testQueueProducerSendBytesMessage() returns error? {
     check queueProducer->send(message);
 }
 
+@test:Config {
+    groups: ["queueProducer"]
+}
+isolated function testQueueProducerSendToError() returns error? {
+    Destination queue = check createJmsDestination(autoAckSession, QUEUE, "unsupported-queue");
+    TextMessage message = {
+        content: "This is a sample message"
+    };
+    error? result = trap queueProducer->sendTo(queue, message);
+    test:assertTrue(result is error, "Success results retured for an errorneous scenario");
+}
+
 final MessageProducer producerWithoutDefaultDestination = check createProducerWithoutDefaultDestination(autoAckSession);
 
 @test:Config {
@@ -87,4 +99,15 @@ isolated function testQueueProducerSendToBytesMessage() returns error? {
     };
     Destination queue = check createJmsDestination(autoAckSession, QUEUE, "test-queue-2");
     check producerWithoutDefaultDestination->sendTo(queue, message);
+}
+
+@test:Config {
+    groups: ["queueProducer"]
+}
+isolated function testQueueProducerSendError() returns error? {
+    TextMessage message = {
+        content: "This is a sample message"
+    };
+    error? result = trap producerWithoutDefaultDestination->send(message);
+    test:assertTrue(result is error, "Success results retured for an errorneous scenario");
 }
