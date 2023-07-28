@@ -14,6 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+// import ballerina/log;
 import ballerina/test;
 
 final MessageProducer queueProducer = check createQueueProducer(autoAckSession, "test-queue-1");
@@ -111,3 +112,19 @@ isolated function testQueueProducerSendError() returns error? {
     error? result = trap producerWithoutDefaultDestination->send(message);
     test:assertTrue(result is error, "Success results retured for an errorneous scenario");
 }
+
+// @test:Config {
+//     groups: ["queueProducer"]
+// }
+// isolated function testTempQueueCreation() returns error? {
+//     Destination|error dest = trap autoAckSession->createTemporaryQueue();
+//     if dest is error {
+//         log:printError(string `error occurred [temp-queue]: ${dest.message()}`, dest);
+//         return;
+//     }
+//     MessageProducer|error producer = trap autoAckSession.createProducer(dest);
+//     if producer is error {
+//         log:printError(string `error occurred [producer]: ${producer.message()}`, producer, stackTrace = producer.stackTrace());
+//         return;
+//     }
+// }
