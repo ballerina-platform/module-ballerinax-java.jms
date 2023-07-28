@@ -17,13 +17,11 @@
 import ballerina/jballerina.java;
 
 # Represents JMS Connection.
-#
-# + config - Used to store configurations related to a JMS Connection
 public isolated client class Connection {
-    public final readonly & ConnectionConfiguration config;
+    private final readonly & ConnectionConfiguration config;
 
     # JMS Connection constructor
-    # 
+    #
     # + connectionConfig - The configurations to be used when initializing the JMS connection
     # + return - The `jms:Connection` or an `jms:Error` if the initialization failed
     public isolated function init(*ConnectionConfiguration connectionConfig) returns Error? {
@@ -46,7 +44,7 @@ public isolated client class Connection {
 
     # Starts (or restarts) a connection's delivery of incoming messages.
     # A call to start on a connection that has already been started is ignored.
-    # 
+    #
     # + return - A `jms:Error` if threre is an error while starting the connection
     isolated remote function 'start() returns Error? = @java:Method {
         name: "start",
@@ -55,14 +53,14 @@ public isolated client class Connection {
 
     # Temporarily stops a connection's delivery of incoming messages.
     # Delivery can be restarted using the connection's start method.
-    # 
+    #
     # + return - A `jms:Error` if threre is an error while stopping the connection
     isolated remote function stop() returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.JmsConnection"
     } external;
 
     # Closes the connection.
-    # 
+    #
     # + return - A `jms:Error` if threre is an error while closing the connection
     isolated remote function close() returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.JmsConnection"
