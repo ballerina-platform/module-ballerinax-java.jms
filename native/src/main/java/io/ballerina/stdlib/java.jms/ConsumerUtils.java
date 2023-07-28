@@ -175,7 +175,7 @@ public class ConsumerUtils {
         Iterator<String> iterator = propertyNames.asIterator();
         while (iterator.hasNext()) {
             String key = iterator.next();
-            Object value = ((MapMessage) message).getObject(key);
+            Object value = message.getObjectProperty(key);
             messageProperties.put(StringUtils.fromString(key), getMapValue(value));
         }
         return messageProperties;
