@@ -18,7 +18,9 @@ import ballerina/test;
 
 final MessageProducer queueProducer = check createQueueProducer(autoAckSession, "test-queue-1");
 
-@test:Config {}
+@test:Config {
+    groups: ["queueProducer"]
+}
 isolated function testQueueProducerSendTextMessage() returns error? {
     TextMessage message = {
         content: "This is a sample message"
@@ -26,7 +28,9 @@ isolated function testQueueProducerSendTextMessage() returns error? {
     check queueProducer->send(message);
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["queueProducer"]
+}
 isolated function testQueueProducerSendMapMessage() returns error? {
     MapMessage message = {
         content: {
@@ -37,7 +41,9 @@ isolated function testQueueProducerSendMapMessage() returns error? {
     check queueProducer->send(message);
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["queueProducer"]
+}
 isolated function testQueueProducerSendBytesMessage() returns error? {
     BytesMessage message = {
         content: "This is a sample message".toBytes()
@@ -47,7 +53,9 @@ isolated function testQueueProducerSendBytesMessage() returns error? {
 
 final MessageProducer producerWithoutDefaultDestination = check createProducerWithoutDefaultDestination(autoAckSession);
 
-@test:Config {}
+@test:Config {
+    groups: ["queueProducer"]
+}
 isolated function testQueueProducerSendToTextMessage() returns error? {
     TextMessage message = {
         content: "This is a sample message"
@@ -56,7 +64,9 @@ isolated function testQueueProducerSendToTextMessage() returns error? {
     check producerWithoutDefaultDestination->sendTo(queue, message);
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["queueProducer"]
+}
 isolated function testQueueProducerSendToMapMessage() returns error? {
     MapMessage message = {
         content: {
@@ -68,7 +78,9 @@ isolated function testQueueProducerSendToMapMessage() returns error? {
     check producerWithoutDefaultDestination->sendTo(queue, message);
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["queueProducer"]
+}
 isolated function testQueueProducerSendToBytesMessage() returns error? {
     BytesMessage message = {
         content: "This is a sample message".toBytes()
