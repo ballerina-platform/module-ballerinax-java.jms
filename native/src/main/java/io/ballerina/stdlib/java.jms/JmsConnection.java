@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 
+import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.naming.InitialContext;
@@ -44,7 +45,7 @@ import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONNECTION;
 /**
  * Representation of {@link javax.jms.Connection} with utility methods to invoke as inter-op functions.
  */
-public class Connection {
+public class JmsConnection {
     private static final BString INITIAL_CONTEXT_FACTORY = StringUtils.fromString("initialContextFactory");
     private static final BString PROVIDER_URL = StringUtils.fromString("providerUrl");
     private static final BString CONNECTION_FACTORY_NAME = StringUtils.fromString("connectionFactoryName");
@@ -61,7 +62,7 @@ public class Connection {
      */
     public static Object createConnection(BObject connection, BMap<BString, BObject> connectionConfig) {
         try {
-            javax.jms.Connection jmsConnection = createJmsConnection(connectionConfig);
+            Connection jmsConnection = createJmsConnection(connectionConfig);
             if (jmsConnection.getClientID() == null) {
                 jmsConnection.setClientID(UUID.randomUUID().toString());
             }
@@ -82,7 +83,7 @@ public class Connection {
     }
 
     @SuppressWarnings("unchecked")
-    private static javax.jms.Connection createJmsConnection(BMap<BString, BObject> connectionConfigs)
+    private static Connection createJmsConnection(BMap<BString, BObject> connectionConfigs)
             throws BallerinaJmsException {
         String connectionFactoryName = connectionConfigs.getStringValue(CONNECTION_FACTORY_NAME).getValue();
         Properties properties = getConnectionProperties(connectionConfigs, connectionFactoryName);
@@ -188,7 +189,7 @@ public class Connection {
         Object nativeConnection = connection.getNativeData(NATIVE_CONNECTION);
         if (Objects.nonNull(nativeConnection)) {
             try {
-                ((javax.jms.Connection) nativeConnection).start();
+                ((Connection) nativeConnection).start();
                 return null;
             } catch (JMSException exception) {
                 BError cause = ErrorCreator.createError(exception);
@@ -220,7 +221,7 @@ public class Connection {
         Object nativeConnection = connection.getNativeData(NATIVE_CONNECTION);
         if (Objects.nonNull(nativeConnection)) {
             try {
-                ((javax.jms.Connection) nativeConnection).stop();
+                ((Connection) nativeConnection).stop();
                 return null;
             } catch (JMSException exception) {
                 BError cause = ErrorCreator.createError(exception);
@@ -244,7 +245,7 @@ public class Connection {
         Object nativeConnection = connection.getNativeData(NATIVE_CONNECTION);
         if (Objects.nonNull(nativeConnection)) {
             try {
-                ((javax.jms.Connection) nativeConnection).close();
+                ((Connection) nativeConnection).close();
                 return null;
             } catch (JMSException exception) {
                 BError cause = ErrorCreator.createError(exception);

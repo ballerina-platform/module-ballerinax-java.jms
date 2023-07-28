@@ -31,7 +31,7 @@ public isolated client class Connection {
 
     isolated function externInit(ConnectionConfiguration connectionConfig) returns Error? = @java:Method {
         name: "createConnection",
-        'class: "io.ballerina.stdlib.java.jms.Connection"
+        'class: "io.ballerina.stdlib.java.jms.JmsConnection"
     } external;
 
     # Create a Session object, specifying transacted and acknowledgeMode
@@ -48,7 +48,7 @@ public isolated client class Connection {
     # + return - A `jms:Error` if threre is an error while starting the connection
     isolated remote function 'start() returns Error? = @java:Method {
         name: "start",
-        'class: "io.ballerina.stdlib.java.jms.Connection"
+        'class: "io.ballerina.stdlib.java.jms.JmsConnection"
     } external;
 
     # Temporarily stops a connection's delivery of incoming messages.
@@ -56,14 +56,14 @@ public isolated client class Connection {
     #
     # + return - A `jms:Error` if threre is an error while stopping the connection
     isolated remote function stop() returns Error? = @java:Method {
-        'class: "io.ballerina.stdlib.java.jms.Connection"
+        'class: "io.ballerina.stdlib.java.jms.JmsConnection"
     } external;
 
     # Closes the connection.
     #
     # + return - A `jms:Error` if threre is an error while closing the connection
     isolated remote function close() returns Error? = @java:Method {
-        'class: "io.ballerina.stdlib.java.jms.Connection"
+        'class: "io.ballerina.stdlib.java.jms.JmsConnection"
     } external;
 }
 
