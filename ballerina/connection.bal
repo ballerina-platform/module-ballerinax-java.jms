@@ -36,10 +36,10 @@ public isolated client class Connection {
 
     # Create a Session object, specifying transacted and acknowledgeMode.
     #
-    # + sessionConfig - SessionConfiguration record consist with JMS session config
+    # + ackMode - Configuration indicating how messages received by the session will be acknowledged
     # + return - Returns the Session or an error if it fails.
-    isolated remote function createSession(SessionConfiguration sessionConfig) returns Session|error {
-        return new Session(self, sessionConfig);
+    isolated remote function createSession(AcknowledgementMode ackMode = AUTO_ACKNOWLEDGE) returns Session|error {
+        return new Session(self, ackMode);
     }
 
     # Starts (or restarts) a connection's delivery of incoming messages.
