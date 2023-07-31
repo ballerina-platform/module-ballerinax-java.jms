@@ -37,7 +37,7 @@ public enum JmsDestinationType {
 # Message consumer configurations.
 #
 # + connectionConfig - Configurations related to the broker connection  
-# + sessionConfig - Configurations related to the JMS session
+# + acknowledgementMode - Configuration indicating how messages received by the session will be acknowledged
 # + destination - Name of the JMS destination
 # + messageSelector - only messages with properties matching the message selector expression are added to the durable subscription. 
 #                     An empty string indicates that there is no message selector for the durable subscription.
@@ -45,7 +45,7 @@ public enum JmsDestinationType {
 #             with the same client identifier, will not be added to the durable subscription.
 public type ConsumerConfiguration record {|
     ConnectionConfiguration connectionConfig;
-    SessionConfiguration sessionConfig;
+    AcknowledgementMode acknowledgementMode = AUTO_ACKNOWLEDGE;
     record {|
         JmsDestinationType 'type;
         string name?;
@@ -63,7 +63,7 @@ public isolated class Listener {
     # + consumer - The relevant JMS consumer.
     public isolated function init(*ConsumerConfiguration consumerConfig) returns error? {
         Connection connection = check new (consumerConfig.connectionConfig);
-        Session session = check connection->createSession(consumerConfig.sessionConfig);
+        Session session = check connection->createSession(consumerConfig.acknowledgementMode);
         Destination destination = check createJmsDestination(
             session, consumerConfig.destination.'type, consumerConfig.destination?.name);
         self.consumer = check session.createConsumer(
