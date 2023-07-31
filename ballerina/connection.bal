@@ -30,7 +30,7 @@ public isolated client class Connection {
     }
 
     isolated function externInit(ConnectionConfiguration connectionConfig) returns Error? = @java:Method {
-        name: "createConnection",
+        name: "init",
         'class: "io.ballerina.stdlib.java.jms.JmsConnection"
     } external;
 

@@ -60,7 +60,7 @@ public class JmsConnection {
      * @param connectionConfig JMS configurations
      * @return A Ballerina `jms:Error` if the JMS provider fails to create the connection due to some internal error
      */
-    public static Object createConnection(BObject connection, BMap<BString, BObject> connectionConfig) {
+    public static Object init(BObject connection, BMap<BString, BObject> connectionConfig) {
         try {
             Connection jmsConnection = createJmsConnection(connectionConfig);
             if (jmsConnection.getClientID() == null) {
