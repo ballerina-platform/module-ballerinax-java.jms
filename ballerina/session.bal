@@ -18,17 +18,12 @@ import ballerina/log;
 import ballerina/jballerina.java;
 
 # Represents the JMS session.
-#
-# + config - Stores the configurations related to a JMS session.
 public isolated client class Session {
-    private final readonly & SessionConfiguration config;
-    private final handle jmsSession;
+    private final handle jmsSession = JAVA_NULL;
 
-# The default constructor of the JMS session.
-    public isolated function init(handle jmsConnection, SessionConfiguration sessionConfig) returns error? {
-        self.config = sessionConfig.cloneReadOnly();
-        handle ackModeJString = java:fromString(self.config.acknowledgementMode);
-        self.jmsSession = check createJmsSession(jmsConnection, ackModeJString);
+    public isolated function init(Connection connetion, SessionConfiguration sessionConfig) returns error? {
+        // handle ackModeJString = java:fromString(sessionConfig.acknowledgementMode);
+        // self.jmsSession = check createJmsSession(jmsConnection, ackModeJString);
     }
 
     # Unsubscribe a durable subscription that has been created by a client.
