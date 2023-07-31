@@ -24,11 +24,11 @@ import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 
+import java.util.Objects;
+
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Session;
-
-import java.util.Objects;
 
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONNECTION;
