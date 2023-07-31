@@ -67,7 +67,7 @@ public isolated client class Connection {
     } external;
 }
 
-# Configurations related to a JMS connection
+# Configurations related to a JMS connection.
 #
 # + initialContextFactory - JMS provider specific inital context factory
 # + providerUrl - JMS provider specific provider URL used to configure a connection
