@@ -55,7 +55,8 @@ public class JmsSession {
                 return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
                         StringUtils.fromString("Could not find the native JMS connection"), null, null);
             }
-            Session jmsSession = createJmsSession((Connection) nativeConnection, sessionAckMode);
+            boolean transacted = Session.SESSION_TRANSACTED == sessionAckMode;
+            Session jmsSession = ((Connection) nativeConnection).createSession(transacted, sessionAckMode);
             session.addNativeData(NATIVE_SESSION, jmsSession);
         } catch (JMSException e) {
             BError cause = ErrorCreator.createError(e);
@@ -76,12 +77,5 @@ public class JmsSession {
         } else {
             return Session.DUPS_OK_ACKNOWLEDGE;
         }
-    }
-
-    private static Session createJmsSession(Connection jmsConnection, int sessionAckMode) throws JMSException {
-        if (Session.SESSION_TRANSACTED == sessionAckMode) {
-            return jmsConnection.createSession(true, sessionAckMode);
-        }
-        return jmsConnection.createSession(false, sessionAckMode);
     }
 }
