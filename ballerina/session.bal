@@ -21,10 +21,14 @@ import ballerina/jballerina.java;
 public isolated client class Session {
     private final handle jmsSession = JAVA_NULL;
 
-    public isolated function init(Connection connetion, AcknowledgementMode ackMode) returns error? {
-        // handle ackModeJString = java:fromString(sessionConfig.acknowledgementMode);
-        // self.jmsSession = check createJmsSession(jmsConnection, ackModeJString);
+    isolated function init(Connection connection, AcknowledgementMode ackMode) returns error? {
+        return self.externInit(connection, ackMode);
     }
+
+    isolated function externInit(Connection connection, AcknowledgementMode ackMode) returns Error? = @java:Method {
+        name: "init",
+        'class: "io.ballerina.stdlib.java.jms.JmsSession"
+    } external;
 
     # Unsubscribe a durable subscription that has been created by a client.
     # It is erroneous for a client to delete a durable subscription while there is an active (not closed) consumer
