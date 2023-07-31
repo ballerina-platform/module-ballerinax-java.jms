@@ -35,7 +35,7 @@ public class Constants {
 
     static final String ORG = "ballerina";
     static final String PACKAGE_NAME = "java.jms";
-    public static final String VERSION = "0.8.2";
+    public static final String VERSION = "0.8.3";
 
     public static final String PACKAGE_NAME_WITH_VERSION = PACKAGE_NAME + VERSION_SEPARATOR + VERSION;
 

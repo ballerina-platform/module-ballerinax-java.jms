@@ -24,11 +24,11 @@
     <parent>
         <artifactId>module-jms</artifactId>
         <groupId>org.ballerinalang</groupId>
-        <version>0.8.2</version>
+        <version>0.8.3</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <version>0.8.2</version>
+    <version>0.8.3</version>
     <artifactId>jms-utils</artifactId>
     <packaging>jar</packaging>
     <name>JMS Utils</name>

@@ -1,6 +1,6 @@
 [project]
 org-name= "ballerina"
-version= "0.8.2"
+version= "0.8.3"
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
 keywords = ["jms"]
@@ -13,9 +13,9 @@ target = "java8"
 
   [[platform.libraries]]
   module = "java.jms"
-  path = "../utils/target/jms-utils-0.8.2.jar"
+  path = "../utils/target/jms-utils-0.8.3.jar"
   artifactId = "jms-utils"
-  version = "0.8.2"
+  version = "0.8.3"
   groupId = "org.ballerinalang"
 
   [[platform.libraries]]
