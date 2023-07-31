@@ -34,12 +34,12 @@ public isolated client class Connection {
         'class: "io.ballerina.stdlib.java.jms.JmsConnection"
     } external;
 
-    # Create a Session object, specifying transacted and acknowledgeMode
+    # Create a Session object, specifying transacted and acknowledgeMode.
     #
     # + sessionConfig - SessionConfiguration record consist with JMS session config
     # + return - Returns the Session or an error if it fails.
     isolated remote function createSession(SessionConfiguration sessionConfig) returns Session|error {
-        return new Session(JAVA_NULL, sessionConfig);
+        return new Session(self, sessionConfig);
     }
 
     # Starts (or restarts) a connection's delivery of incoming messages.
