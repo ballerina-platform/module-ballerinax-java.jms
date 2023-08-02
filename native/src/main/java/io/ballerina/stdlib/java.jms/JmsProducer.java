@@ -30,6 +30,7 @@ import java.util.Optional;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
@@ -54,7 +55,8 @@ public class JmsProducer {
      * @param producer Ballerina producer object
      * @param session Ballerina session object
      * @param destination Relevant JMS destination
-     * @return A Ballerina `jms:Error` if the JMS provider fails to create the connection due to some internal error
+     * @return A Ballerina `jms:Error` if the JMS provider fails to create the MessageProducer due to some
+     * internal error
      */
     public static Object init(BObject producer, BObject session, Object destination) {
         Object nativeSession = session.getNativeData(NATIVE_SESSION);
@@ -87,7 +89,11 @@ public class JmsProducer {
             return null;
         }
 
-        BMap<BString, BObject> destinationConfig = (BMap<BString, BObject>) destination;
+        return createJmsDestination(session, (BMap<BString, BObject>) destination);
+    }
+
+    private static Destination createJmsDestination(Session session, BMap<BString, BObject> destinationConfig)
+            throws BallerinaJmsException, JMSException {
         String destinationType = destinationConfig.getStringValue(DESTINATION_TYPE).getValue();
         Optional<String> destinationNameOpt = getOptionalStringProperty(destinationConfig, DESTINATION_NAME);
         if (QUEUE.equals(destinationType) || TOPIC.equals(destinationType)) {
@@ -106,5 +112,69 @@ public class JmsProducer {
         } else {
             return session.createTemporaryTopic();
         }
+    }
+
+    /**
+     * Sends a message using the {@code MessageProducer}'s default delivery mode, priority, and time to live.
+     *
+     * @param producer Ballerina producer object
+     * @param message The JMS message
+     * @return A Ballerina `jms:Error` if the JMS MessageProducer fails to send the message due to some error
+     */
+    public static Object send(BObject producer, Message message) {
+        Object nativeProducer = producer.getNativeData(NATIVE_PRODUCER);
+        if (Objects.isNull(nativeProducer)) {
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Could not find the native JMS MessageProducer"),
+                    null, null);
+        }
+        try {
+            ((MessageProducer) nativeProducer).send(message);
+        } catch (JMSException exception) {
+            BError cause = ErrorCreator.createError(exception);
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Error occurred while sending a message to the JMS provider"),
+                    cause, null);
+        }
+        return null;
+    }
+
+    /**
+     * Sends a message to a destination for an unidentified message producer using the {@code MessageProducer}'s
+     * default delivery mode, priority, and time to live.
+     *
+     * @param producer Ballerina producer object
+     * @param session Ballerina session object
+     * @param destination Relevant JMS destination
+     * @param message The JMS message
+     * @return A Ballerina `jms:Error` if the JMS MessageProducer fails to send the message due to some error
+     */
+    public static Object sendTo(BObject producer, BObject session, BMap<BString, BObject> destination,
+                                Message message) {
+        Object nativeProducer = producer.getNativeData(NATIVE_PRODUCER);
+        if (Objects.isNull(nativeProducer)) {
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Could not find the native JMS MessageProducer"),
+                    null, null);
+        }
+        Object nativeSession = session.getNativeData(NATIVE_SESSION);
+        if (Objects.isNull(nativeSession)) {
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Could not find the native JMS session"), null, null);
+        }
+        try {
+            Destination jmsDestination = createJmsDestination((Session) nativeSession, destination);
+            ((MessageProducer) nativeProducer).send(jmsDestination, message);
+        } catch (BallerinaJmsException exception) {
+            BError cause = ErrorCreator.createError(exception);
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString(exception.getMessage()), cause, null);
+        } catch (JMSException exception) {
+            BError cause = ErrorCreator.createError(exception);
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Error occurred while initializing the JMS MessageProducer"),
+                    cause, null);
+        }
+        return null;
     }
 }
