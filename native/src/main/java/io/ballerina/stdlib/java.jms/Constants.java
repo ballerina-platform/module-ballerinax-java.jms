@@ -105,13 +105,6 @@ public class Constants {
     static final String DUPS_OK_ACKNOWLEDGE_MODE = "DUPS_OK_ACKNOWLEDGE";
     static final String SESSION_TRANSACTED_MODE = "SESSION_TRANSACTED";
 
-    static final String TEXT_MESSAGE_BAL_OBJECT_NAME = "TextMessage";
-    static final String MESSAGE_BAL_OBJECT_NAME = "Message";
-    static final String MAP_MESSAGE_BAL_OBJECT_NAME = "MapMessage";
-    static final String BYTE_MESSAGE_BAL_OBJECT_NAME = "BytesMessage";
-    static final String STREAM_MESSAGE_BAL_OBJECT_NAME = "StreamMessage";
-
-
     // Native properties in respective ballerina objects
     static final String NATIVE_CONNECTION = "connection";
     static final String NATIVE_SESSION = "session";
@@ -119,6 +112,8 @@ public class Constants {
     static final String NATIVE_CONSUMER = "consumer";
 
     static final String NATIVE_MESSAGE = "message";
+
+    // Ballerina JMS message types
     static final String MESSAGE_BAL_RECORD_NAME = "Message";
     static final String TEXT_MESSAGE_BAL_RECORD_NAME = "TextMessage";
     static final String MAP_MESSAGE_BAL_RECORD_NAME = "MapMessage";
