@@ -51,7 +51,7 @@ public isolated client class Session {
     #
     # + consumerOptions - The relevant consumer configurations
     # + return - Returns a jms:MessageConsumer
-    public isolated function createConsumer(ConsumerOptions consumerOptions) returns MessageConsumer|Error {
+    public isolated function createConsumer(*ConsumerOptions consumerOptions) returns MessageConsumer|Error {
         return new MessageConsumer(self, consumerOptions);
     }
 
