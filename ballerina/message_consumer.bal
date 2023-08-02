@@ -47,7 +47,6 @@ public type ConsumerOptions record {|
 
 # JMS Message Consumer client object to receive messages from both queues and topics.
 public isolated client class MessageConsumer {
-    private final handle jmsConsumer = JAVA_NULL;
 
     isolated function init(Session session, *ConsumerOptions consumerOptions) returns Error? {
         return self.externInit(session, consumerOptions);
