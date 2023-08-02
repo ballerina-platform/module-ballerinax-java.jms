@@ -16,6 +16,15 @@
 
 import ballerina/jballerina.java;
 
+# Represent the JMS destination.
+#
+# + 'type - JMS destination types  
+# + name - Name of the destination
+public type JmsDestination readonly & record {|
+    JmsDestinationType 'type;
+    string name?;
+|};
+
 # Represent the JMS destination
 public type Destination distinct object {
     
