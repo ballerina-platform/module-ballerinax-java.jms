@@ -31,7 +31,17 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.jms.*;
+import javax.jms.BytesMessage;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MapMessage;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TemporaryQueue;
+import javax.jms.TemporaryTopic;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
 
 /**
  * {@code CommonUtils} contains the common utility functions for the Ballerina JMS connector.

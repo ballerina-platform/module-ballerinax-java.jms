@@ -25,10 +25,10 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 
+import java.util.Objects;
+
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
-
-import java.util.Objects;
 
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONSUMER;
