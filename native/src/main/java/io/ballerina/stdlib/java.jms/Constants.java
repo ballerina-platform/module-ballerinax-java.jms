@@ -33,19 +33,8 @@ import javax.naming.Context;
  * @since 0.8.0
  */
 public class Constants {
-
-    static final String ORG = "ballerina";
-    static final String PACKAGE_NAME = "java.jms";
-    public static final String VERSION = "0.99.0";
-
     // Error names for JMS package
     public static final String JMS_ERROR = "Error";
-
-    // Destination types
-    public static final String DESTINATION_TYPE_QUEUE = "queue";
-    public static final String DESTINATION_TYPE_TOPIC = "topic";
-    public static final String DESTINATION_TYPE_TEMP_QUEUE = "temporaryQueue";
-    public static final String DESTINATION_TYPE_TEMP_TOPIC = "temporaryTopic";
 
     public static final String CONFIG_FILE_PATH = "configFilePath";
 
