@@ -81,6 +81,39 @@ public class JmsSession {
         }
     }
 
+    /**
+     * Unsubscribes a durable subscription that has been created by a client.
+     *
+     * @param session Ballerina session object
+     * @param subscriptionId Subscriber ID
+     * @return A Ballerina `jms:Error` if the session fails to unsubscribe to the durable subscription due to some
+     * internal error.
+     */
+    public static Object unsubscribe(BObject session, BString subscriptionId) {
+        Object nativeSession = session.getNativeData(NATIVE_SESSION);
+        if (Objects.isNull(nativeSession)) {
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Could not find the native JMS session"), null, null);
+        }
+        try {
+            ((Session) nativeSession).unsubscribe(subscriptionId.getValue());
+        } catch (JMSException exception) {
+            BError cause = ErrorCreator.createError(exception);
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString(String.format("Error while creating session: %s", exception.getMessage())),
+                    cause, null);
+        }
+        return null;
+    }
+
+    /**
+     * Creates a JMS message.
+     *
+     * @param session Ballerina session object
+     * @param messageType JMS message type
+     * @return {@link javax.jms.Message} or Ballerina `jms:Error` if the JMS provider fails to create this message due
+     * to some internal error.
+     */
     public static Object createJmsMessage(BObject session, BString messageType) {
         Object nativeSession = session.getNativeData(NATIVE_SESSION);
         if (Objects.isNull(nativeSession)) {
@@ -100,8 +133,8 @@ public class JmsSession {
         } catch (JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error while creating session: %s", exception.getMessage())),
-                    cause, null);
+                    StringUtils.fromString(String.format("Error while creating JMS message: %s",
+                            exception.getMessage())), cause, null);
         }
     }
 }
