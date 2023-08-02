@@ -75,6 +75,11 @@ public type BytesMessage record {|
     byte[] content;
 |};
 
+isolated function externWriteText(handle message, handle value) returns error? = @java:Method {
+    name: "setText",
+    'class: "javax.jms.TextMessage"
+} external;
+
 isolated function externWriteBytes(handle message, byte[] value) returns error? = @java:Method {
     name: "writeBytes",
     'class: "io.ballerina.stdlib.java.jms.JmsBytesMessageUtils"
