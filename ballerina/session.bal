@@ -14,7 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/log;
 import ballerina/jballerina.java;
 
 # Represents the JMS session.
@@ -100,17 +99,14 @@ public isolated client class Session {
 
     # Creates a MessageProducer to send messages to the specified destination.
     #
-    # + destination - the Destination to send to, or nil if this is a producer which does not have a specified destination
+    # + destination - The Destination to send to, or nil if this is a producer which does not have a specified destination
     # + return - Returns jms:MessageProducer
-    public isolated function createProducer(Destination? destination = ()) returns MessageProducer|error {
-        handle jmsDestination = (destination is Destination) ? destination.getJmsDestination() : JAVA_NULL;
-        handle|error v = createJmsProducer(self.jmsSession, jmsDestination);
-        if (v is handle) {
-            return new MessageProducer(self, ());
-        } else {
-            log:printError("Error occurred while creating producer");
-            return v;
+    public isolated function createProducer(JmsDestination? destination = ()) returns MessageProducer|Error {
+        MessageProducer|error producer = check new(self, destination);
+        if producer is error {
+            return error Error(producer.message(), 'cause = producer);
         }
+        return producer;
     }
 
     # Creates a MessageConsumer for the specified destination. Both Queue and Topic can be used in 
@@ -254,11 +250,6 @@ isolated function createJmsSession(handle connection, handle acknowledgmentMode)
 
 isolated function unsubscribeJmsSubscription(handle session, handle subscriptionId) returns error? = @java:Method {
     name: "unsubscribe",
-    'class: "javax.jms.Session"
-} external;
-
-isolated function createJmsProducer(handle session, handle jmsDestination) returns handle|error = @java:Method {
-    name: "createProducer",
     'class: "javax.jms.Session"
 } external;
 
