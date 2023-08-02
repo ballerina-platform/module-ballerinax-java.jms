@@ -18,13 +18,13 @@
 #
 # + 'type - JMS destination types  
 # + name - Name of the destination
-public type JmsDestination readonly & record {|
-    JmsDestinationType 'type;
+public type Destination readonly & record {|
+    DestinationType 'type;
     string name?;
 |};
 
 # Defines the supported JMS destination types.
-public enum JmsDestinationType {
+public enum DestinationType {
     # Represents JMS Queue
     QUEUE = "QUEUE", 
     # Represents JMS Temporary Queue

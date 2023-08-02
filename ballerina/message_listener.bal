@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/jballerina.java;
-import ballerina/log;
 
 # The JMS service type.
 public type Service distinct service object {
@@ -26,11 +25,7 @@ public type Service distinct service object {
 #
 # + connectionConfig - Configurations related to the broker connection  
 # + acknowledgementMode - Configuration indicating how messages received by the session will be acknowledged
-# + destination - Name of the JMS destination
-# + messageSelector - only messages with properties matching the message selector expression are added to the durable subscription. 
-#                     An empty string indicates that there is no message selector for the durable subscription.
-# + noLocal - if true then any messages published to the topic using this session's connection, or any other connection 
-#             with the same client identifier, will not be added to the durable subscription.
+# + consumerOptions - Underlying JMS message consumer configurations
 public type MessageListenerConfigurations record {|
     ConnectionConfiguration connectionConfig;
     AcknowledgementMode acknowledgementMode = AUTO_ACKNOWLEDGE;

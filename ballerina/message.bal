@@ -35,11 +35,11 @@ public type Message record {
     int timestamp?;
     string correlationId?;
     record {|
-        JmsDestinationType 'type;
+        DestinationType 'type;
         string name?;
     |} replyTo?;
     record {|
-        JmsDestinationType 'type;
+        DestinationType 'type;
         string name?;
     |} destination?;
     int deliveryMode?;

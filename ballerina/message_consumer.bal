@@ -39,7 +39,7 @@ public enum ConsumerType {
 # + subscriberName - the name used to identify the subscription 
 public type ConsumerOptions record {|
     ConsumerType 'type = DEFAULT;
-    JmsDestination destination;
+    Destination destination;
     string messageSelector = "";
     boolean noLocal = false;
     string subscriberName?;

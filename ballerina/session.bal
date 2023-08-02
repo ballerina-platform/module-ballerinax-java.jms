@@ -43,7 +43,7 @@ public isolated client class Session {
     #
     # + destination - The Destination to send to, or nil if this is a producer which does not have a specified destination
     # + return - Returns jms:MessageProducer
-    public isolated function createProducer(JmsDestination? destination = ()) returns MessageProducer|Error {
+    public isolated function createProducer(Destination? destination = ()) returns MessageProducer|Error {
         return new MessageProducer(self, destination);
     }
 

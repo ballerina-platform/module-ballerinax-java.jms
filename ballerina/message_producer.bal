@@ -20,12 +20,12 @@ import ballerina/jballerina.java;
 public isolated client class MessageProducer {
     private final Session session;
 
-    isolated function init(Session session, JmsDestination? destination = ()) returns Error? {
+    isolated function init(Session session, Destination? destination = ()) returns Error? {
         self.session = session;
         return self.externInit(session, destination);
     }
 
-    isolated function externInit(Session session, JmsDestination? destination) returns Error? = @java:Method {
+    isolated function externInit(Session session, Destination? destination) returns Error? = @java:Method {
         name: "init",
         'class: "io.ballerina.stdlib.java.jms.JmsProducer"
     } external;
@@ -49,12 +49,12 @@ public isolated client class MessageProducer {
     # + destination - Destination used for the message sender
     # + message - Message to be sent to the JMS provider
     # + return - Error if sending to the given destination fails
-    isolated remote function sendTo(JmsDestination destination, Message message) returns Error? {
+    isolated remote function sendTo(Destination destination, Message message) returns Error? {
         handle jmsMessage = check getJmsMessage(self.session, message);
         return self.externSendTo(self.session, destination, jmsMessage);
     }
 
-    isolated function externSendTo(Session session, JmsDestination destination, handle message) 
+    isolated function externSendTo(Session session, Destination destination, handle message) 
         returns Error? = @java:Method {
         name: "sendTo",
         'class: "io.ballerina.stdlib.java.jms.JmsProducer"
