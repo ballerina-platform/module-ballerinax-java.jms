@@ -34,9 +34,3 @@ public enum JmsDestinationType {
     # Represents JMS Temporary Topic
     TEMPORARY_TOPIC = "TEMPORARY_TOPIC"
 }
-
-# Represent the JMS destination
-public type Destination distinct object {
-    
-    isolated function getJmsDestination() returns handle;
-};
