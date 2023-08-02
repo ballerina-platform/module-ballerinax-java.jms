@@ -31,26 +31,55 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.jms.BytesMessage;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.Queue;
-import javax.jms.TemporaryQueue;
-import javax.jms.TemporaryTopic;
-import javax.jms.TextMessage;
-import javax.jms.Topic;
+import javax.jms.*;
 
 /**
  * {@code CommonUtils} contains the common utility functions for the Ballerina JMS connector.
  */
 public class CommonUtils {
+    private static final BString DESTINATION_TYPE = StringUtils.fromString("type");
+    private static final BString DESTINATION_NAME = StringUtils.fromString("name");
+    private static final String QUEUE = "QUEUE";
+    private static final String TEMPORARY_QUEUE = "TEMPORARY_QUEUE";
+    private static final String TOPIC = "TOPIC";
+
     public static Optional<String> getOptionalStringProperty(BMap<BString, Object> config, BString fieldName) {
         if (config.containsKey(fieldName)) {
             return Optional.of(config.getStringValue(fieldName).getValue());
         }
         return Optional.empty();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Destination getDestinationOrNull(Session session, Object destination)
+            throws JMSException, BallerinaJmsException {
+        if (Objects.isNull(destination)) {
+            return null;
+        }
+
+        return getDestination(session, (BMap<BString, Object>) destination);
+    }
+
+    public static Destination getDestination(Session session, BMap<BString, Object> destinationConfig)
+            throws BallerinaJmsException, JMSException {
+        String destinationType = destinationConfig.getStringValue(DESTINATION_TYPE).getValue();
+        Optional<String> destinationNameOpt = getOptionalStringProperty(destinationConfig, DESTINATION_NAME);
+        if (QUEUE.equals(destinationType) || TOPIC.equals(destinationType)) {
+            if (destinationNameOpt.isEmpty()) {
+                throw new BallerinaJmsException(
+                        String.format("JMS destination name can not be empty for destination type: %s", destinationType)
+                );
+            }
+        }
+        if (QUEUE.equals(destinationType)) {
+            return session.createQueue(destinationNameOpt.get());
+        } else if (TEMPORARY_QUEUE.equals(destinationType)) {
+            return session.createTemporaryQueue();
+        } else if (TOPIC.equals(destinationType)) {
+            return session.createTopic(destinationNameOpt.get());
+        } else {
+            return session.createTemporaryTopic();
+        }
     }
 
     public static BMap<BString, Object> getBallerinaMessage(Message message)
