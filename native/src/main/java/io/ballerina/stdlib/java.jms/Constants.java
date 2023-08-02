@@ -123,8 +123,6 @@ public class Constants {
     static final BString MESSAGE_ID = StringUtils.fromString("messageId");
     static final BString TIMESTAMP = StringUtils.fromString("timestamp");
     static final BString CORRELATION_ID = StringUtils.fromString("correlationId");
-    static final BString TYPE = StringUtils.fromString("'type");
-    static final BString NAME = StringUtils.fromString("name");
     static final BString REPLY_TO = StringUtils.fromString("replyTo");
     static final BString DESTINATION = StringUtils.fromString("destination");
     static final BString DELIVERY_MODE = StringUtils.fromString("deliveryMode");

@@ -131,22 +131,21 @@ public class CommonUtils {
     }
 
     private static BMap<BString, Object> getJmsDestinationField(Destination destination) throws JMSException {
-        BMap<BString, Object> destRecord = ValueCreator.createRecordValue(
-                ModuleUtils.getModule(), "Destination");
+        BMap<BString, Object> values = ValueCreator.createMapValue();
         if (destination instanceof TemporaryQueue) {
-            destRecord.put(Constants.TYPE, Constants.TEMPORARY_QUEUE);
+            values.put(DESTINATION_TYPE, Constants.TEMPORARY_QUEUE);
         } else if (destination instanceof Queue) {
             String queueName = ((Queue) destination).getQueueName();
-            destRecord.put(Constants.TYPE, Constants.QUEUE);
-            destRecord.put(Constants.NAME, StringUtils.fromString(queueName));
+            values.put(DESTINATION_TYPE, Constants.QUEUE);
+            values.put(DESTINATION_NAME, StringUtils.fromString(queueName));
         } else if (destination instanceof TemporaryTopic) {
-            destRecord.put(Constants.TYPE, Constants.TEMPORARY_TOPIC);
+            values.put(DESTINATION_TYPE, Constants.TEMPORARY_TOPIC);
         } else {
             String topicName = ((Topic) destination).getTopicName();
-            destRecord.put(Constants.TYPE, Constants.TOPIC);
-            destRecord.put(Constants.NAME, StringUtils.fromString(topicName));
+            values.put(DESTINATION_TYPE, Constants.TOPIC);
+            values.put(DESTINATION_NAME, StringUtils.fromString(topicName));
         }
-        return destRecord;
+        return ValueCreator.createReadonlyRecordValue(ModuleUtils.getModule(), "Destination", values);
     }
 
     @SuppressWarnings("unchecked")
