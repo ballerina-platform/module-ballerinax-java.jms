@@ -22,19 +22,7 @@ public type Service distinct service object {
     // remote function onMessage(jms:Message message, jms:Caller caller) returns error?;
 };
 
-# Defines the supported JMS destination types.
-public enum JmsDestinationType {
-    # Represents JMS Queue
-    QUEUE = "QUEUE", 
-    # Represents JMS Temporary Queue
-    TEMPORARY_QUEUE = "TEMPORARY_QUEUE", 
-    # Represents JMS Topic
-    TOPIC = "TOPIC", 
-    # Represents JMS Temporary Topic
-    TEMPORARY_TOPIC = "TEMPORARY_TOPIC"
-}
-
-# Message consumer configurations.
+# Message consumer listener configurations.
 #
 # + connectionConfig - Configurations related to the broker connection  
 # + acknowledgementMode - Configuration indicating how messages received by the session will be acknowledged
@@ -46,10 +34,7 @@ public enum JmsDestinationType {
 public type ConsumerConfiguration record {|
     ConnectionConfiguration connectionConfig;
     AcknowledgementMode acknowledgementMode = AUTO_ACKNOWLEDGE;
-    record {|
-        JmsDestinationType 'type;
-        string name?;
-    |} destination;
+    JmsDestination destination;
     string messageSelector = "";
     boolean noLocal = false;
 |};
@@ -64,8 +49,7 @@ public isolated class Listener {
     public isolated function init(*ConsumerConfiguration consumerConfig) returns error? {
         Connection connection = check new (consumerConfig.connectionConfig);
         Session session = check connection->createSession(consumerConfig.acknowledgementMode);
-        Destination destination = check createJmsDestination(
-            session, consumerConfig.destination.'type, consumerConfig.destination?.name);
+        Destination destination = check createJmsDestination(session, consumerConfig.destination);
         self.consumer = check session.createConsumer(
             destination, consumerConfig.messageSelector, consumerConfig.noLocal);
     }
@@ -118,7 +102,9 @@ public isolated class Listener {
     }
 }
 
-isolated function createJmsDestination(Session session, JmsDestinationType 'type, string? name) returns Destination|error {
+isolated function createJmsDestination(Session session, JmsDestination destination) returns Destination|error {
+    JmsDestinationType 'type = destination.'type;
+    string? name = destination.name;
     if 'type is TEMPORARY_QUEUE || 'type is TEMPORARY_TOPIC {
         if name is string {
             log:printWarn("Temporary JSM destinations does not support naming");

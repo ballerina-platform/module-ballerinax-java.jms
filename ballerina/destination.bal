@@ -25,6 +25,18 @@ public type JmsDestination readonly & record {|
     string name?;
 |};
 
+# Defines the supported JMS destination types.
+public enum JmsDestinationType {
+    # Represents JMS Queue
+    QUEUE = "QUEUE", 
+    # Represents JMS Temporary Queue
+    TEMPORARY_QUEUE = "TEMPORARY_QUEUE", 
+    # Represents JMS Topic
+    TOPIC = "TOPIC", 
+    # Represents JMS Temporary Topic
+    TEMPORARY_TOPIC = "TEMPORARY_TOPIC"
+}
+
 # Represent the JMS destination
 public type Destination distinct object {
     
