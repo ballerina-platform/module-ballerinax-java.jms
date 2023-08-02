@@ -199,6 +199,10 @@ public isolated client class Session {
             return val;
         }
     }
+
+    isolated function createJmsMessage(string messageType) returns handle|Error = @java:Method {
+        'class: "io.ballerina.stdlib.java.jms.JmsSession"
+    } external;
 }
 
 # Defines the JMS session acknowledgement modes.
