@@ -39,6 +39,7 @@ import javax.jms.JMSException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import static io.ballerina.stdlib.java.jms.CommonUtils.getOptionalStringProperty;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONNECTION;
 
@@ -168,14 +169,6 @@ public class JmsConnection {
             }
         }
         configParams.putAll(tempMap);
-    }
-
-    private static Optional<String> getOptionalStringProperty(BMap<BString, BObject> connectionConfigs,
-                                                              BString fieldName) {
-        if (connectionConfigs.containsKey(fieldName)) {
-            return Optional.of(connectionConfigs.getStringValue(fieldName).getValue());
-        }
-        return Optional.empty();
     }
 
     /** Starts (or restarts) a connection's delivery of incoming messages.
