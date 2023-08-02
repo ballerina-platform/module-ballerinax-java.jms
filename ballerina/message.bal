@@ -34,14 +34,8 @@ public type Message record {
     string messageId?;
     int timestamp?;
     string correlationId?;
-    record {|
-        DestinationType 'type;
-        string name?;
-    |} replyTo?;
-    record {|
-        DestinationType 'type;
-        string name?;
-    |} destination?;
+    Destination replyTo?;
+    Destination destination?;
     int deliveryMode?;
     boolean redelivered?;
     string jmsType?;

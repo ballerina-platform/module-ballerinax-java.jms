@@ -131,7 +131,8 @@ public class CommonUtils {
     }
 
     private static BMap<BString, Object> getJmsDestinationField(Destination destination) throws JMSException {
-        BMap<BString, Object> destRecord = ValueCreator.createMapValue();
+        BMap<BString, Object> destRecord = ValueCreator.createRecordValue(
+                ModuleUtils.getModule(), "Destination");
         if (destination instanceof TemporaryQueue) {
             destRecord.put(Constants.TYPE, Constants.TEMPORARY_QUEUE);
         } else if (destination instanceof Queue) {
