@@ -38,6 +38,8 @@ import static io.ballerina.stdlib.java.jms.Constants.NATIVE_SESSION;
  * Representation of {@link javax.jms.Session} with utility methods to invoke as inter-op functions.
  */
 public class JmsSession {
+    private static final String TEXT = "TEXT";
+    private static final String MAP = "MAP";
 
     /**
      * Creates a {@link javax.jms.Session} object with given {@link javax.jms.Connection}.
@@ -76,6 +78,30 @@ public class JmsSession {
             return Session.CLIENT_ACKNOWLEDGE;
         } else {
             return Session.DUPS_OK_ACKNOWLEDGE;
+        }
+    }
+
+    public static Object createJmsMessage(BObject session, BString messageType) {
+        Object nativeSession = session.getNativeData(NATIVE_SESSION);
+        if (Objects.isNull(nativeSession)) {
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Could not find the native JMS session"), null, null);
+        }
+        String jmsMessageType = messageType.getValue();
+        try {
+            // currently ballerina JMS only support `Text`, `Map` and, `Bytes` message types
+            if (TEXT.equals(jmsMessageType)) {
+                return ((Session) nativeSession).createTextMessage();
+            } else if (MAP.equals(jmsMessageType)) {
+                return ((Session) nativeSession).createMapMessage();
+            } else {
+                return ((Session) nativeSession).createBytesMessage();
+            }
+        } catch (JMSException exception) {
+            BError cause = ErrorCreator.createError(exception);
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString(String.format("Error while creating session: %s", exception.getMessage())),
+                    cause, null);
         }
     }
 }
