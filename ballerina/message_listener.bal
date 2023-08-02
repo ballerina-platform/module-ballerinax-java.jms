@@ -22,7 +22,7 @@ public type Service distinct service object {
     // remote function onMessage(jms:Message message, jms:Caller caller) returns error?;
 };
 
-# Defines the supported JMS destinations.
+# Defines the supported JMS destination types.
 public enum JmsDestinationType {
     # Represents JMS Queue
     QUEUE = "QUEUE", 
