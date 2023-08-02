@@ -18,16 +18,22 @@ import ballerina/jballerina.java;
 
 # JMS Message Producer client object to send messages to both queues and topics.
 public isolated client class MessageProducer {
-    private final handle jmsProducer;
-    private final handle jmsSession;
+    private final Session session;
+    private final handle jmsProducer = JAVA_NULL;
+    private final handle jmsSession = JAVA_NULL;
 
     # Initialize the Message Producer client object
     #
     # + jmsProducer - reference to java MessageProducer object
-    isolated function init(handle jmsProducer, handle session) returns error? {
-        self.jmsProducer = jmsProducer;
-        self.jmsSession = session;
+    isolated function init(Session session, JmsDestination? destination = ()) returns Error? {
+        self.session = session;
+        return self.externInit(session, destination);
     }
+
+    isolated function externInit(Session session, JmsDestination? destination) returns Error? = @java:Method {
+        name: "init",
+        'class: "io.ballerina.stdlib.java.jms.JmsProducer"
+    } external;
 
     # Sends a message to the JMS provider
     #

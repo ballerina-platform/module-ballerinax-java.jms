@@ -106,7 +106,7 @@ public isolated client class Session {
         handle jmsDestination = (destination is Destination) ? destination.getJmsDestination() : JAVA_NULL;
         handle|error v = createJmsProducer(self.jmsSession, jmsDestination);
         if (v is handle) {
-            return new MessageProducer(v, self.jmsSession);
+            return new MessageProducer(self, ());
         } else {
             log:printError("Error occurred while creating producer");
             return v;
