@@ -61,7 +61,7 @@ public class JmsConnection {
      * @param connectionConfig JMS configurations
      * @return A Ballerina `jms:Error` if the JMS provider fails to create the connection due to some internal error
      */
-    public static Object init(BObject connection, BMap<BString, BObject> connectionConfig) {
+    public static Object init(BObject connection, BMap<BString, Object> connectionConfig) {
         try {
             Connection jmsConnection = createJmsConnection(connectionConfig);
             if (jmsConnection.getClientID() == null) {
@@ -83,7 +83,7 @@ public class JmsConnection {
         return null;
     }
 
-    private static Connection createJmsConnection(BMap<BString, BObject> connectionConfigs)
+    private static Connection createJmsConnection(BMap<BString, Object> connectionConfigs)
             throws BallerinaJmsException {
         String connectionFactoryName = connectionConfigs.getStringValue(CONNECTION_FACTORY_NAME).getValue();
         Properties properties = getConnectionProperties(connectionConfigs, connectionFactoryName);
@@ -108,7 +108,7 @@ public class JmsConnection {
     }
 
     @SuppressWarnings("unchecked")
-    private static Properties getConnectionProperties(BMap<BString, BObject> connectionConfigs,
+    private static Properties getConnectionProperties(BMap<BString, Object> connectionConfigs,
                                                       String connectionFactoryName) throws BallerinaJmsException {
         Map<String, String> configProperties = new HashMap<>();
 

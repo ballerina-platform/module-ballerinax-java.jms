@@ -10,7 +10,7 @@ import java.util.Optional;
  * {@code CommonUtils} contains the common utility functions related to JMS interop functions.
  */
 public class CommonUtils {
-    public static Optional<String> getOptionalStringProperty(BMap<BString, BObject> configs,
+    public static Optional<String> getOptionalStringProperty(BMap<BString, Object> configs,
                                                              BString fieldName) {
         if (configs.containsKey(fieldName)) {
             return Optional.of(configs.getStringValue(fieldName).getValue());

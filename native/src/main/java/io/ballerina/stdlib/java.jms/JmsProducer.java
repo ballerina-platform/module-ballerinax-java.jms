@@ -89,10 +89,10 @@ public class JmsProducer {
             return null;
         }
 
-        return createJmsDestination(session, (BMap<BString, BObject>) destination);
+        return createJmsDestination(session, (BMap<BString, Object>) destination);
     }
 
-    private static Destination createJmsDestination(Session session, BMap<BString, BObject> destinationConfig)
+    private static Destination createJmsDestination(Session session, BMap<BString, Object> destinationConfig)
             throws BallerinaJmsException, JMSException {
         String destinationType = destinationConfig.getStringValue(DESTINATION_TYPE).getValue();
         Optional<String> destinationNameOpt = getOptionalStringProperty(destinationConfig, DESTINATION_NAME);
@@ -149,7 +149,7 @@ public class JmsProducer {
      * @param message The JMS message
      * @return A Ballerina `jms:Error` if the JMS MessageProducer fails to send the message due to some error
      */
-    public static Object sendTo(BObject producer, BObject session, BMap<BString, BObject> destination,
+    public static Object sendTo(BObject producer, BObject session, BMap<BString, Object> destination,
                                 Message message) {
         Object nativeProducer = producer.getNativeData(NATIVE_PRODUCER);
         if (Objects.isNull(nativeProducer)) {
