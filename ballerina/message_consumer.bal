@@ -16,15 +16,40 @@
 
 import ballerina/jballerina.java;
 
+# Defines the supported JMS message consumer types.
+public enum ConsumerType {
+    # Represents JMS durable subscriber
+    DURABLE = "DURABLE", 
+    # Represents JMS shared consumer
+    SHARED = "SHARED", 
+    # Represents JMS shared durable subscriber
+    SHARED_DURABLE = "SHARED_DURABLE", 
+    # Represents JMS default consumer
+    DEFAULT = "DEFAULT"
+}
+
+# Message consumer listener configurations.
+#
+# + type - Message consumer type
+# + destination - Name of the JMS destination
+# + messageSelector - only messages with properties matching the message selector expression are added to the durable subscription. 
+#                     An empty string indicates that there is no message selector for the durable subscription.
+# + noLocal - if true then any messages published to the topic using this session's connection, or any other connection 
+#             with the same client identifier, will not be added to the durable subscription.
+public type ConsumerOptions record {|
+    ConsumerType 'type = DEFAULT;
+    JmsDestination destination;
+    string messageSelector = "";
+    boolean noLocal = false;
+|};
+
 # JMS Message Consumer client object to receive messages from both queues and topics.
 public isolated client class MessageConsumer {
-    private final handle jmsConsumer;
+    private final Session session;
+    private final handle jmsConsumer = JAVA_NULL;
 
-    # Initialize the Message Consumer client object.
-    #
-    # + jmsProducer - reference to java MessageConsumer object
-    isolated function init(handle jmsMessageConsumer) {
-        self.jmsConsumer = jmsMessageConsumer;
+    isolated function init(Session session) {
+        self.session = session;
     }
 
     # Receives the next message that arrives within the specified timeout interval.
