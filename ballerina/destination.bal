@@ -14,34 +14,23 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/jballerina.java;
+# Represent the JMS destination.
+#
+# + 'type - JMS destination types  
+# + name - Name of the destination
+public type Destination readonly & record {|
+    DestinationType 'type;
+    string name?;
+|};
 
-# Represent the JMS destination
-public type Destination distinct object {
-    
-    isolated function getJmsDestination() returns handle;
-};
-
-function getDestination(handle jmsDestination) returns Destination|error {
-    handle jmsDestinationType = getDestinationType(jmsDestination);
-    string? destinationType = java:toString(jmsDestinationType);
-    match destinationType {
-        "queue" => {
-            return new Queue(jmsDestination);
-        }
-        "topic" => {
-            return new Topic(jmsDestination);
-        }
-        "temporaryQueue" => {
-            return new TemporaryQueue(jmsDestination);
-        }
-        "temporaryTopic" => {
-            return new TemporaryTopic(jmsDestination);
-        }
-    }
-    return error Error("Invalid destination type");
+# Defines the supported JMS destination types.
+public enum DestinationType {
+    # Represents JMS Queue
+    QUEUE = "QUEUE", 
+    # Represents JMS Temporary Queue
+    TEMPORARY_QUEUE = "TEMPORARY_QUEUE", 
+    # Represents JMS Topic
+    TOPIC = "TOPIC", 
+    # Represents JMS Temporary Topic
+    TEMPORARY_TOPIC = "TEMPORARY_TOPIC"
 }
-
-function getDestinationType(handle destination) returns handle = @java:Method {
-    'class: "io.ballerina.stdlib.java.jms.JmsDestinationUtils"
-} external;

@@ -33,19 +33,8 @@ import javax.naming.Context;
  * @since 0.8.0
  */
 public class Constants {
-
-    static final String ORG = "ballerina";
-    static final String PACKAGE_NAME = "java.jms";
-    public static final String VERSION = "0.99.0";
-
     // Error names for JMS package
     public static final String JMS_ERROR = "Error";
-
-    // Destination types
-    public static final String DESTINATION_TYPE_QUEUE = "queue";
-    public static final String DESTINATION_TYPE_TOPIC = "topic";
-    public static final String DESTINATION_TYPE_TEMP_QUEUE = "temporaryQueue";
-    public static final String DESTINATION_TYPE_TEMP_TOPIC = "temporaryTopic";
 
     public static final String CONFIG_FILE_PATH = "configFilePath";
 
@@ -116,14 +105,15 @@ public class Constants {
     static final String DUPS_OK_ACKNOWLEDGE_MODE = "DUPS_OK_ACKNOWLEDGE";
     static final String SESSION_TRANSACTED_MODE = "SESSION_TRANSACTED";
 
-    static final String TEXT_MESSAGE_BAL_OBJECT_NAME = "TextMessage";
-    static final String MESSAGE_BAL_OBJECT_NAME = "Message";
-    static final String MAP_MESSAGE_BAL_OBJECT_NAME = "MapMessage";
-    static final String BYTE_MESSAGE_BAL_OBJECT_NAME = "BytesMessage";
-    static final String STREAM_MESSAGE_BAL_OBJECT_NAME = "StreamMessage";
-
+    // Native properties in respective ballerina objects
+    static final String NATIVE_CONNECTION = "connection";
+    static final String NATIVE_SESSION = "session";
+    static final String NATIVE_PRODUCER = "producer";
+    static final String NATIVE_CONSUMER = "consumer";
 
     static final String NATIVE_MESSAGE = "message";
+
+    // Ballerina JMS message types
     static final String MESSAGE_BAL_RECORD_NAME = "Message";
     static final String TEXT_MESSAGE_BAL_RECORD_NAME = "TextMessage";
     static final String MAP_MESSAGE_BAL_RECORD_NAME = "MapMessage";
@@ -133,8 +123,6 @@ public class Constants {
     static final BString MESSAGE_ID = StringUtils.fromString("messageId");
     static final BString TIMESTAMP = StringUtils.fromString("timestamp");
     static final BString CORRELATION_ID = StringUtils.fromString("correlationId");
-    static final BString TYPE = StringUtils.fromString("'type");
-    static final BString NAME = StringUtils.fromString("name");
     static final BString REPLY_TO = StringUtils.fromString("replyTo");
     static final BString DESTINATION = StringUtils.fromString("destination");
     static final BString DELIVERY_MODE = StringUtils.fromString("deliveryMode");
