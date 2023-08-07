@@ -38,7 +38,7 @@ public isolated client class Connection {
     #
     # + ackMode - Configuration indicating how messages received by the session will be acknowledged
     # + return - Returns the Session or an error if it fails.
-    isolated remote function createSession(AcknowledgementMode ackMode = AUTO_ACKNOWLEDGE) returns Session|error {
+    isolated remote function createSession(AcknowledgementMode ackMode = AUTO_ACKNOWLEDGE) returns Session|Error {
         return new Session(self, ackMode);
     }
 
