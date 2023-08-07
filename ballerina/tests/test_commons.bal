@@ -27,12 +27,16 @@ isolated function createSession(AcknowledgementMode acknowledgementMode) returns
     return TEST_CONNECTION->createSession(acknowledgementMode);
 }
 
-isolated function createQueueProducer(Session session, Destination destination) returns MessageProducer|error {
+isolated function createProducer(Session session, Destination destination) returns MessageProducer|error {
     return session.createProducer(destination);
 }
 
-isolated function createProducerWithoutDefaultDestination(Session session) returns MessageProducer|error {
+isolated function createProducerWithoutDestination(Session session) returns MessageProducer|error {
     return session.createProducer();
+}
+
+isolated function createConsumer(Session session, *ConsumerOptions options) returns MessageConsumer|error {
+    return session.createConsumer(options);
 }
 
 @test:AfterSuite {
