@@ -76,6 +76,21 @@ isolated function testTopicWithBytesMessage() returns error? {
     }
 }
 
+@test:Config {
+    groups: ["topic"]
+}
+isolated function testTempTopic() returns error? {
+    MessageProducer tempTopicProducer = check createProducer(AUTO_ACK_SESSION, {
+        'type: TEMPORARY_TOPIC
+    });
+    string content = "This is a sample message";
+    TextMessage message = {
+        content: content
+    };
+    check tempTopicProducer->send(message);
+    check tempTopicProducer->close();
+}
+
 final MessageProducer topicProducerWithoutDestination = check createProducerWithoutDestination(AUTO_ACK_SESSION);
 final MessageConsumer topic2Consumer = check createConsumer(AUTO_ACK_SESSION, destination = {
     'type: TOPIC,
@@ -140,6 +155,21 @@ isolated function testTopicProducerSendToBytesMessage() returns error? {
     if response is BytesMessage {
         test:assertEquals(response.content, content, "Invalid payload");
     }
+}
+
+@test:Config {
+    groups: ["queue"]
+}
+isolated function testTempTopicUsingSendTo() returns error? {
+    MessageProducer tempTopicProducer = check createProducerWithoutDestination(AUTO_ACK_SESSION);
+    string content = "This is a sample message";
+    TextMessage message = {
+        content: content
+    };
+    check tempTopicProducer->sendTo({
+        'type: TEMPORARY_TOPIC
+    }, message);
+    check tempTopicProducer->close();
 }
 
 @test:AfterGroups {
