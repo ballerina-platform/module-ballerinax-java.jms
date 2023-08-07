@@ -49,7 +49,19 @@ public type ConsumerOptions record {|
 public isolated client class MessageConsumer {
 
     isolated function init(Session session, *ConsumerOptions consumerOptions) returns Error? {
+        // todo: this validation should be moved into compiler plugin logic
+        check self.validateConsumerOptions(consumerOptions);
         return self.externInit(session, consumerOptions);
+    }
+
+    isolated function validateConsumerOptions(ConsumerOptions options) returns Error? {
+        if options.'type !is DEFAULT {
+            Destination consumerDestination = options.destination;
+            if consumerDestination.'type !is TOPIC {
+                return error Error(string `Invalid destination type: ${consumerDestination.'type} 
+                    provided for a ${options.'type} consumer`);
+            }
+        }
     }
 
     isolated function externInit(Session session, ConsumerOptions consumerOptions) returns Error? = @java:Method {
