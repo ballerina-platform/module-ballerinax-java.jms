@@ -25,29 +25,29 @@ isolated function testCreateConnectionSuccess() returns error? {
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    check connection->stop();
+    check connection->close();
 }
 
 @test:Config {
     groups: ["connection"]
 }
 isolated function testCreateConnectionInvalidInitialContextFactory() returns error? {
-    Connection|error connection = new (
+    Connection|Error connection = new (
         initialContextFactory = "io.sample.SampleMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    test:assertTrue(connection is error, "Success results retured for an errorneous scenario");
+    test:assertTrue(connection is Error, "Success results retured for an errorneous scenario");
 }
 
 @test:Config {
     groups: ["connection"]
 }
 isolated function testCreateConnectionInvalidProviderUrl() returns error? {
-    Connection|error connection = new (
+    Connection|Error connection = new (
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61615"
     );
-    test:assertTrue(connection is error, "Success results retured for an errorneous scenario");
+    test:assertTrue(connection is Error, "Success results retured for an errorneous scenario");
 }
 
 @test:Config {
@@ -62,7 +62,7 @@ isolated function testConnectionRestart() returns error? {
     runtime:sleep(2);
     check connection->'start();
     runtime:sleep(2);
-    check connection->stop();
+    check connection->close();
 }
 
 @test:Config {
@@ -73,8 +73,6 @@ isolated function testCreateSession() returns error? {
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    Session|error session = connection->createSession();
-    test:assertTrue(session is Session, "Failure results retured for an successful scenario");
-    runtime:sleep(2);
-    check connection->stop();
+    Session session = check connection->createSession();
+    check connection->close();
 }
