@@ -73,7 +73,7 @@ isolated function testCreateSession() returns error? {
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    Session|error session = trap connection->createSession();
+    Session|error session = connection->createSession();
     test:assertTrue(session is Session, "Failure results retured for an successful scenario");
     runtime:sleep(2);
     check connection->stop();
