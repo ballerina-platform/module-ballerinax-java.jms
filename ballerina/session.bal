@@ -69,6 +69,13 @@ public isolated client class Session {
         'class: "io.ballerina.stdlib.java.jms.JmsSession"
     } external;
 
+    # Closes the session.
+    # 
+    # + return - `jms:Error` if there is an error or else nil
+    isolated remote function close() returns Error? = @java:Method {
+        'class: "io.ballerina.stdlib.java.jms.JmsSession"
+    } external;
+
     isolated function createJmsMessage(string messageType) returns handle|Error = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.JmsSession"
     } external;

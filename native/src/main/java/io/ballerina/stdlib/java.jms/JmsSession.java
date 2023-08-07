@@ -185,4 +185,28 @@ public class JmsSession {
         }
         return null;
     }
+
+    /**
+     * Closes the session.
+     *
+     * @param session Ballerina session object
+     * @return {@link javax.jms.Message} or Ballerina `jms:Error` iif the JMS provider fails to close the session due
+     * to some internal error.
+     */
+    public static Object close(BObject session) {
+        Object nativeSession = session.getNativeData(NATIVE_SESSION);
+        if (Objects.isNull(nativeSession)) {
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Could not find the native JMS session"), null, null);
+        }
+        try {
+            ((Session) nativeSession).close();
+        } catch (JMSException exception) {
+            BError cause = ErrorCreator.createError(exception);
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString(String.format("Error while closing the JMS session: %s",
+                            exception.getMessage())), cause, null);
+        }
+        return null;
+    }
 }
