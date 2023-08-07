@@ -16,22 +16,19 @@
 
 import ballerina/test;
 
-final Connection connection = check new (
+final Connection TEST_CONNECTION = check new (
     initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
     providerUrl = "tcp://localhost:61616"
 );
 
-final Session autoAckSession = check createSession("AUTO_ACKNOWLEDGE");
+final Session AUTO_ACK_SESSION = check createSession("AUTO_ACKNOWLEDGE");
 
 isolated function createSession(AcknowledgementMode acknowledgementMode) returns Session|error {
-    return connection->createSession(acknowledgementMode);
+    return TEST_CONNECTION->createSession(acknowledgementMode);
 }
 
-isolated function createQueueProducer(Session session, string queueName) returns MessageProducer|error {
-    return session.createProducer({
-        'type: QUEUE,
-        name: queueName
-    });
+isolated function createQueueProducer(Session session, Destination destination) returns MessageProducer|error {
+    return session.createProducer(destination);
 }
 
 isolated function createProducerWithoutDefaultDestination(Session session) returns MessageProducer|error {
@@ -42,5 +39,5 @@ isolated function createProducerWithoutDefaultDestination(Session session) retur
     alwaysRun: true
 }
 isolated function afterSuite() returns error? {
-    check connection->stop();
+    check TEST_CONNECTION->close();
 }

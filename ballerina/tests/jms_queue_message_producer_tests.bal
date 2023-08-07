@@ -17,7 +17,10 @@
 // import ballerina/log;
 import ballerina/test;
 
-final MessageProducer queueProducer = check createQueueProducer(autoAckSession, "test-queue-1");
+final MessageProducer queueProducer = check createQueueProducer(AUTO_ACK_SESSION, {
+    'type: QUEUE,
+    name: "test-queue-1"
+});
 
 @test:Config {
     groups: ["queueProducer"]
@@ -66,7 +69,7 @@ isolated function testQueueProducerSendToError() returns error? {
     test:assertTrue(result is error, "Success results retured for an errorneous scenario");
 }
 
-final MessageProducer producerWithoutDefaultDestination = check createProducerWithoutDefaultDestination(autoAckSession);
+final MessageProducer producerWithoutDefaultDestination = check createProducerWithoutDefaultDestination(AUTO_ACK_SESSION);
 
 @test:Config {
     groups: ["queueProducer"]
