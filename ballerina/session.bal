@@ -19,7 +19,7 @@ import ballerina/jballerina.java;
 # Represents the JMS session.
 public isolated client class Session {
 
-    isolated function init(Connection connection, AcknowledgementMode ackMode) returns error? {
+    isolated function init(Connection connection, AcknowledgementMode ackMode) returns Error? {
         return self.externInit(connection, ackMode);
     }
 
