@@ -171,7 +171,7 @@ isolated function testQueueProducerSendError() returns error? {
 @test:AfterGroups {
     value: ["queue"]
 }
-isolated function afterQueueProducerTests() returns error? {
+isolated function afterQueueTests() returns error? {
     check queueProducer->close();
     check queue1Consumer->close();
     check queueProducerWithoutDestination->close();
