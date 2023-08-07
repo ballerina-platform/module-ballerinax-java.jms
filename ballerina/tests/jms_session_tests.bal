@@ -76,7 +76,6 @@ isolated function testCreateDefaultQueueConsumer() returns error? {
         'type: QUEUE,
         name: "consumer-create"
     });
-    test:assertTrue(queueConsumer is MessageConsumer);
     check queueConsumer->close();
 }
 
@@ -88,8 +87,91 @@ isolated function testCreateDefaultTopicConsumer() returns error? {
         'type: TOPIC,
         name: "consumer-create"
     });
-    test:assertTrue(topicConsumer is MessageConsumer);
     check topicConsumer->close();
+}
+
+@test:Config {
+    groups: ["session"]
+}
+isolated function testCreateDurableConsumer() returns error? {
+    MessageConsumer durableSubscriber = check autoAckSession.createConsumer(
+        'type = DURABLE,
+        destination = {
+            'type: TOPIC,
+            name: "consumer-create"
+        },
+        subscriberName = "durable-subscriber"
+    );
+    check durableSubscriber->close();
+}
+
+@test:Config {
+    groups: ["session"]
+}
+isolated function testCreateDurableConsumerForQueueError() returns error? {
+    MessageConsumer|Error durableSubscriber = autoAckSession.createConsumer(
+        'type = DURABLE,
+        destination = {
+            'type: QUEUE,
+            name: "consumer-create"
+        },
+        subscriberName = "durable-subscriber"
+    );
+    test:assertTrue(durableSubscriber is Error, "Durable subscription created for a queue");
+    if durableSubscriber is Error {
+        test:assertEquals(durableSubscriber.message(), 
+            "Invalid destination type: QUEUE provided for a DURABLE consumer", 
+            "Invalid error message for consumer-creation");
+    }
+}
+
+@test:Config {
+    groups: ["session"]
+}
+isolated function testCreateDurableConsumerWithoutNameError() returns error? {
+    MessageConsumer|Error durableSubscriber = autoAckSession.createConsumer(
+        'type = DURABLE,
+        destination = {
+            'type: TOPIC,
+            name: "consumer-create"
+        }
+    );
+    test:assertTrue(durableSubscriber is Error, "Durable subscription created withou a subscriber name");
+    if durableSubscriber is Error {
+        test:assertEquals(durableSubscriber.message(), 
+            "Subscriber name cannot be empty for consumer type DURABLE", 
+            "Invalid error message for consumer-creation");
+    }
+}
+
+// @test:Config {
+//     groups: ["session"]
+// }
+isolated function testCreateSharedConsumer() returns error? {
+    MessageConsumer sharedSubscriber = check autoAckSession.createConsumer(
+        'type = SHARED,
+        destination = {
+            'type: TOPIC,
+            name: "consumer-create"
+        },
+        subscriberName = "shared-subscriber"
+    );
+    check sharedSubscriber->close();
+}
+
+// @test:Config {
+//     groups: ["session"]
+// }
+isolated function testCreateSharedDurableConsumer() returns error? {
+    MessageConsumer sharedDurableSubscriber = check autoAckSession.createConsumer(
+        'type = SHARED_DURABLE,
+        destination = {
+            'type: TOPIC,
+            name: "consumer-create"
+        },
+        subscriberName = "shared-subscriber"
+    );
+    check sharedDurableSubscriber->close();
 }
 
 @test:AfterGroups {
