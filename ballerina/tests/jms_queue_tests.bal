@@ -79,6 +79,21 @@ isolated function testQueueWithBytesMessage() returns error? {
 @test:Config {
     groups: ["queue"]
 }
+isolated function testTempQueue() returns error? {
+    MessageProducer tempQueueProducer = check createProducer(AUTO_ACK_SESSION, {
+        'type: TEMPORARY_QUEUE
+    });
+    string content = "This is a sample message";
+    TextMessage message = {
+        content: content
+    };
+    check tempQueueProducer->send(message);
+    check tempQueueProducer->close();
+}
+
+@test:Config {
+    groups: ["queue"]
+}
 isolated function testQueueProducerSendToError() returns error? {
     TextMessage message = {
         content: "This is a sample message"
@@ -141,7 +156,7 @@ isolated function testQueueWithMapMessageUsingSendTo() returns error? {
 @test:Config {
     groups: ["queue"]
 }
-isolated function testQueueProducerSendToBytesMessage() returns error? {
+isolated function testQueueWithBytesMessageUsingSendTo() returns error? {
     byte[] content = "This is a sample message".toBytes();
     BytesMessage message = {
         content: content
@@ -155,6 +170,21 @@ isolated function testQueueProducerSendToBytesMessage() returns error? {
     if response is BytesMessage {
         test:assertEquals(response.content, content, "Invalid payload");
     }
+}
+
+@test:Config {
+    groups: ["queue"]
+}
+isolated function testTempQueueUsingSendTo() returns error? {
+    MessageProducer tempQueueProducer = check createProducerWithoutDestination(AUTO_ACK_SESSION);
+    string content = "This is a sample message";
+    TextMessage message = {
+        content: content
+    };
+    check tempQueueProducer->sendTo({
+        'type: TEMPORARY_QUEUE
+    }, message);
+    check tempQueueProducer->close();
 }
 
 @test:Config {
