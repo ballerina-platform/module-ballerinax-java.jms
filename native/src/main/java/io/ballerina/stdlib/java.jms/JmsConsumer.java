@@ -108,11 +108,12 @@ public class JmsConsumer {
             return session.createConsumer(jmsDestination, messageSelector, noLocal);
         } else if (DURABLE.equals(consumerType)) {
             return session.createDurableSubscriber(
-                    (Topic) destination, subscriberNameOpt.get(), messageSelector, noLocal);
+                    (Topic) jmsDestination, subscriberNameOpt.get(), messageSelector, noLocal);
         } else if (SHARED.equals(consumerType)) {
-            return session.createSharedConsumer((Topic) destination, subscriberNameOpt.get(), messageSelector);
+            return session.createSharedConsumer((Topic) jmsDestination, subscriberNameOpt.get(), messageSelector);
         } else {
-            return session.createSharedDurableConsumer((Topic) destination, subscriberNameOpt.get(), messageSelector);
+            return session.createSharedDurableConsumer(
+                    (Topic) jmsDestination, subscriberNameOpt.get(), messageSelector);
         }
     }
 
