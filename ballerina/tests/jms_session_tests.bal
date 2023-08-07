@@ -16,7 +16,7 @@
 
 import ballerina/test;
 
-final Session autoAckSession = check createSession("AUTO_ACKNOWLEDGE");
+final Session autoAckSession = check createSession(AUTO_ACKNOWLEDGE);
 
 @test:Config {
     groups: ["session"]
@@ -90,4 +90,11 @@ isolated function testCreateDefaultTopicConsumer() returns error? {
     });
     test:assertTrue(topicConsumer is MessageConsumer);
     check topicConsumer->close();
+}
+
+@test:AfterGroups {
+    value: ["session"]
+}
+isolated function afterSessionTests() returns error? {
+    check autoAckSession->close();
 }
