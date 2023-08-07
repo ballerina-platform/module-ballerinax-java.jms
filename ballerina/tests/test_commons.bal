@@ -21,7 +21,7 @@ final Connection TEST_CONNECTION = check new (
     providerUrl = "tcp://localhost:61616"
 );
 
-final Session AUTO_ACK_SESSION = check createSession("AUTO_ACKNOWLEDGE");
+final Session AUTO_ACK_SESSION = check createSession(AUTO_ACKNOWLEDGE);
 
 isolated function createSession(AcknowledgementMode acknowledgementMode) returns Session|error {
     return TEST_CONNECTION->createSession(acknowledgementMode);
@@ -43,5 +43,6 @@ isolated function createConsumer(Session session, *ConsumerOptions options) retu
     alwaysRun: true
 }
 isolated function afterSuite() returns error? {
+    check AUTO_ACK_SESSION->close();
     check TEST_CONNECTION->close();
 }
