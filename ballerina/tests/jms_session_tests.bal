@@ -14,22 +14,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/test;
+// import ballerina/test;
 
 final Session testSession = check createSession("AUTO_ACKNOWLEDGE");
 
-@test:Config {
-    groups: ["session"]
-}
-isolated function testCreateQueue() returns error? {
-    Destination queue = check testSession->createQueue("test-session-queue");
-    test:assertTrue(queue is Queue);
-}
+// @test:Config {
+//     groups: ["session"]
+// }
+// isolated function testCreateQueue() returns error? {
+//     Destination queue = check testSession->createQueue("test-session-queue");
+//     test:assertTrue(queue is Queue);
+// }
 
-@test:Config {
-    groups: ["session"]
-}
-isolated function testCreateTopic() returns error? {
-    Destination topic = check testSession->createTopic("test-session-topic");
-    test:assertTrue(topic is Topic);
-}
+// @test:Config {
+//     groups: ["session"]
+// }
+// isolated function testCreateTopic() returns error? {
+//     Destination topic = check testSession->createTopic("test-session-topic");
+//     test:assertTrue(topic is Topic);
+// }

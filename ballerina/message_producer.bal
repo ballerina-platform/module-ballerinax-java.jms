@@ -18,50 +18,73 @@ import ballerina/jballerina.java;
 
 # JMS Message Producer client object to send messages to both queues and topics.
 public isolated client class MessageProducer {
-    private final handle jmsProducer;
-    private final handle jmsSession;
+    private final Session session;
 
-    # Initialize the Message Producer client object
-    #
-    # + jmsProducer - reference to java MessageProducer object
-    isolated function init(handle jmsProducer, handle session) returns error? {
-        self.jmsProducer = jmsProducer;
-        self.jmsSession = session;
+    isolated function init(Session session, Destination? destination = ()) returns Error? {
+        self.session = session;
+        return self.externInit(session, destination);
     }
 
-    # Sends a message to the JMS provider
+    isolated function externInit(Session session, Destination? destination) returns Error? = @java:Method {
+        name: "init",
+        'class: "io.ballerina.stdlib.java.jms.JmsProducer"
+    } external;
+
+    # Sends a message to the JMS provider.
     #
     # + message - Message to be sent to the JMS provider
     # + return - Error if unable to send the message to the queue
-    isolated remote function send(Message message) returns error? {
-        handle jmsMessage = check getJmsMessage(self.jmsSession, message);
-        return externSend(self.jmsProducer, jmsMessage);
+    isolated remote function send(Message message) returns Error? {
+        handle jmsMessage = check getJmsMessage(self.session, message);
+        return self.externSend(jmsMessage);
     }
 
-    # Sends a message to a given destination of the JMS provider
+    isolated function externSend(handle message) returns Error? = @java:Method {
+        name: "send",
+        'class: "io.ballerina.stdlib.java.jms.JmsProducer"
+    } external;
+
+    # Sends a message to a given destination of the JMS provider.
     #
     # + destination - Destination used for the message sender
     # + message - Message to be sent to the JMS provider
     # + return - Error if sending to the given destination fails
-    isolated remote function sendTo(Destination destination, Message message) returns error? {
-        handle jmsMessage = check getJmsMessage(self.jmsSession, message);
-        return externSendTo(self.jmsProducer, destination.getJmsDestination(), jmsMessage);
+    isolated remote function sendTo(Destination destination, Message message) returns Error? {
+        handle jmsMessage = check getJmsMessage(self.session, message);
+        return self.externSendTo(self.session, destination, jmsMessage);
     }
+
+    isolated function externSendTo(Session session, Destination destination, handle message) 
+        returns Error? = @java:Method {
+        name: "sendTo",
+        'class: "io.ballerina.stdlib.java.jms.JmsProducer"
+    } external;
 };
 
-isolated function getJmsMessage(handle session, Message message) returns handle|error {
+isolated function getJmsMessage(Session session, Message message) returns handle|Error {
     if message is TextMessage {
-        return createJmsTextMessageWithText(session, java:fromString(message.content));
+        handle jmsMessage = check session.createJmsMessage("TEXT");
+        error? result = trap externWriteText(jmsMessage, java:fromString(message.content));
+        if result is error {
+            return error Error(result.message());
+        }
+        return jmsMessage;
     } else if message is BytesMessage {
-        handle jmsMessage = check createJmsBytesMessage(session);
-        check externWriteBytes(jmsMessage, message.content);
+        handle jmsMessage = check session.createJmsMessage("BYTES");
+        error? result = trap externWriteBytes(jmsMessage, message.content);
+        if result is error {
+            return error Error(result.message());
+        }
         return jmsMessage;
     } else if message is MapMessage {
-        handle jmsMessage = check createJmsMapMessage(session);
-        check populateMapMessage(jmsMessage, message.content);
+        handle jmsMessage = check session.createJmsMessage("MAP");
+        error? result = trap populateMapMessage(jmsMessage, message.content);
+        if result is error {
+            return error Error(result.message());
+        }
         return jmsMessage;
     }
-    return error ("Unidentified message type");
+    return error Error("Unidentified message type");
 }
 
 isolated function populateMapMessage(handle mapMessage, map<anydata> keyValues) returns error? {
@@ -78,15 +101,3 @@ isolated function populateMapMessage(handle mapMessage, map<anydata> keyValues) 
         }
     }
 }
-
-isolated function externSend(handle messageProducer, handle message) returns error? = @java:Method {
-    name: "send",
-    paramTypes: ["javax.jms.Message"],
-    'class: "javax.jms.MessageProducer"
-} external;
-
-isolated function externSendTo(handle messageProducer, handle destination, handle message) returns error? = @java:Method {
-    name: "send",
-    paramTypes: ["javax.jms.Destination", "javax.jms.Message"],
-    'class: "javax.jms.MessageProducer"
-} external;

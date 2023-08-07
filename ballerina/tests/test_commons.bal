@@ -23,13 +23,15 @@ final Connection connection = check new (
 
 final Session autoAckSession = check createSession("AUTO_ACKNOWLEDGE");
 
-isolated function createSession(string acknowledgementMode) returns Session|error {
-    return connection->createSession({acknowledgementMode: acknowledgementMode});
+isolated function createSession(AcknowledgementMode acknowledgementMode) returns Session|error {
+    return connection->createSession(acknowledgementMode);
 }
 
 isolated function createQueueProducer(Session session, string queueName) returns MessageProducer|error {
-    Destination queue = check createJmsDestination(session, QUEUE, queueName);
-    return session.createProducer(queue);
+    return session.createProducer({
+        'type: QUEUE,
+        name: queueName
+    });
 }
 
 isolated function createProducerWithoutDefaultDestination(Session session) returns MessageProducer|error {
@@ -40,5 +42,5 @@ isolated function createProducerWithoutDefaultDestination(Session session) retur
     alwaysRun: true
 }
 isolated function afterSuite() returns error? {
-    connection->stop();
+    check connection->stop();
 }

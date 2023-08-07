@@ -14,6 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/jballerina.java;
+
 # Represents a JMS caller, which can be used to commit the offsets consumed by the service.
 public isolated client class Caller {
 
@@ -21,7 +23,7 @@ public isolated client class Caller {
     #
     # + message - JMS message record
     # + return - `jms:Error` if there is an error in the execution or else nil
-    isolated remote function acknowledge(Message message) returns Error? {
-        return externConsumerAcknowledge(message);
-    }
+    isolated remote function acknowledge(Message message) returns Error? = @java:Method {
+        'class: "io.ballerina.stdlib.java.jms.JmsConsumer"
+    } external;
 }

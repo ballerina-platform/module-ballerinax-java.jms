@@ -25,7 +25,7 @@ isolated function testCreateConnectionSuccess() returns error? {
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    connection->stop();
+    check connection->stop();
 }
 
 @test:Config {
@@ -58,11 +58,11 @@ isolated function testConnectionRestart() returns error? {
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    connection->stop();
+    check connection->stop();
     runtime:sleep(2);
-    connection->'start();
+    check connection->'start();
     runtime:sleep(2);
-    connection->stop();
+    check connection->stop();
 }
 
 @test:Config {
@@ -73,8 +73,8 @@ isolated function testCreateSession() returns error? {
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    Session|error session = trap connection->createSession({});
+    Session|error session = trap connection->createSession();
     test:assertTrue(session is Session, "Failure results retured for an successful scenario");
     runtime:sleep(2);
-    connection->stop();
+    check connection->stop();
 }

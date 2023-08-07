@@ -18,97 +18,78 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.utils.ValueUtils;
-import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.jms.BytesMessage;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-import javax.jms.MessageConsumer;
 import javax.jms.Queue;
+import javax.jms.Session;
 import javax.jms.TemporaryQueue;
 import javax.jms.TemporaryTopic;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 
 /**
- * Represents {@code javax.jms.MessageConsumer} related utility functions.
+ * {@code CommonUtils} contains the common utility functions for the Ballerina JMS connector.
  */
-public class ConsumerUtils {
-    public static Object receive(MessageConsumer consumer, long timeout) {
-        try {
-            Message message = consumer.receive(timeout);
-            if (Objects.isNull(message)) {
-                return null;
-            }
-            return getBallerinaMessage(message);
-        } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while receiving messages"), cause, null);
-        } catch (BallerinaJmsException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while processing the received messages"),
-                    cause, null);
-        } catch (Exception exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Unknown error occurred while processing the received messages"),
-                    cause, null);
+public class CommonUtils {
+    private static final BString DESTINATION_TYPE = StringUtils.fromString("type");
+    private static final BString DESTINATION_NAME = StringUtils.fromString("name");
+    private static final String QUEUE = "QUEUE";
+    private static final String TEMPORARY_QUEUE = "TEMPORARY_QUEUE";
+    private static final String TOPIC = "TOPIC";
+
+    public static Optional<String> getOptionalStringProperty(BMap<BString, Object> config, BString fieldName) {
+        if (config.containsKey(fieldName)) {
+            return Optional.of(config.getStringValue(fieldName).getValue());
         }
+        return Optional.empty();
     }
 
-    public static Object receiveNoWait(MessageConsumer consumer) {
-        try {
-            Message message = consumer.receiveNoWait();
-            if (Objects.isNull(message)) {
-                return null;
-            }
-            return getBallerinaMessage(message);
-        } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while receiving messages"), cause, null);
-        } catch (BallerinaJmsException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while processing the received messages"),
-                    cause, null);
-        } catch (Exception exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Unknown error occurred while processing the received messages"),
-                    cause, null);
+    @SuppressWarnings("unchecked")
+    public static Destination getDestinationOrNull(Session session, Object destination)
+            throws JMSException, BallerinaJmsException {
+        if (Objects.isNull(destination)) {
+            return null;
         }
+
+        return getDestination(session, (BMap<BString, Object>) destination);
     }
 
-    public static Object acknowledge(BMap<BString, Object> message) {
-        try {
-            Object nativeMessage = message.getNativeData(Constants.NATIVE_MESSAGE);
-            if (Objects.nonNull(nativeMessage)) {
-                ((Message) nativeMessage).acknowledge();
+    public static Destination getDestination(Session session, BMap<BString, Object> destinationConfig)
+            throws BallerinaJmsException, JMSException {
+        String destinationType = destinationConfig.getStringValue(DESTINATION_TYPE).getValue();
+        Optional<String> destinationNameOpt = getOptionalStringProperty(destinationConfig, DESTINATION_NAME);
+        if (QUEUE.equals(destinationType) || TOPIC.equals(destinationType)) {
+            if (destinationNameOpt.isEmpty()) {
+                throw new BallerinaJmsException(
+                        String.format("JMS destination name can not be empty for destination type: %s", destinationType)
+                );
             }
-        } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while sending acknowledgement for the message"),
-                    cause, null);
         }
-        return null;
+        if (QUEUE.equals(destinationType)) {
+            return session.createQueue(destinationNameOpt.get());
+        } else if (TEMPORARY_QUEUE.equals(destinationType)) {
+            return session.createTemporaryQueue();
+        } else if (TOPIC.equals(destinationType)) {
+            return session.createTopic(destinationNameOpt.get());
+        } else {
+            return session.createTemporaryTopic();
+        }
     }
 
     public static BMap<BString, Object> getBallerinaMessage(Message message)
@@ -150,21 +131,21 @@ public class ConsumerUtils {
     }
 
     private static BMap<BString, Object> getJmsDestinationField(Destination destination) throws JMSException {
-        BMap<BString, Object> destRecord = ValueCreator.createMapValue();
+        BMap<BString, Object> values = ValueCreator.createMapValue();
         if (destination instanceof TemporaryQueue) {
-            destRecord.put(Constants.TYPE, Constants.TEMPORARY_QUEUE);
+            values.put(DESTINATION_TYPE, Constants.TEMPORARY_QUEUE);
         } else if (destination instanceof Queue) {
             String queueName = ((Queue) destination).getQueueName();
-            destRecord.put(Constants.TYPE, Constants.QUEUE);
-            destRecord.put(Constants.NAME, StringUtils.fromString(queueName));
+            values.put(DESTINATION_TYPE, Constants.QUEUE);
+            values.put(DESTINATION_NAME, StringUtils.fromString(queueName));
         } else if (destination instanceof TemporaryTopic) {
-            destRecord.put(Constants.TYPE, Constants.TEMPORARY_TOPIC);
+            values.put(DESTINATION_TYPE, Constants.TEMPORARY_TOPIC);
         } else {
             String topicName = ((Topic) destination).getTopicName();
-            destRecord.put(Constants.TYPE, Constants.TOPIC);
-            destRecord.put(Constants.NAME, StringUtils.fromString(topicName));
+            values.put(DESTINATION_TYPE, Constants.TOPIC);
+            values.put(DESTINATION_NAME, StringUtils.fromString(topicName));
         }
-        return destRecord;
+        return ValueCreator.createReadonlyRecordValue(ModuleUtils.getModule(), "Destination", values);
     }
 
     @SuppressWarnings("unchecked")

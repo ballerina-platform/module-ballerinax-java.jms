@@ -15,58 +15,59 @@
 // under the License.
 
 import ballerina/jballerina.java;
-import ballerina/log;
 
 # Represents JMS Connection.
-#
-# + config - Used to store configurations related to a JMS Connection
 public isolated client class Connection {
-    public final readonly & ConnectionConfiguration config;
-    private final handle jmsConnection;
+    private final readonly & ConnectionConfiguration config;
 
-    # JMS Connection constructor
-    public isolated function init(*ConnectionConfiguration connectionConfig) returns error? {
+    # Initialize and starts a JMS connection.
+    #
+    # + connectionConfig - The configurations to be used when initializing the JMS connection
+    # + return - The `jms:Connection` or an `jms:Error` if the initialization failed
+    public isolated function init(*ConnectionConfiguration connectionConfig) returns Error? {
         self.config = connectionConfig.cloneReadOnly();
-        string icf = self.config.initialContextFactory;
-        string providerUrl = self.config.providerUrl;
-        string factoryName = self.config.connectionFactoryName;
-        self.jmsConnection = check createJmsConnection(
-            icf, providerUrl, factoryName, connectionConfig.properties);
+        return self.externInit(connectionConfig);
     }
 
-    # Create a Session object, specifying transacted and acknowledgeMode
+    isolated function externInit(ConnectionConfiguration connectionConfig) returns Error? = @java:Method {
+        name: "init",
+        'class: "io.ballerina.stdlib.java.jms.JmsConnection"
+    } external;
+
+    # Create a Session object, specifying transacted and acknowledgeMode.
     #
-    # + sessionConfig - SessionConfiguration record consist with JMS session config
+    # + ackMode - Configuration indicating how messages received by the session will be acknowledged
     # + return - Returns the Session or an error if it fails.
-    isolated remote function createSession(SessionConfiguration sessionConfig) returns Session|error {
-        return new Session(self.jmsConnection, sessionConfig);
+    isolated remote function createSession(AcknowledgementMode ackMode = AUTO_ACKNOWLEDGE) returns Session|error {
+        return new Session(self, ackMode);
     }
 
     # Starts (or restarts) a connection's delivery of incoming messages.
     # A call to start on a connection that has already been started is ignored.
-    isolated remote function 'start() {
-        error? err = startJmsConnection(self.jmsConnection);
-        if (err is error) {
-            log:printError("Error starting connection", err);
-        }
-
-    }
+    #
+    # + return - A `jms:Error` if threre is an error while starting the connection
+    isolated remote function 'start() returns Error? = @java:Method {
+        name: "start",
+        'class: "io.ballerina.stdlib.java.jms.JmsConnection"
+    } external;
 
     # Temporarily stops a connection's delivery of incoming messages.
     # Delivery can be restarted using the connection's start method.
-    isolated remote function stop() {
-        error? err = stopJmsConnection(self.jmsConnection);
-        if (err is error) {
-            log:printError("Error stopping connection", err);
-        }
-    }
+    #
+    # + return - A `jms:Error` if threre is an error while stopping the connection
+    isolated remote function stop() returns Error? = @java:Method {
+        'class: "io.ballerina.stdlib.java.jms.JmsConnection"
+    } external;
 
-    isolated function getJmsConnection() returns handle {
-        return self.jmsConnection;
-    }
+    # Closes the connection.
+    #
+    # + return - A `jms:Error` if threre is an error while closing the connection
+    isolated remote function close() returns Error? = @java:Method {
+        'class: "io.ballerina.stdlib.java.jms.JmsConnection"
+    } external;
 }
 
-# Configurations related to a JMS connection
+# Configurations related to a JMS connection.
 #
 # + initialContextFactory - JMS provider specific inital context factory
 # + providerUrl - JMS provider specific provider URL used to configure a connection
@@ -78,22 +79,7 @@ public type ConnectionConfiguration record {|
     string initialContextFactory = "wso2mbInitialContextFactory";
     string providerUrl = "amqp://admin:admin@ballerina/default?brokerlist='tcp://localhost:5672'";
     string connectionFactoryName = "ConnectionFactory";
-    string? username = ();
-    string? password = ();
+    string username?;
+    string password?;
     map<string> properties = {};
 |};
-
-isolated function createJmsConnection(string initialContextFactory, string providerUrl, 
-    string connectionFactoryName, map<string> otherPropeties) returns handle|error = @java:Method {
-    'class: "io.ballerina.stdlib.java.jms.JmsConnectionUtils"
-} external;
-
-isolated function startJmsConnection(handle jmsConnection) returns error? = @java:Method {
-    name: "start",
-    'class: "javax.jms.Connection"
-} external;
-
-isolated function stopJmsConnection(handle jmsConnection) returns error? = @java:Method {
-    name: "stop",
-    'class: "javax.jms.Connection"
-} external;

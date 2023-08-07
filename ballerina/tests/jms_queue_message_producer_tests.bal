@@ -56,11 +56,13 @@ isolated function testQueueProducerSendBytesMessage() returns error? {
     groups: ["queueProducer"]
 }
 isolated function testQueueProducerSendToError() returns error? {
-    Destination queue = check createJmsDestination(autoAckSession, QUEUE, "unsupported-queue");
     TextMessage message = {
         content: "This is a sample message"
     };
-    error? result = trap queueProducer->sendTo(queue, message);
+    error? result = trap queueProducer->sendTo({
+        'type: QUEUE,
+        name: "unsupported-queue"
+    }, message);
     test:assertTrue(result is error, "Success results retured for an errorneous scenario");
 }
 
@@ -73,8 +75,10 @@ isolated function testQueueProducerSendToTextMessage() returns error? {
     TextMessage message = {
         content: "This is a sample message"
     };
-    Destination queue = check createJmsDestination(autoAckSession, QUEUE, "test-queue-2");
-    check producerWithoutDefaultDestination->sendTo(queue, message);
+    check producerWithoutDefaultDestination->sendTo({
+        'type: QUEUE,
+        name: "test-queue-2"
+    }, message);
 }
 
 @test:Config {
@@ -87,8 +91,10 @@ isolated function testQueueProducerSendToMapMessage() returns error? {
             "message": "This is a sample message"
         }
     };
-    Destination queue = check createJmsDestination(autoAckSession, QUEUE, "test-queue-2");
-    check producerWithoutDefaultDestination->sendTo(queue, message);
+    check producerWithoutDefaultDestination->sendTo({
+        'type: QUEUE,
+        name: "test-queue-2"
+    }, message);
 }
 
 @test:Config {
@@ -98,8 +104,10 @@ isolated function testQueueProducerSendToBytesMessage() returns error? {
     BytesMessage message = {
         content: "This is a sample message".toBytes()
     };
-    Destination queue = check createJmsDestination(autoAckSession, QUEUE, "test-queue-2");
-    check producerWithoutDefaultDestination->sendTo(queue, message);
+    check producerWithoutDefaultDestination->sendTo({
+        'type: QUEUE,
+        name: "test-queue-2"
+    }, message);
 }
 
 @test:Config {

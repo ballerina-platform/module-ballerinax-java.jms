@@ -34,14 +34,8 @@ public type Message record {
     string messageId?;
     int timestamp?;
     string correlationId?;
-    record {|
-        JmsDestinationType 'type;
-        string name?;
-    |} replyTo?;
-    record {|
-        JmsDestinationType 'type;
-        string name?;
-    |} destination?;
+    Destination replyTo?;
+    Destination destination?;
     int deliveryMode?;
     boolean redelivered?;
     string jmsType?;
@@ -75,9 +69,14 @@ public type BytesMessage record {|
     byte[] content;
 |};
 
+isolated function externWriteText(handle message, handle value) returns error? = @java:Method {
+    name: "setText",
+    'class: "javax.jms.TextMessage"
+} external;
+
 isolated function externWriteBytes(handle message, byte[] value) returns error? = @java:Method {
     name: "writeBytes",
-    'class: "io.ballerina.stdlib.java.jms.JmsBytesMessageUtils"
+    'class: "io.ballerina.stdlib.java.jms.JmsBytesMessage"
 } external;
 
 isolated function externSetBoolean(handle message, handle name, boolean value) returns error? = @java:Method {

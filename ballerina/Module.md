@@ -33,7 +33,7 @@ public function main() returns error? {
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+    jms:Session session = check connection->createSession();
     jms:Destination queue = check session->createQueue("MyQueue");
     jms:MessageProducer producer = check session.createProducer(queue);
     jms:TextMessage msg = {
@@ -55,7 +55,7 @@ public function main() returns error? {
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    jms:Session session = check connection->createSession({acknowledgementMode: "AUTO_ACKNOWLEDGE"});
+    jms:Session session = check connection->createSession();
     jms:Destination queue = check session->createQueue("MyQueue");
     jms:MessageConsumer consumer = check session.createConsumer(queue);
 
@@ -83,10 +83,7 @@ service "consumer-service" on new jms:Listener(
     connectionConfig = {
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl: "tcp://localhost:61616"
-    },
-    sessionConfig = {
-        acknowledgementMode: "AUTO_ACKNOWLEDGE"
-    },
+    }
     destination = {
         'type: jms:QUEUE,
         name: "MyQueue"

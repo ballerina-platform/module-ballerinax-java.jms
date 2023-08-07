@@ -42,7 +42,7 @@ import javax.jms.MessageListener;
 
 import static io.ballerina.runtime.api.TypeTags.OBJECT_TYPE_TAG;
 import static io.ballerina.runtime.api.TypeTags.RECORD_TYPE_TAG;
-import static io.ballerina.stdlib.java.jms.ConsumerUtils.getBallerinaMessage;
+import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
 
 /**
  * A {@link javax.jms.MessageListener} implementation.

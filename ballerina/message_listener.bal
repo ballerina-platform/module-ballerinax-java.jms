@@ -15,43 +15,21 @@
 // under the License.
 
 import ballerina/jballerina.java;
-import ballerina/log;
 
 # The JMS service type.
 public type Service distinct service object {
     // remote function onMessage(jms:Message message, jms:Caller caller) returns error?;
 };
 
-# Defines the supported JMS destinations.
-public enum JmsDestinationType {
-    # Represents JMS Queue
-    QUEUE = "QUEUE", 
-    # Represents JMS Temporary Queue
-    TEMPORARY_QUEUE = "TEMPORARY_QUEUE", 
-    # Represents JMS Topic
-    TOPIC = "TOPIC", 
-    # Represents JMS Temporary Topic
-    TEMPORARY_TOPIC = "TEMPORARY_TOPIC"
-}
-
-# Message consumer configurations.
+# Message listener configurations.
 #
 # + connectionConfig - Configurations related to the broker connection  
-# + sessionConfig - Configurations related to the JMS session
-# + destination - Name of the JMS destination
-# + messageSelector - only messages with properties matching the message selector expression are added to the durable subscription. 
-#                     An empty string indicates that there is no message selector for the durable subscription.
-# + noLocal - if true then any messages published to the topic using this session's connection, or any other connection 
-#             with the same client identifier, will not be added to the durable subscription.
-public type ConsumerConfiguration record {|
+# + acknowledgementMode - Configuration indicating how messages received by the session will be acknowledged
+# + consumerOptions - Underlying JMS message consumer configurations
+public type MessageListenerConfigurations record {|
     ConnectionConfiguration connectionConfig;
-    SessionConfiguration sessionConfig;
-    record {|
-        JmsDestinationType 'type;
-        string name?;
-    |} destination;
-    string messageSelector = "";
-    boolean noLocal = false;
+    AcknowledgementMode acknowledgementMode = AUTO_ACKNOWLEDGE;
+    ConsumerOptions consumerOptions;
 |};
 
 # Represents a JMS consumer listener.
@@ -61,13 +39,10 @@ public isolated class Listener {
     # Creates a new `jms:Listener`.
     #
     # + consumer - The relevant JMS consumer.
-    public isolated function init(*ConsumerConfiguration consumerConfig) returns error? {
+    public isolated function init(*MessageListenerConfigurations consumerConfig) returns error? {
         Connection connection = check new (consumerConfig.connectionConfig);
-        Session session = check connection->createSession(consumerConfig.sessionConfig);
-        Destination destination = check createJmsDestination(
-            session, consumerConfig.destination.'type, consumerConfig.destination?.name);
-        self.consumer = check session.createConsumer(
-            destination, consumerConfig.messageSelector, consumerConfig.noLocal);
+        Session session = check connection->createSession(consumerConfig.acknowledgementMode);
+        self.consumer = check new(session, consumerConfig.consumerOptions);
     }
 
     # Attaches a message consumer service to a listener.
@@ -79,7 +54,7 @@ public isolated class Listener {
     # + name - Name of the service.
     # + return - Returns nil or an error upon failure to register the listener.
     public isolated function attach(Service 'service, string[]|string? name = ()) returns Error? {
-        return setMessageListener(self.consumer.getJmsConsumer(), 'service);
+        return setMessageListener(self.consumer, 'service);
     }
 
     # Detaches a message consumer service from the the listener.
@@ -118,36 +93,6 @@ public isolated class Listener {
     }
 }
 
-isolated function createJmsDestination(Session session, JmsDestinationType 'type, string? name) returns Destination|error {
-    if 'type is TEMPORARY_QUEUE || 'type is TEMPORARY_TOPIC {
-        if name is string {
-            log:printWarn("Temporary JSM destinations does not support naming");
-        }
-    }
-    if 'type is QUEUE || 'type is TOPIC {
-        if name is () {
-            return error ("JMS destination name can not be empty");
-        }
-    } 
-    match 'type {
-        QUEUE => {
-            return session->createQueue(<string> name);
-        }
-        TEMPORARY_QUEUE => {
-            return session->createTemporaryQueue();
-        }
-        TOPIC => {
-            return session->createTopic(<string> name);
-        }
-        TEMPORARY_TOPIC => {
-            return session->createTemporaryTopic();
-        }
-        _ => {
-            return error (string `Unidentified JSM destination type: ${'type}`);
-        }
-    }
-}
-
-isolated function setMessageListener(handle jmsConsumer, Service 'service) returns Error? = @java:Method {
+isolated function setMessageListener(MessageConsumer consumer, Service 'service) returns Error? = @java:Method {
     'class: "io.ballerina.stdlib.java.jms.JmsMessageListenerUtils"
 } external;

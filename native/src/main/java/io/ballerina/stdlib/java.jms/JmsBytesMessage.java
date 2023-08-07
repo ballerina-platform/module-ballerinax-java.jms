@@ -18,41 +18,36 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import io.ballerina.runtime.api.Environment;
-import io.ballerina.runtime.api.Runtime;
 import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BError;
-import io.ballerina.runtime.api.values.BObject;
 
-import java.util.Objects;
-
+import javax.jms.BytesMessage;
 import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
 
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
-import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONSUMER;
 
 /**
- * Representation of {@link javax.jms.MessageListener} with utility methods to invoke as inter-op functions.
+ * Representation of {@link javax.jms.BytesMessage} with utility methods to invoke as inter-op functions.
  */
-public class JmsMessageListenerUtils {
+public class JmsBytesMessage {
 
-    public static Object setMessageListener(Environment environment, BObject consumer,
-                                            BObject serviceObject) {
-        Object nativeConsumer = consumer.getNativeData(NATIVE_CONSUMER);
-        if (Objects.isNull(nativeConsumer)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS MessageConsumer"),
-                    null, null);
-        }
-        Runtime bRuntime = environment.getRuntime();
+    /**
+     * Writes a byte array to the bytes message stream.
+     *
+     * @param message {@link javax.jms.BytesMessage} object
+     * @param value   byte[] array as ballerina
+     */
+    public static Object writeBytes(BytesMessage message, BArray value) {
         try {
-            ((MessageConsumer) nativeConsumer).setMessageListener(new JmsListener(serviceObject, bRuntime));
+            byte[] bytes = value.getBytes();
+            message.writeBytes(bytes);
         } catch (JMSException e) {
             BError cause = ErrorCreator.createError(e);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while setting the message listener"), cause, null);
+                    StringUtils.fromString("Error occurred while writing the bytes message."),
+                    cause, null);
         }
         return null;
     }
