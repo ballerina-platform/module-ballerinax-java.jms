@@ -74,6 +74,6 @@ isolated function testCreateSession() returns error? {
         providerUrl = "tcp://localhost:61616"
     );
     Session session = check connection->createSession();
-    test:assertTrue(session is Session);
+    check session->close();
     check connection->close();
 }

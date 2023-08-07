@@ -26,7 +26,7 @@ isolated function testCreateQueueProducer() returns error? {
         'type: QUEUE,
         name: "producer-create"
     });
-    test:assertTrue(queueProducer is MessageProducer);
+    check queueProducer->close();
 }
 
 @test:Config {
@@ -36,7 +36,7 @@ isolated function testCreateTempQueueProducer() returns error? {
     MessageProducer tempQueueProducer = check autoAckSession.createProducer({
         'type: TEMPORARY_QUEUE
     });
-    test:assertTrue(tempQueueProducer is MessageProducer);
+    check tempQueueProducer->close();
 }
 
 @test:Config {
@@ -47,7 +47,7 @@ isolated function testCreateTopicProducer() returns error? {
         'type: TOPIC,
         name: "producer-create"
     });
-    test:assertTrue(topicProducer is MessageProducer);
+    check topicProducer->close();
 }
 
 @test:Config {
@@ -57,7 +57,7 @@ isolated function testCreateTempTopicProducer() returns error? {
     MessageProducer tempTopicProducer = check autoAckSession.createProducer({
         'type: TEMPORARY_TOPIC
     });
-    test:assertTrue(tempTopicProducer is MessageProducer);
+    check tempTopicProducer->close();
 }
 
 @test:Config {
@@ -65,7 +65,7 @@ isolated function testCreateTempTopicProducer() returns error? {
 }
 isolated function testCreateProducerWithoutDestination() returns error? {
     MessageProducer producer = check autoAckSession.createProducer();
-    test:assertTrue(producer is MessageProducer);
+    check producer->close();
 }
 
 @test:Config {
