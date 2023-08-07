@@ -58,8 +58,12 @@ public isolated client class MessageConsumer {
         if options.'type !is DEFAULT {
             Destination consumerDestination = options.destination;
             if consumerDestination.'type !is TOPIC {
-                return error Error(string `Invalid destination type: ${consumerDestination.'type} 
-                    provided for a ${options.'type} consumer`);
+                return error Error(
+                    string `Invalid destination type: ${consumerDestination.'type} provided for a ${options.'type} consumer`);
+            }
+            if options.subscriberName is () {
+                return error Error(
+                    string `Subscriber name cannot be empty for consumer type ${options.'type}`);
             }
         }
     }
