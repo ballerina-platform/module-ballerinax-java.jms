@@ -14,22 +14,56 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// import ballerina/test;
+import ballerina/test;
 
-final Session testSession = check createSession("AUTO_ACKNOWLEDGE");
+final Session autoAckSession = check createSession("AUTO_ACKNOWLEDGE");
 
-// @test:Config {
-//     groups: ["session"]
-// }
-// isolated function testCreateQueue() returns error? {
-//     Destination queue = check testSession->createQueue("test-session-queue");
-//     test:assertTrue(queue is Queue);
-// }
+@test:Config {
+    groups: ["session"]
+}
+isolated function testCreateQueueProducer() returns error? {
+    MessageProducer queueProducer = check autoAckSession.createProducer({
+        'type: QUEUE,
+        name: "producer-create"
+    });
+    test:assertTrue(queueProducer is MessageProducer);
+}
 
-// @test:Config {
-//     groups: ["session"]
-// }
-// isolated function testCreateTopic() returns error? {
-//     Destination topic = check testSession->createTopic("test-session-topic");
-//     test:assertTrue(topic is Topic);
-// }
+@test:Config {
+    groups: ["session"]
+}
+isolated function testCreateTempQueueProducer() returns error? {
+    MessageProducer tempQueueProducer = check autoAckSession.createProducer({
+        'type: TEMPORARY_QUEUE
+    });
+    test:assertTrue(tempQueueProducer is MessageProducer);
+}
+
+@test:Config {
+    groups: ["session"]
+}
+isolated function testCreateTopicProducer() returns error? {
+    MessageProducer topicProducer = check autoAckSession.createProducer({
+        'type: TOPIC,
+        name: "producer-create"
+    });
+    test:assertTrue(topicProducer is MessageProducer);
+}
+
+@test:Config {
+    groups: ["session"]
+}
+isolated function testCreateTempTopicProducer() returns error? {
+    MessageProducer tempTopicProducer = check autoAckSession.createProducer({
+        'type: TEMPORARY_TOPIC
+    });
+    test:assertTrue(tempTopicProducer is MessageProducer);
+}
+
+@test:Config {
+    groups: ["session"]
+}
+isolated function createProducerWithoutDestination() returns error? {
+    MessageProducer producer = check autoAckSession.createProducer();
+    test:assertTrue(producer is MessageProducer);
+}
