@@ -33,8 +33,10 @@ public function main() returns error? {
         providerUrl = "tcp://localhost:61616"
     );
     jms:Session session = check connection->createSession();
-    jms:Destination queue = check session->createQueue("MyQueue");
-    jms:MessageProducer producer = check session.createProducer(queue);
+    jms:MessageProducer producer = check session.createProducer({
+        'type: jms:QUEUE,
+        name: "MyQueue"
+    });
     jms:TextMessage msg = {
         content: "Hello Ballerina!"
     };
@@ -55,9 +57,11 @@ public function main() returns error? {
         providerUrl = "tcp://localhost:61616"
     );
     jms:Session session = check connection->createSession();
-    jms:Destination queue = check session->createQueue("MyQueue");
-    jms:MessageConsumer consumer = check session.createConsumer(queue);
-
+    jms:MessageConsumer consumer = check session.createConsumer(
+        destination = {
+            'type: jms:QUEUE,
+            name: "MyQueue"
+    });
     while true {
         jms:Message? response = check consumer->receive(3000);
         if response is jms:TextMessage {
@@ -82,10 +86,12 @@ service "consumer-service" on new jms:Listener(
     connectionConfig = {
         initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl: "tcp://localhost:61616"
-    }
-    destination = {
-        'type: jms:QUEUE,
-        name: "MyQueue"
+    },
+    consumerOptions = {
+        destination: {
+            'type: jms:QUEUE,
+            name: "MyQueue"
+        }
     }
 ) {
     remote function onMessage(jms:Message message) returns error? {
