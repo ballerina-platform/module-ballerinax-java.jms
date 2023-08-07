@@ -93,7 +93,7 @@ public class JmsProducer {
         }
         try {
             ((MessageProducer) nativeProducer).send(message);
-        } catch (JMSException exception) {
+        } catch (UnsupportedOperationException | JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
                     StringUtils.fromString("Error occurred while sending a message to the JMS provider"),
@@ -132,10 +132,10 @@ public class JmsProducer {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
                     StringUtils.fromString(exception.getMessage()), cause, null);
-        } catch (JMSException exception) {
+        } catch (UnsupportedOperationException | JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while initializing the JMS MessageProducer"),
+                    StringUtils.fromString("Error occurred while sending a message to the JMS provider"),
                     cause, null);
         }
         return null;
