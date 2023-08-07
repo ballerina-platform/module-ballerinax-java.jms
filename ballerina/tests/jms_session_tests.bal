@@ -63,7 +63,31 @@ isolated function testCreateTempTopicProducer() returns error? {
 @test:Config {
     groups: ["session"]
 }
-isolated function createProducerWithoutDestination() returns error? {
+isolated function testCreateProducerWithoutDestination() returns error? {
     MessageProducer producer = check autoAckSession.createProducer();
     test:assertTrue(producer is MessageProducer);
+}
+
+@test:Config {
+    groups: ["session"]
+}
+isolated function testCreateDefaultQueueConsumer() returns error? {
+    MessageConsumer queueConsumer = check autoAckSession.createConsumer(destination = {
+        'type: QUEUE,
+        name: "consumer-create"
+    });
+    test:assertTrue(queueConsumer is MessageConsumer);
+    check queueConsumer->close();
+}
+
+@test:Config {
+    groups: ["session"]
+}
+isolated function testCreateDefaultTopicConsumer() returns error? {
+    MessageConsumer topicConsumer = check autoAckSession.createConsumer(destination = {
+        'type: TOPIC,
+        name: "consumer-create"
+    });
+    test:assertTrue(topicConsumer is MessageConsumer);
+    check topicConsumer->close();
 }
