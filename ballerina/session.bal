@@ -55,6 +55,20 @@ public isolated client class Session {
         return new MessageConsumer(self, consumerOptions);
     }
 
+    # Commits all messages done in this transaction and releases any locks currently held.
+    # 
+    # + return - `jms:Error` if there is an error or else nil
+    isolated remote function 'commit() returns Error? = @java:Method {
+        'class: "io.ballerina.stdlib.java.jms.JmsSession"
+    } external;
+
+    # Rolls back any messages done in this transaction and releases any locks currently held.
+    # 
+    # + return - `jms:Error` if there is an error or else nil
+    isolated remote function 'rollback() returns Error? = @java:Method {
+        'class: "io.ballerina.stdlib.java.jms.JmsSession"
+    } external;
+
     isolated function createJmsMessage(string messageType) returns handle|Error = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.JmsSession"
     } external;
