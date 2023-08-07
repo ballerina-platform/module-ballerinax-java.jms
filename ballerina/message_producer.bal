@@ -59,6 +59,13 @@ public isolated client class MessageProducer {
         name: "sendTo",
         'class: "io.ballerina.stdlib.java.jms.JmsProducer"
     } external;
+
+    # Closes the message producer.
+    # 
+    # + return - `jms:Error` if there is an error or else nil
+    isolated remote function close() returns Error? = @java:Method {
+        'class: "io.ballerina.stdlib.java.jms.JmsProducer"
+    } external;
 };
 
 isolated function getJmsMessage(Session session, Message message) returns handle|Error {
