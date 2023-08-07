@@ -137,4 +137,52 @@ public class JmsSession {
                             exception.getMessage())), cause, null);
         }
     }
+
+    /**
+     * Commits all messages done in this transaction and releases any locks currently held.
+     *
+     * @param session Ballerina session object
+     * @return {@link javax.jms.Message} or Ballerina `jms:Error` if the session is not using a local transaction or
+     * else the JMS provider fails to commit the transaction due to some internal error.
+     */
+    public static Object commit(BObject session) {
+        Object nativeSession = session.getNativeData(NATIVE_SESSION);
+        if (Objects.isNull(nativeSession)) {
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Could not find the native JMS session"), null, null);
+        }
+        try {
+            ((Session) nativeSession).commit();
+        } catch (JMSException exception) {
+            BError cause = ErrorCreator.createError(exception);
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString(String.format("Error while committing the JMS transaction: %s",
+                            exception.getMessage())), cause, null);
+        }
+        return null;
+    }
+
+    /**
+     * Rolls back any messages done in this transaction and releases any locks currently held.
+     *
+     * @param session Ballerina session object
+     * @return {@link javax.jms.Message} or Ballerina `jms:Error` if the session is not using a local transaction or
+     * else the JMS provider fails to roll back the transaction due to some internal error.
+     */
+    public static Object rollback(BObject session) {
+        Object nativeSession = session.getNativeData(NATIVE_SESSION);
+        if (Objects.isNull(nativeSession)) {
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Could not find the native JMS session"), null, null);
+        }
+        try {
+            ((Session) nativeSession).rollback();
+        } catch (JMSException exception) {
+            BError cause = ErrorCreator.createError(exception);
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString(String.format("Error while rolling back the JMS transaction: %s",
+                            exception.getMessage())), cause, null);
+        }
+        return null;
+    }
 }
