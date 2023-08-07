@@ -140,4 +140,28 @@ public class JmsProducer {
         }
         return null;
     }
+
+    /**
+     * Closes the message producer.
+     *
+     * @param producer Ballerina producer object
+     * @return A Ballerina `jms:Error` if the JMS provider fails to close the producer due to some internal error.
+     */
+    public static Object close(BObject producer) {
+        Object nativeProducer = producer.getNativeData(NATIVE_PRODUCER);
+        if (Objects.isNull(nativeProducer)) {
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Could not find the native JMS MessageProducer"),
+                    null, null);
+        }
+        try {
+            ((MessageProducer) nativeProducer).close();
+        } catch (JMSException exception) {
+            BError cause = ErrorCreator.createError(exception);
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString(String.format("Error occurred while closing the message produce: %s",
+                            exception.getMessage())), cause, null);
+        }
+        return null;
+    }
 }
