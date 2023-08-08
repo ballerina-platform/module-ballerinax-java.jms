@@ -62,6 +62,25 @@ isolated function testCreateConnectionInvalidProviderUrl() returns error? {
     }
 }
 
+// @test:Config {
+//     groups: ["connection"]
+// }
+isolated function testCreateConnectionInvalidCredentials() returns error? {
+    Connection|Error connection = new (
+        initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+        providerUrl = "tcp://localhost:61616",
+        username = "testuser",
+        password = "testpassword"
+    );
+    test:assertTrue(connection is Error, 
+        "Connection created with invalid credentials");
+    if connection is Error {
+        test:assertEquals(connection.message(), 
+            "Error occurred while connecting to broker: Could not connect to broker URL: tcp://localhost:61615. Reason: java.net.ConnectException: Connection refused (Connection refused)", 
+            "Invalid connection init error message");
+    }
+}
+
 @test:Config {
     groups: ["connection"]
 }
