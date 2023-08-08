@@ -16,7 +16,7 @@
 
 import ballerina/test;
 
-final MessageProducer topicProducer = check createProducer(AUTO_ACK_SESSION, {
+final MessageProducer topic1Producer = check createProducer(AUTO_ACK_SESSION, {
     'type: TOPIC,
     name: "test-topic-1"
 });
@@ -33,7 +33,7 @@ isolated function testTopicWithTextMessage() returns error? {
     TextMessage message = {
         content: content
     };
-    check topicProducer->send(message);
+    check topic1Producer->send(message);
     Message? response = check topic1Consumer->receive(5000);
     test:assertTrue(response is TextMessage, "Invalid message type received");
     if response is TextMessage {
@@ -52,7 +52,7 @@ isolated function testTopicWithMapMessage() returns error? {
     MapMessage message = {
         content: content
     };
-    check topicProducer->send(message);
+    check topic1Producer->send(message);
     Message? response = check topic1Consumer->receive(5000);
     test:assertTrue(response is MapMessage, "Invalid message type received");
     if response is MapMessage {
@@ -68,7 +68,7 @@ isolated function testTopicWithBytesMessage() returns error? {
     BytesMessage message = {
         content: content
     };
-    check topicProducer->send(message);
+    check topic1Producer->send(message);
     Message? response = check topic1Consumer->receive(5000);
     test:assertTrue(response is BytesMessage, "Invalid message type received");
     if response is BytesMessage {
@@ -176,7 +176,7 @@ isolated function testTempTopicUsingSendTo() returns error? {
     value: ["topic"]
 }
 isolated function afterTopicTests() returns error? {
-    check topicProducer->close();
+    check topic1Producer->close();
     check topic1Consumer->close();
     check topicProducerWithoutDestination->close();
     check topic2Consumer->close();
