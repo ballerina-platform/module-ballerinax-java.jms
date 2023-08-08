@@ -36,7 +36,13 @@ isolated function testCreateConnectionInvalidInitialContextFactory() returns err
         initialContextFactory = "io.sample.SampleMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    test:assertTrue(connection is Error, "Success results retured for an errorneous scenario");
+    test:assertTrue(connection is Error, 
+        "Connection created with invalid initial context factory");
+    if connection is Error {
+        test:assertEquals(connection.message(), 
+            "Error occurred while connecting to broker: Cannot instantiate class: io.sample.SampleMQInitialContextFactory", 
+            "Invalid connection init error message");
+    }
 }
 
 @test:Config {
@@ -47,7 +53,13 @@ isolated function testCreateConnectionInvalidProviderUrl() returns error? {
         initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
         providerUrl = "tcp://localhost:61615"
     );
-    test:assertTrue(connection is Error, "Success results retured for an errorneous scenario");
+    test:assertTrue(connection is Error, 
+        "Connection created with invalid provider URL");
+    if connection is Error {
+        test:assertEquals(connection.message(), 
+            "Error occurred while connecting to broker: Could not connect to broker URL: tcp://localhost:61615. Reason: java.net.ConnectException: Connection refused (Connection refused)", 
+            "Invalid connection init error message");
+    }
 }
 
 @test:Config {
@@ -63,6 +75,26 @@ isolated function testConnectionRestart() returns error? {
     check connection->'start();
     runtime:sleep(2);
     check connection->close();
+}
+
+@test:Config {
+    groups: ["connection"]
+}
+isolated function testConnectionRestartAfterClosing() returns error? {
+    Connection connection = check new (
+        initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+        providerUrl = "tcp://localhost:61616"
+    );
+    check connection->close();
+    runtime:sleep(2);
+    Error? result = connection->'start();
+    test:assertTrue(result is Error, 
+        "Connection restarted successfully after closing"); 
+    if result is Error {
+        test:assertEquals(result.message(), 
+            "Error occurred while starting the connection",
+            "Invalid connection init error message");
+    }   
 }
 
 @test:Config {
