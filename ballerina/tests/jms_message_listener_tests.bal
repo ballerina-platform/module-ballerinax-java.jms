@@ -200,6 +200,79 @@ isolated function testTopicMessageListener() returns error? {
     }
 }
 
+boolean textMsgReceived = false;
+boolean mapMsgReceived = false;
+boolean bytesMsgReceived = false;
+int receivedMsgCount = 0;
+
+@test:Config {
+    groups: ["messageListener"]
+}
+function testNonIsolatedMessageListener() returns error? {
+    Listener nonIsolatedMsgListener = check new (
+        connectionConfig = {
+            initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+            providerUrl: "tcp://localhost:61616"
+        },
+        consumerOptions = {
+            destination: {
+                'type: QUEUE,
+                name: "test-isolation"
+            }
+        }
+    );
+    Service nonIsolatedSvc = service object {
+        remote function onMessage(Message message) returns error? {
+            if message is TextMessage {
+                textMsgReceived = true;
+            }
+            if message is MapMessage {
+                mapMsgReceived = true;
+            }
+            if message is BytesMessage {
+                bytesMsgReceived = true;
+            }
+            receivedMsgCount += 1;
+        }
+    };
+    check nonIsolatedMsgListener.attach(nonIsolatedSvc, "non-isolated-service");
+    check nonIsolatedMsgListener.'start();
+
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {
+        'type: QUEUE,
+        name: "test-isolation"
+    });
+    TextMessage textMsg = {
+        content: "This is a sample message"
+    };
+    check producer->send(textMsg);
+    runtime:sleep(2);
+    test:assertTrue(textMsgReceived,
+            "Queue message listener did not received the text message");
+
+    MapMessage mapMessage = {
+        content: {
+            "user": "John Doe",
+            "message": "This is a sample message"
+        }
+    };
+    check producer->send(mapMessage);
+    runtime:sleep(2);
+    test:assertTrue(mapMsgReceived,
+            "Queue message listener did not received the map message");
+
+    BytesMessage bytesMessage = {
+        content: "This is a sample message".toBytes()
+    };
+    check producer->send(bytesMessage);
+    runtime:sleep(2);
+    test:assertTrue(bytesMsgReceived,
+            "Queue message listener did not received the bytes message");
+
+    test:assertEquals(receivedMsgCount, 3,
+            "Queue message listener did not received the expected number of messages");
+}
+
 @test:AfterGroups {
     value: ["messageListener"]
 }
