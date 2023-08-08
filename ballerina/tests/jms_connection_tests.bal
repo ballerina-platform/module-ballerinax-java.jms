@@ -92,8 +92,28 @@ isolated function testConnectionRestartAfterClosing() returns error? {
         "Connection restarted successfully after closing"); 
     if result is Error {
         test:assertEquals(result.message(), 
-            "Error occurred while starting the connection",
-            "Invalid connection init error message");
+            "Error occurred while starting the connection: The connection is already closed",
+            "Invalid connection restart error message");
+    }   
+}
+
+@test:Config {
+    groups: ["connection"]
+}
+isolated function testConnectionStopAfterClosing() returns error? {
+    Connection connection = check new (
+        initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+        providerUrl = "tcp://localhost:61616"
+    );
+    check connection->close();
+    runtime:sleep(2);
+    Error? result = connection->stop();
+    test:assertTrue(result is Error, 
+        "Connection stopped successfully after closing"); 
+    if result is Error {
+        test:assertEquals(result.message(), 
+            "Error occurred while stopping the connection: The connection is already closed",
+            "Invalid connection restart error message");
     }   
 }
 
