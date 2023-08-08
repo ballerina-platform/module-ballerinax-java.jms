@@ -77,7 +77,9 @@ public class JmsConnection {
         } catch (JMSException e) {
             BError cause = ErrorCreator.createError(e);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while initializing and starring connection"),
+                    StringUtils.fromString(
+                            String.format("Error occurred while initializing and starring connection: %s",
+                                    e.getMessage())),
                     cause, null);
         }
         return null;
@@ -186,7 +188,9 @@ public class JmsConnection {
             } catch (JMSException exception) {
                 BError cause = ErrorCreator.createError(exception);
                 return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                        StringUtils.fromString("Error occurred while starting the connection"), cause, null);
+                        StringUtils.fromString(String.format("Error occurred while starting the connection: %s",
+                                exception.getMessage())),
+                        cause, null);
             }
         }
         return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
@@ -218,7 +222,9 @@ public class JmsConnection {
             } catch (JMSException exception) {
                 BError cause = ErrorCreator.createError(exception);
                 return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                        StringUtils.fromString("Error occurred while stopping the connection"), cause, null);
+                        StringUtils.fromString(String.format("Error occurred while stopping the connection: %s",
+                                exception.getMessage())),
+                        cause, null);
             }
         }
         return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
@@ -242,7 +248,9 @@ public class JmsConnection {
             } catch (JMSException exception) {
                 BError cause = ErrorCreator.createError(exception);
                 return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                        StringUtils.fromString("Error occurred while closing the connection"), cause, null);
+                        StringUtils.fromString(String.format("Error occurred while closing the connection: %s",
+                                exception.getMessage())),
+                        cause, null);
             }
         }
         return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
