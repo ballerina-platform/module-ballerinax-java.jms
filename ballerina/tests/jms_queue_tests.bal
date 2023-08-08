@@ -16,7 +16,7 @@
 
 import ballerina/test;
 
-final MessageProducer queueProducer = check createProducer(AUTO_ACK_SESSION, {
+final MessageProducer queue1Producer = check createProducer(AUTO_ACK_SESSION, {
     'type: QUEUE,
     name: "test-queue-1"
 });
@@ -33,7 +33,7 @@ isolated function testQueueWithTextMessage() returns error? {
     TextMessage message = {
         content: content
     };
-    check queueProducer->send(message);
+    check queue1Producer->send(message);
     Message? response = check queue1Consumer->receive(5000);
     test:assertTrue(response is TextMessage, "Invalid message type received");
     if response is TextMessage {
@@ -52,7 +52,7 @@ isolated function testQueueWithMapMessage() returns error? {
     MapMessage message = {
         content: content
     };
-    check queueProducer->send(message);
+    check queue1Producer->send(message);
     Message? response = check queue1Consumer->receive(5000);
     test:assertTrue(response is MapMessage, "Invalid message type received");
     if response is MapMessage {
@@ -68,7 +68,7 @@ isolated function testQueueWithBytesMessage() returns error? {
     BytesMessage message = {
         content: content
     };
-    check queueProducer->send(message);
+    check queue1Producer->send(message);
     Message? response = check queue1Consumer->receive(5000);
     test:assertTrue(response is BytesMessage, "Invalid message type received");
     if response is BytesMessage {
@@ -98,7 +98,7 @@ isolated function testQueueProducerSendToError() returns error? {
     TextMessage message = {
         content: "This is a sample message"
     };
-    Error? result = queueProducer->sendTo({
+    Error? result = queue1Producer->sendTo({
         'type: QUEUE,
         name: "unsupported-queue"
     }, message);
@@ -202,7 +202,7 @@ isolated function testQueueProducerSendError() returns error? {
     value: ["queue"]
 }
 isolated function afterQueueTests() returns error? {
-    check queueProducer->close();
+    check queue1Producer->close();
     check queue1Consumer->close();
     check queueProducerWithoutDestination->close();
     check queue2Consumer->close();
