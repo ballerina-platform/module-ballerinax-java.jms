@@ -174,6 +174,14 @@ isolated function testCreateSharedDurableConsumer() returns error? {
     check sharedDurableSubscriber->close();
 }
 
+@test:Config {
+    groups: ["session"]
+}
+isolated function testCloseSession() returns error? {
+    Session session = check createSession(AUTO_ACKNOWLEDGE);
+    check session->close();
+}
+
 @test:AfterGroups {
     value: ["session"]
 }
