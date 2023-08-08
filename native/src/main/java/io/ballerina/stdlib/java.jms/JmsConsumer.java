@@ -229,7 +229,9 @@ public class JmsConsumer {
         } catch (JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while sending acknowledgement for the message"),
+                    StringUtils.fromString(
+                            String.format("Error occurred while sending acknowledgement for the message: %s",
+                                    exception.getMessage())),
                     cause, null);
         }
         return null;
