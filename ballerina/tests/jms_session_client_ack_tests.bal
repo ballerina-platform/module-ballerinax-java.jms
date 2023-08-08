@@ -77,11 +77,11 @@ isolated function testInvalidClientAck() returns error? {
     Session session = check createSession(CLIENT_ACKNOWLEDGE);
     MessageProducer producer = check createProducer(session, {
         'type: QUEUE,
-        name: "test-queue-5"
+        name: "session-ack-queue"
     });
     MessageConsumer consumer = check createConsumer(session, destination = {
         'type: QUEUE,
-        name: "test-queue-5"
+        name: "session-ack-queue"
     });
     string content = "This is a sample message";
     TextMessage message = {
