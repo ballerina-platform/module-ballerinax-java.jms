@@ -44,11 +44,11 @@ isolated function testClientAckWithQueue() returns error? {
     }
 }
 
-final MessageProducer topic4Producer = check createProducer(AUTO_ACK_SESSION, {
+final MessageProducer topic4Producer = check createProducer(clientAckSession, {
     'type: TOPIC,
     name: "test-topic-4"
 });
-final MessageConsumer topic4Consumer = check createConsumer(AUTO_ACK_SESSION, destination = {
+final MessageConsumer topic4Consumer = check createConsumer(clientAckSession, destination = {
     'type: TOPIC,
     name: "test-topic-4"
 });
