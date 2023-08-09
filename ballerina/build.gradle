@@ -59,7 +59,7 @@ ballerina {
     packageOrganization = packageOrg
     module = packageName
     langVersion = ballerinaLangVersion
-    testCoverageParam = "--code-coverage --coverage-format=xml --includes=io.ballerina.stdlib.*:ballerinax.java.jms*"
+    testCoverageParam = "--code-coverage --coverage-format=xml --includes=*"
 }
 
 configurations {
