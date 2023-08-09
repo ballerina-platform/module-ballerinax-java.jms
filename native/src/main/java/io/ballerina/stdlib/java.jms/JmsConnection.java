@@ -18,9 +18,7 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -39,6 +37,7 @@ import javax.jms.JMSException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getOptionalStringProperty;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONNECTION;
@@ -71,16 +70,10 @@ public class JmsConnection {
             jmsConnection.start();
             connection.addNativeData(NATIVE_CONNECTION, jmsConnection);
         } catch (BallerinaJmsException e) {
-            BError cause = ErrorCreator.createError(e);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(e.getMessage()), cause, null);
+            return createError(JMS_ERROR, e.getMessage(), e);
         } catch (JMSException e) {
-            BError cause = ErrorCreator.createError(e);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(
-                            String.format("Error occurred while initializing and starring connection: %s",
-                                    e.getMessage())),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while initializing and starring connection: %s", e.getMessage()), e);
         }
         return null;
     }
@@ -184,11 +177,9 @@ public class JmsConnection {
         try {
             nativeConnection.start();
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error occurred while starting the connection: %s",
-                            exception.getMessage())),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while starting the connection: %s", exception.getMessage()),
+                    exception);
         }
         return null;
     }
@@ -214,11 +205,9 @@ public class JmsConnection {
         try {
             nativeConnection.stop();
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error occurred while stopping the connection: %s",
-                            exception.getMessage())),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while stopping the connection: %s", exception.getMessage()),
+                    exception);
         }
         return null;
     }
@@ -236,11 +225,9 @@ public class JmsConnection {
         try {
             nativeConnection.close();
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error occurred while closing the connection: %s",
-                            exception.getMessage())),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while closing the connection: %s", exception.getMessage()),
+                    exception);
         }
         return null;
     }

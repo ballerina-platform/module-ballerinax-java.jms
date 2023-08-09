@@ -18,11 +18,13 @@
 
 package io.ballerina.stdlib.java.jms;
 
+import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.utils.ValueUtils;
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 
@@ -52,6 +54,12 @@ public class CommonUtils {
     private static final String QUEUE = "QUEUE";
     private static final String TEMPORARY_QUEUE = "TEMPORARY_QUEUE";
     private static final String TOPIC = "TOPIC";
+
+    public static BError createError(String errorType, String message, Throwable throwable) {
+        BError cause = ErrorCreator.createError(throwable);
+        return ErrorCreator.createError(
+                ModuleUtils.getModule(), errorType, StringUtils.fromString(message), cause, null);
+    }
 
     public static Optional<String> getOptionalStringProperty(BMap<BString, Object> config, BString fieldName) {
         if (config.containsKey(fieldName)) {
