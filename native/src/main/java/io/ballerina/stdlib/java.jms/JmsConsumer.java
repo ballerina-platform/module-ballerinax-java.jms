@@ -18,9 +18,7 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -35,6 +33,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getDestination;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getOptionalStringProperty;
@@ -59,8 +58,8 @@ public class JmsConsumer {
     /**
      * Creates a {@link javax.jms.MessageConsumer} object with given {@link javax.jms.Session}.
      *
-     * @param consumer Ballerina consumer object
-     * @param session Ballerina session object
+     * @param consumer        Ballerina consumer object
+     * @param session         Ballerina session object
      * @param consumerOptions JMS MessageConsumer configurations
      * @return A Ballerina `jms:Error` if the JMS provider fails to create the MessageConsumer due to some
      * internal error
@@ -71,14 +70,11 @@ public class JmsConsumer {
             MessageConsumer jmsConsumer = createConsumer(nativeSession, consumerOptions);
             consumer.addNativeData(NATIVE_CONSUMER, jmsConsumer);
         } catch (BallerinaJmsException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(exception.getMessage()), cause, null);
+            return createError(JMS_ERROR, exception.getMessage(), exception);
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while initializing the JMS MessageConsumer"),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while initializing the JMS MessageConsumer: %s",
+                            exception.getMessage()), exception);
         }
         return null;
     }
@@ -116,7 +112,7 @@ public class JmsConsumer {
      * Receives the next message that arrives within the specified timeout interval.
      *
      * @param consumer Ballerina consumer object
-     * @param timeout The timeout value (in milliseconds)
+     * @param timeout  The timeout value (in milliseconds)
      * @return A Ballerina `jms:Error` if the JMS MessageConsumer fails to receive the message due to some error
      * or else the next message produced for this message consumer, or null
      */
@@ -129,19 +125,14 @@ public class JmsConsumer {
             }
             return getBallerinaMessage(message);
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while receiving messages"), cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while receiving messages: %s", exception.getMessage()), exception);
         } catch (BallerinaJmsException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while processing the received messages"),
-                    cause, null);
+            return createError(JMS_ERROR, exception.getMessage(), exception);
         } catch (Exception exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Unknown error occurred while processing the received messages"),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Unknown error occurred while processing the received messages: %s",
+                            exception.getMessage()), exception);
         }
     }
 
@@ -161,19 +152,14 @@ public class JmsConsumer {
             }
             return getBallerinaMessage(message);
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while receiving messages"), cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while receiving messages: %s", exception.getMessage()), exception);
         } catch (BallerinaJmsException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while processing the received messages"),
-                    cause, null);
+            return createError(JMS_ERROR, exception.getMessage(), exception);
         } catch (Exception exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Unknown error occurred while processing the received messages"),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Unknown error occurred while processing the received messages: %s",
+                            exception.getMessage()), exception);
         }
     }
 
@@ -188,9 +174,9 @@ public class JmsConsumer {
         try {
             nativeConsumer.close();
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString("Error occurred while closing the message consumer"), cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while closing the message consumer: %s", exception.getMessage()),
+                    exception);
         }
         return null;
     }
@@ -208,12 +194,9 @@ public class JmsConsumer {
                 ((Message) nativeMessage).acknowledge();
             }
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
-                    StringUtils.fromString(
-                            String.format("Error occurred while sending acknowledgement for the message: %s",
-                                    exception.getMessage())),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while sending acknowledgement for the message: %s",
+                            exception.getMessage()), exception);
         }
         return null;
     }
