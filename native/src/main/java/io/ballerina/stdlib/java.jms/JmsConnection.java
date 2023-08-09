@@ -180,14 +180,9 @@ public class JmsConnection {
      * @return A Ballerina `jms:Error` if the JMS provider fails to start message delivery due to some internal error
      */
     public static Object start(BObject connection) {
-        Object nativeConnection = connection.getNativeData(NATIVE_CONNECTION);
-        if (Objects.isNull(nativeConnection)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS connection"), null, null);
-        }
+        Connection nativeConnection = (Connection) connection.getNativeData(NATIVE_CONNECTION);
         try {
-            ((Connection) nativeConnection).start();
-            return null;
+            nativeConnection.start();
         } catch (JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
@@ -195,6 +190,7 @@ public class JmsConnection {
                             exception.getMessage())),
                     cause, null);
         }
+        return null;
     }
 
     /**
@@ -214,14 +210,9 @@ public class JmsConnection {
      *         </ul>
      */
     public static Object stop(BObject connection) {
-        Object nativeConnection = connection.getNativeData(NATIVE_CONNECTION);
-        if (Objects.isNull(nativeConnection)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS connection"), null, null);
-        }
+        Connection nativeConnection = (Connection) connection.getNativeData(NATIVE_CONNECTION);
         try {
-            ((Connection) nativeConnection).stop();
-            return null;
+            nativeConnection.stop();
         } catch (JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
@@ -229,6 +220,7 @@ public class JmsConnection {
                             exception.getMessage())),
                     cause, null);
         }
+        return null;
     }
 
     /**
@@ -240,14 +232,9 @@ public class JmsConnection {
      *                  to close a socket connection can cause this exception to be thrown.
      */
     public static Object close(BObject connection) {
-        Object nativeConnection = connection.getNativeData(NATIVE_CONNECTION);
-        if (Objects.isNull(nativeConnection)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS connection"), null, null);
-        }
+        Connection nativeConnection = (Connection) connection.getNativeData(NATIVE_CONNECTION);
         try {
-            ((Connection) nativeConnection).close();
-            return null;
+            nativeConnection.close();
         } catch (JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
@@ -255,5 +242,6 @@ public class JmsConnection {
                             exception.getMessage())),
                     cause, null);
         }
+        return null;
     }
 }
