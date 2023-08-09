@@ -25,8 +25,6 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 
-import java.util.Objects;
-
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 
@@ -40,15 +38,10 @@ public class JmsMessageListenerUtils {
 
     public static Object setMessageListener(Environment environment, BObject consumer,
                                             BObject serviceObject) {
-        Object nativeConsumer = consumer.getNativeData(NATIVE_CONSUMER);
-        if (Objects.isNull(nativeConsumer)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS MessageConsumer"),
-                    null, null);
-        }
+        MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
         Runtime bRuntime = environment.getRuntime();
         try {
-            ((MessageConsumer) nativeConsumer).setMessageListener(new JmsListener(serviceObject, bRuntime));
+            nativeConsumer.setMessageListener(new JmsListener(serviceObject, bRuntime));
         } catch (JMSException e) {
             BError cause = ErrorCreator.createError(e);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
