@@ -54,15 +54,10 @@ public class JmsProducer {
      * internal error
      */
     public static Object init(BObject producer, BObject session, Object destination) {
-        Object nativeSession = session.getNativeData(NATIVE_SESSION);
-        if (Objects.isNull(nativeSession)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS session"), null, null);
-        }
-        Session jmsSession = (Session) nativeSession;
+        Session nativeSession = (Session) session.getNativeData(NATIVE_SESSION);
         try {
-            Destination jmsDestination = getDestinationOrNull(jmsSession, destination);
-            MessageProducer jmsProducer = jmsSession.createProducer(jmsDestination);
+            Destination jmsDestination = getDestinationOrNull(nativeSession, destination);
+            MessageProducer jmsProducer = nativeSession.createProducer(jmsDestination);
             producer.addNativeData(NATIVE_PRODUCER, jmsProducer);
         } catch (BallerinaJmsException exception) {
             BError cause = ErrorCreator.createError(exception);
@@ -85,14 +80,9 @@ public class JmsProducer {
      * @return A Ballerina `jms:Error` if the JMS MessageProducer fails to send the message due to some error
      */
     public static Object send(BObject producer, Message message) {
-        Object nativeProducer = producer.getNativeData(NATIVE_PRODUCER);
-        if (Objects.isNull(nativeProducer)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS MessageProducer"),
-                    null, null);
-        }
+        MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
         try {
-            ((MessageProducer) nativeProducer).send(message);
+            nativeProducer.send(message);
         } catch (UnsupportedOperationException | JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
@@ -114,20 +104,11 @@ public class JmsProducer {
      */
     public static Object sendTo(BObject producer, BObject session, BMap<BString, Object> destination,
                                 Message message) {
-        Object nativeProducer = producer.getNativeData(NATIVE_PRODUCER);
-        if (Objects.isNull(nativeProducer)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS MessageProducer"),
-                    null, null);
-        }
-        Object nativeSession = session.getNativeData(NATIVE_SESSION);
-        if (Objects.isNull(nativeSession)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS session"), null, null);
-        }
+        MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
+        Session nativeSession = (Session) session.getNativeData(NATIVE_SESSION);
         try {
-            Destination jmsDestination = getDestination((Session) nativeSession, destination);
-            ((MessageProducer) nativeProducer).send(jmsDestination, message);
+            Destination jmsDestination = getDestination(nativeSession, destination);
+            nativeProducer.send(jmsDestination, message);
         } catch (BallerinaJmsException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
@@ -148,14 +129,9 @@ public class JmsProducer {
      * @return A Ballerina `jms:Error` if the JMS provider fails to close the producer due to some internal error.
      */
     public static Object close(BObject producer) {
-        Object nativeProducer = producer.getNativeData(NATIVE_PRODUCER);
-        if (Objects.isNull(nativeProducer)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS MessageProducer"),
-                    null, null);
-        }
+        MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
         try {
-            ((MessageProducer) nativeProducer).close();
+            nativeProducer.close();
         } catch (JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
