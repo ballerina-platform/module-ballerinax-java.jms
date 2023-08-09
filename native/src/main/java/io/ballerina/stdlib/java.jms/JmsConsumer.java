@@ -66,14 +66,9 @@ public class JmsConsumer {
      * internal error
      */
     public static Object init(BObject consumer, BObject session, BMap<BString, Object> consumerOptions) {
-        Object nativeSession = session.getNativeData(NATIVE_SESSION);
-        if (Objects.isNull(nativeSession)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS session"), null, null);
-        }
-        Session jmsSession = (Session) nativeSession;
+        Session nativeSession = (Session) session.getNativeData(NATIVE_SESSION);
         try {
-            MessageConsumer jmsConsumer = createConsumer((Session) jmsSession, consumerOptions);
+            MessageConsumer jmsConsumer = createConsumer(nativeSession, consumerOptions);
             consumer.addNativeData(NATIVE_CONSUMER, jmsConsumer);
         } catch (BallerinaJmsException exception) {
             BError cause = ErrorCreator.createError(exception);
@@ -126,14 +121,9 @@ public class JmsConsumer {
      * or else the next message produced for this message consumer, or null
      */
     public static Object receive(BObject consumer, long timeout) {
-        Object nativeConsumer = consumer.getNativeData(NATIVE_CONSUMER);
-        if (Objects.isNull(nativeConsumer)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS MessageConsumer"),
-                    null, null);
-        }
+        MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
         try {
-            Message message = ((MessageConsumer) nativeConsumer).receive(timeout);
+            Message message = nativeConsumer.receive(timeout);
             if (Objects.isNull(message)) {
                 return null;
             }
@@ -163,14 +153,9 @@ public class JmsConsumer {
      * or else the next message produced for this message consumer, or null
      */
     public static Object receiveNoWait(BObject consumer) {
-        Object nativeConsumer = consumer.getNativeData(NATIVE_CONSUMER);
-        if (Objects.isNull(nativeConsumer)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS MessageConsumer"),
-                    null, null);
-        }
+        MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
         try {
-            Message message = ((MessageConsumer) nativeConsumer).receiveNoWait();
+            Message message = nativeConsumer.receiveNoWait();
             if (Objects.isNull(message)) {
                 return null;
             }
@@ -199,14 +184,9 @@ public class JmsConsumer {
      * @return A Ballerina `jms:Error` if the JMS provider fails to close the consumer due to some internal error
      */
     public static Object close(BObject consumer) {
-        Object nativeConsumer = consumer.getNativeData(NATIVE_CONSUMER);
-        if (Objects.isNull(nativeConsumer)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS MessageConsumer"),
-                    null, null);
-        }
+        MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
         try {
-            ((MessageConsumer) nativeConsumer).close();
+            nativeConsumer.close();
         } catch (JMSException exception) {
             BError cause = ErrorCreator.createError(exception);
             return ErrorCreator.createError(ModuleUtils.getModule(), Constants.JMS_ERROR,
