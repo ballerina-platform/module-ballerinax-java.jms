@@ -18,10 +18,7 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import io.ballerina.runtime.api.creators.ErrorCreator;
-import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
-import io.ballerina.runtime.api.values.BError;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
