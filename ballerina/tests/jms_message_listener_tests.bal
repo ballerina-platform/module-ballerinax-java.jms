@@ -273,6 +273,97 @@ function testNonIsolatedMessageListener() returns error? {
             "Queue message listener did not received the expected number of messages");
 }
 
+isolated boolean msgListenerWithCallerTextMsgReceived = false;
+isolated boolean msgListenerWithCallerMapMsgReceived = false;
+isolated boolean msgListenerWithCallerBytesMsgReceived = false;
+isolated int msgListenerWithCallerReceivedMsgCount = 0;
+
+@test:Config {
+    groups: ["messageListener"]
+}
+isolated function testMessageListenerWithCaller() returns error? { 
+    Listener msgListener = check new (
+        connectionConfig = {
+            initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+            providerUrl: "tcp://localhost:61616"
+        },
+        acknowledgementMode = CLIENT_ACKNOWLEDGE,
+        consumerOptions = {
+            destination: {
+                'type: QUEUE,
+                name: "test-caller"
+            }
+        }
+    );
+    Service consumerSvc = service object {
+        remote function onMessage(Message message, Caller caller) returns error? {
+            if message is TextMessage {
+                lock {
+                    msgListenerWithCallerTextMsgReceived = true;
+                }
+            }
+            if message is MapMessage {
+                lock {
+                    msgListenerWithCallerMapMsgReceived = true;
+                }
+            }
+            if message is BytesMessage {
+                lock {
+                    msgListenerWithCallerBytesMsgReceived = true;
+                }
+            }
+            lock {
+                msgListenerWithCallerReceivedMsgCount += 1;
+            }
+            check caller->acknowledge(message);
+        }
+    };
+    check msgListener.attach(consumerSvc, "non-isolated-service");
+    check msgListener.'start();
+
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {
+        'type: QUEUE,
+        name: "test-caller"
+    });
+    TextMessage textMsg = {
+        content: "This is a sample message"
+    };
+    check producer->send(textMsg);
+    runtime:sleep(2);
+    lock {
+        test:assertTrue(msgListenerWithCallerTextMsgReceived,
+            "Queue message listener did not received the text message");
+    }
+
+    MapMessage mapMessage = {
+        content: {
+            "user": "John Doe",
+            "message": "This is a sample message"
+        }
+    };
+    check producer->send(mapMessage);
+    runtime:sleep(2);
+    lock {
+        test:assertTrue(msgListenerWithCallerMapMsgReceived,
+            "Queue message listener did not received the map message");
+    }
+
+    BytesMessage bytesMessage = {
+        content: "This is a sample message".toBytes()
+    };
+    check producer->send(bytesMessage);
+    runtime:sleep(2);
+    lock {
+        test:assertTrue(msgListenerWithCallerBytesMsgReceived,
+            "Queue message listener did not received the bytes message");
+    }
+
+    lock {
+        test:assertEquals(msgListenerWithCallerReceivedMsgCount, 3,
+            "Queue message listener did not received the expected number of messages");
+    }
+}
+
 @test:AfterGroups {
     value: ["messageListener"]
 }
