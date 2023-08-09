@@ -25,8 +25,6 @@ import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 
-import java.util.Objects;
-
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
