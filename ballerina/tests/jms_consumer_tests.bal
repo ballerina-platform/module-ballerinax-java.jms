@@ -45,6 +45,28 @@ isolated function testReceiveNoWaitWithQueue() returns error? {
     }
 }
 
+@test:Config {
+    groups: ["consumer"]
+}
+isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
+    map<anydata> content = {
+        "intPayload": 1,
+        "strPayload": "This is a sample message",
+        "bytePayload": "This is a sample message".toBytes(),
+        "boolPayload": true
+    };
+    MapMessage message = {
+        content: content
+    };
+    check queue7Producer->send(message);
+    runtime:sleep(2);
+    Message? response = check queue7Consumer->receiveNoWait();
+    test:assertTrue(response is MapMessage, "Received a invalid message type");
+    if response is MapMessage {
+        test:assertEquals(response.content, content, "Invalid content received");
+    }
+}
+
 final MessageProducer topic7Producer = check createProducer(AUTO_ACK_SESSION, {
     'type: TOPIC,
     name: "test-topic-7"
