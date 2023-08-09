@@ -18,9 +18,7 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -39,6 +37,7 @@ import javax.jms.JMSException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getOptionalStringProperty;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONNECTION;
@@ -71,14 +70,10 @@ public class JmsConnection {
             jmsConnection.start();
             connection.addNativeData(NATIVE_CONNECTION, jmsConnection);
         } catch (BallerinaJmsException e) {
-            BError cause = ErrorCreator.createError(e);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(e.getMessage()), cause, null);
+            return createError(JMS_ERROR, e.getMessage(), e);
         } catch (JMSException e) {
-            BError cause = ErrorCreator.createError(e);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while initializing and starring connection"),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while initializing and starring connection: %s", e.getMessage()), e);
         }
         return null;
     }
@@ -178,19 +173,15 @@ public class JmsConnection {
      * @return A Ballerina `jms:Error` if the JMS provider fails to start message delivery due to some internal error
      */
     public static Object start(BObject connection) {
-        Object nativeConnection = connection.getNativeData(NATIVE_CONNECTION);
-        if (Objects.nonNull(nativeConnection)) {
-            try {
-                ((Connection) nativeConnection).start();
-                return null;
-            } catch (JMSException exception) {
-                BError cause = ErrorCreator.createError(exception);
-                return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                        StringUtils.fromString("Error occurred while starting the connection"), cause, null);
-            }
+        Connection nativeConnection = (Connection) connection.getNativeData(NATIVE_CONNECTION);
+        try {
+            nativeConnection.start();
+        } catch (JMSException exception) {
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while starting the connection: %s", exception.getMessage()),
+                    exception);
         }
-        return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                StringUtils.fromString("Could not find the native JMS connection"), null, null);
+        return null;
     }
 
     /**
@@ -210,19 +201,15 @@ public class JmsConnection {
      *         </ul>
      */
     public static Object stop(BObject connection) {
-        Object nativeConnection = connection.getNativeData(NATIVE_CONNECTION);
-        if (Objects.nonNull(nativeConnection)) {
-            try {
-                ((Connection) nativeConnection).stop();
-                return null;
-            } catch (JMSException exception) {
-                BError cause = ErrorCreator.createError(exception);
-                return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                        StringUtils.fromString("Error occurred while stopping the connection"), cause, null);
-            }
+        Connection nativeConnection = (Connection) connection.getNativeData(NATIVE_CONNECTION);
+        try {
+            nativeConnection.stop();
+        } catch (JMSException exception) {
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while stopping the connection: %s", exception.getMessage()),
+                    exception);
         }
-        return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                StringUtils.fromString("Could not find the native JMS connection"), null, null);
+        return null;
     }
 
     /**
@@ -234,18 +221,14 @@ public class JmsConnection {
      *                  to close a socket connection can cause this exception to be thrown.
      */
     public static Object close(BObject connection) {
-        Object nativeConnection = connection.getNativeData(NATIVE_CONNECTION);
-        if (Objects.nonNull(nativeConnection)) {
-            try {
-                ((Connection) nativeConnection).close();
-                return null;
-            } catch (JMSException exception) {
-                BError cause = ErrorCreator.createError(exception);
-                return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                        StringUtils.fromString("Error occurred while closing the connection"), cause, null);
-            }
+        Connection nativeConnection = (Connection) connection.getNativeData(NATIVE_CONNECTION);
+        try {
+            nativeConnection.close();
+        } catch (JMSException exception) {
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while closing the connection: %s", exception.getMessage()),
+                    exception);
         }
-        return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                StringUtils.fromString("Could not find the native JMS connection"), null, null);
+        return null;
     }
 }

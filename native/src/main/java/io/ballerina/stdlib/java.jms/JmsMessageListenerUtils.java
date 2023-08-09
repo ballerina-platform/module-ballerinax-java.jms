@@ -20,16 +20,12 @@ package io.ballerina.stdlib.java.jms;
 
 import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.Runtime;
-import io.ballerina.runtime.api.creators.ErrorCreator;
-import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
-
-import java.util.Objects;
 
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 
+import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONSUMER;
 
@@ -40,19 +36,13 @@ public class JmsMessageListenerUtils {
 
     public static Object setMessageListener(Environment environment, BObject consumer,
                                             BObject serviceObject) {
-        Object nativeConsumer = consumer.getNativeData(NATIVE_CONSUMER);
-        if (Objects.isNull(nativeConsumer)) {
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Could not find the native JMS MessageConsumer"),
-                    null, null);
-        }
+        MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
         Runtime bRuntime = environment.getRuntime();
         try {
-            ((MessageConsumer) nativeConsumer).setMessageListener(new JmsListener(serviceObject, bRuntime));
+            nativeConsumer.setMessageListener(new JmsListener(serviceObject, bRuntime));
         } catch (JMSException e) {
-            BError cause = ErrorCreator.createError(e);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while setting the message listener"), cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while setting the message listener: %s", e.getMessage()), e);
         }
         return null;
     }
