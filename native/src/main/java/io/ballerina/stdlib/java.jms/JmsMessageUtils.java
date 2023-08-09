@@ -27,6 +27,7 @@ import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
+import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 
 /**
@@ -45,10 +46,8 @@ public class JmsMessageUtils {
             byte[] bytes = value.getBytes();
             message.writeBytes(bytes);
         } catch (JMSException e) {
-            BError cause = ErrorCreator.createError(e);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while writing the bytes message."),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while writing the bytes message: %s", e.getMessage()), e);
         }
         return null;
     }
@@ -65,10 +64,9 @@ public class JmsMessageUtils {
             byte[] bytes = value.getBytes();
             message.setBytes(fieldName, bytes);
         } catch (JMSException e) {
-            BError cause = ErrorCreator.createError(e);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while writing the bytes message."),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while setting a byte array field to a map message: %s",
+                            e.getMessage()), e);
         }
         return null;
     }

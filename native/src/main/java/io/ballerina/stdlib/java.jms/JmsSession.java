@@ -18,9 +18,6 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import io.ballerina.runtime.api.creators.ErrorCreator;
-import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 
@@ -28,6 +25,7 @@ import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Session;
 
+import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONNECTION;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_SESSION;
@@ -55,10 +53,7 @@ public class JmsSession {
             Session jmsSession = nativeConnection.createSession(transacted, sessionAckMode);
             session.addNativeData(NATIVE_SESSION, jmsSession);
         } catch (JMSException e) {
-            BError cause = ErrorCreator.createError(e);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error while creating session: %s", e.getMessage())),
-                    cause, null);
+            return createError(JMS_ERROR, String.format("Error while creating session: %s", e.getMessage()), e);
         }
         return null;
     }
@@ -88,10 +83,8 @@ public class JmsSession {
         try {
             nativeSession.unsubscribe(subscriptionId.getValue());
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error while creating session: %s", exception.getMessage())),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error while creating session: %s", exception.getMessage()), exception);
         }
         return null;
     }
@@ -117,10 +110,8 @@ public class JmsSession {
                 return nativeSession.createBytesMessage();
             }
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error while creating JMS message: %s",
-                            exception.getMessage())), cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error while creating JMS message: %s", exception.getMessage()), exception);
         }
     }
 
@@ -136,10 +127,8 @@ public class JmsSession {
         try {
             nativeSession.commit();
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error while committing the JMS transaction: %s",
-                            exception.getMessage())), cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error while committing the JMS transaction: %s", exception.getMessage()), exception);
         }
         return null;
     }
@@ -156,10 +145,9 @@ public class JmsSession {
         try {
             nativeSession.rollback();
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error while rolling back the JMS transaction: %s",
-                            exception.getMessage())), cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error while rolling back the JMS transaction: %s", exception.getMessage()),
+                    exception);
         }
         return null;
     }
@@ -176,10 +164,8 @@ public class JmsSession {
         try {
             nativeSession.close();
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error while closing the JMS session: %s",
-                            exception.getMessage())), cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error while closing the JMS session: %s", exception.getMessage()), exception);
         }
         return null;
     }

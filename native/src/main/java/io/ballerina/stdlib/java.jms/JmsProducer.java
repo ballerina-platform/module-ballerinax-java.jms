@@ -18,9 +18,6 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import io.ballerina.runtime.api.creators.ErrorCreator;
-import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -31,6 +28,7 @@ import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
+import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getDestination;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getDestinationOrNull;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
@@ -58,14 +56,11 @@ public class JmsProducer {
             MessageProducer jmsProducer = nativeSession.createProducer(jmsDestination);
             producer.addNativeData(NATIVE_PRODUCER, jmsProducer);
         } catch (BallerinaJmsException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(exception.getMessage()), cause, null);
+            return createError(JMS_ERROR, exception.getMessage(), exception);
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while initializing the JMS MessageProducer"),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while initializing the JMS MessageProducer: %s",
+                            exception.getMessage()), exception);
         }
         return null;
     }
@@ -82,10 +77,9 @@ public class JmsProducer {
         try {
             nativeProducer.send(message);
         } catch (UnsupportedOperationException | JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while sending a message to the JMS provider"),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while sending a message to the JMS provider: %s",
+                            exception.getMessage()), exception);
         }
         return null;
     }
@@ -108,14 +102,11 @@ public class JmsProducer {
             Destination jmsDestination = getDestination(nativeSession, destination);
             nativeProducer.send(jmsDestination, message);
         } catch (BallerinaJmsException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(exception.getMessage()), cause, null);
+            return createError(JMS_ERROR, exception.getMessage(), exception);
         } catch (UnsupportedOperationException | JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString("Error occurred while sending a message to the JMS provider"),
-                    cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while sending a message to the JMS provider: %s",
+                            exception.getMessage()), exception);
         }
         return null;
     }
@@ -131,10 +122,9 @@ public class JmsProducer {
         try {
             nativeProducer.close();
         } catch (JMSException exception) {
-            BError cause = ErrorCreator.createError(exception);
-            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
-                    StringUtils.fromString(String.format("Error occurred while closing the message produce: %s",
-                            exception.getMessage())), cause, null);
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while closing the message produce: %s", exception.getMessage()),
+                    exception);
         }
         return null;
     }
