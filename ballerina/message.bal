@@ -76,7 +76,7 @@ isolated function externWriteText(handle message, handle value) returns error? =
 
 isolated function externWriteBytes(handle message, byte[] value) returns error? = @java:Method {
     name: "writeBytes",
-    'class: "io.ballerina.stdlib.java.jms.JmsBytesMessage"
+    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
 } external;
 
 isolated function externSetBoolean(handle message, handle name, boolean value) returns error? = @java:Method {
@@ -97,4 +97,9 @@ isolated function externSetLong(handle message, handle name, int value) returns 
 isolated function externSetString(handle message, handle name, handle value) returns error? = @java:Method {
     name: "setString",
     'class: "javax.jms.MapMessage"
+} external;
+
+isolated function externSetBytes(handle message, handle name, byte[] value) returns error? = @java:Method {
+    name: "writeBytesField",
+    'class: "io.ballerina.stdlib.java.jms.JmsMessageUtils"
 } external;

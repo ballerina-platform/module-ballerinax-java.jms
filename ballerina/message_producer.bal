@@ -106,7 +106,7 @@ isolated function populateMapMessage(handle mapMessage, map<anydata> keyValues) 
         } else if value is string {
             check externSetString(mapMessage, java:fromString('key), java:fromString(value));
         } else if value is byte[] {
-            check externWriteBytes(mapMessage, value);
+            check externSetBytes(mapMessage, java:fromString('key), value);
         }
     }
 }
