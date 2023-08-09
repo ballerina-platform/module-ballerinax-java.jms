@@ -25,13 +25,14 @@ import io.ballerina.runtime.api.values.BError;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
+import javax.jms.MapMessage;
 
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 
 /**
  * Representation of {@link javax.jms.BytesMessage} with utility methods to invoke as inter-op functions.
  */
-public class JmsBytesMessage {
+public class JmsMessageUtils {
 
     /**
      * Writes a byte array to the bytes message stream.
@@ -43,6 +44,26 @@ public class JmsBytesMessage {
         try {
             byte[] bytes = value.getBytes();
             message.writeBytes(bytes);
+        } catch (JMSException e) {
+            BError cause = ErrorCreator.createError(e);
+            return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
+                    StringUtils.fromString("Error occurred while writing the bytes message."),
+                    cause, null);
+        }
+        return null;
+    }
+
+    /**
+     * Writes a byte array to the bytes message stream.
+     *
+     * @param message {@link javax.jms.MapMessage} object
+     * @param fieldName Name of the map field
+     * @param value   byte[] array as ballerina
+     */
+    public static Object writeBytesField(MapMessage message, String fieldName, BArray value) {
+        try {
+            byte[] bytes = value.getBytes();
+            message.setBytes(fieldName, bytes);
         } catch (JMSException e) {
             BError cause = ErrorCreator.createError(e);
             return ErrorCreator.createError(ModuleUtils.getModule(), JMS_ERROR,
