@@ -48,6 +48,37 @@ isolated function testReceiveNoWaitWithQueue() returns error? {
 @test:Config {
     groups: ["consumer"]
 }
+isolated function testRequestReplyWithQueue() returns error? {
+    TextMessage requestMessage = {
+        content: "This is a request message",
+        correlationId: "cid-123",
+        replyTo: {
+            'type: QUEUE,
+            name: "reply-queue"
+        }
+    };
+    check queue7Producer->send(requestMessage);
+
+    Message? request = check queue7Consumer->receive(5000);
+    test:assertTrue(request is TextMessage, "Invalid message received");
+    if request is TextMessage {
+        MessageProducer replyProducer = check createProducer(AUTO_ACK_SESSION, {
+            'type: QUEUE,
+            name: "reply-queue"
+        });
+        test:assertTrue(request.correlationId is string, "Could not find the correlation Id");
+        TextMessage replyMessage = {
+            content: "This is a reply message"
+        };
+        replyMessage.correlationId = check request.correlationId.ensureType();
+        check replyProducer->send(replyMessage);
+        check replyProducer->close();
+    } 
+}
+
+@test:Config {
+    groups: ["consumer"]
+}
 isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
     map<anydata> content = {
         "intPayload": 1,
