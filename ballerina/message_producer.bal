@@ -69,6 +69,13 @@ public isolated client class MessageProducer {
 };
 
 isolated function getJmsMessage(Session session, Message message) returns handle|Error {
+    handle jmsMessage = check constructJmsMessage(session, message);
+    check updateReplyToMessageField(session, jmsMessage, message.replyTo);
+    check updateCorrelationIdField(jmsMessage, message.correlationId);
+    return jmsMessage;
+}
+
+isolated function constructJmsMessage(Session session, Message message) returns handle|Error {
     if message is TextMessage {
         handle jmsMessage = check session.createJmsMessage("TEXT");
         error? result = trap externWriteText(jmsMessage, java:fromString(message.content));
@@ -92,6 +99,20 @@ isolated function getJmsMessage(Session session, Message message) returns handle
         return jmsMessage;
     }
     return error Error("Unidentified message type");
+}
+
+isolated function updateReplyToMessageField(Session session, handle jmsMessage, Destination? replyTo = ()) returns Error? {
+    if replyTo is () {
+        return;
+    }
+    check externSetReplyTo(session, jmsMessage, replyTo);
+}
+
+isolated function updateCorrelationIdField(handle jmsMessage, string? correlationId = ()) returns Error? {
+    if correlationId is () {
+        return;
+    }
+    check externSetCorrelationId(jmsMessage, correlationId);
 }
 
 isolated function populateMapMessage(handle mapMessage, map<anydata> keyValues) returns error? {

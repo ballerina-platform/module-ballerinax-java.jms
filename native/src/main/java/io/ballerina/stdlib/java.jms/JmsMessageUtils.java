@@ -19,13 +19,21 @@
 package io.ballerina.stdlib.java.jms;
 
 import io.ballerina.runtime.api.values.BArray;
+import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.api.values.BString;
 
 import javax.jms.BytesMessage;
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.Session;
 
 import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
+import static io.ballerina.stdlib.java.jms.CommonUtils.getDestination;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
+import static io.ballerina.stdlib.java.jms.Constants.NATIVE_SESSION;
 
 /**
  * Representation of {@link javax.jms.BytesMessage} with utility methods to invoke as inter-op functions.
@@ -64,6 +72,47 @@ public class JmsMessageUtils {
             return createError(JMS_ERROR,
                     String.format("Error occurred while setting a byte array field to a map message: %s",
                             e.getMessage()), e);
+        }
+        return null;
+    }
+
+    /**
+     * Updates `replyTo` field in the JMS message.
+     *
+     * @param session Ballerina JMS session object
+     * @param message JMS message
+     * @param replyTo Relevant JMS destination
+     * @return A Ballerina `jms:Error` if there is an error while setting replyTo field to the JMS message
+     */
+    public static Object setReplyTo(BObject session, Message message, BMap<BString, Object> replyTo) {
+        Session nativeSession = (Session) session.getNativeData(NATIVE_SESSION);
+        try {
+            Destination replyToDestination = getDestination(nativeSession, replyTo);
+            message.setJMSReplyTo(replyToDestination);
+        } catch (BallerinaJmsException exception) {
+            return createError(JMS_ERROR, exception.getMessage(), exception);
+        } catch (JMSException exception) {
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while setting a reply-to field in the JMS message: %s",
+                            exception.getMessage()), exception);
+        }
+        return null;
+    }
+
+    /**
+     * Updates `correlationId` field in the JMS message.
+     *
+     * @param message JMS message
+     * @param correlationId Message correlationId
+     * @return A Ballerina `jms:Error` if there is an error while setting correlationId field to the JMS message
+     */
+    public static Object setCorrelationId(Message message, BString correlationId) {
+        try {
+            message.setJMSCorrelationID(correlationId.getValue());
+        } catch (JMSException exception) {
+            return createError(JMS_ERROR,
+                    String.format("Error occurred while setting correlation-id field to the JMS message: %s",
+                            exception.getMessage()), exception);
         }
         return null;
     }
