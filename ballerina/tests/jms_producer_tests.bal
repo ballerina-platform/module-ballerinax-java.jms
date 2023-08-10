@@ -47,3 +47,51 @@ isolated function testProducerSendToWithoutQueueName() returns error? {
             "Invalid error message for producer init error");
     }
 }
+
+@test:Config {
+    groups: ["producer"]
+}
+isolated function testReplyToErrorForQueue() returns error? {
+    MessageProducer producer = check AUTO_ACK_SESSION.createProducer();
+    TextMessage message = {
+        content: "This is a request message",
+        correlationId: "cid-123",
+        replyTo: {
+            'type: QUEUE
+        }
+    };
+    Error? result = producer->sendTo({
+        'type: QUEUE,
+        name: "reply-to-error-queue"
+    }, message);
+    test:assertTrue(result is Error, "Sent message with errorneous replyTo field");
+    if result is Error {
+        test:assertEquals(result.message(), 
+            "JMS destination name can not be empty for destination type: QUEUE", 
+            "Invalid error message for invalid-destination error");
+    }
+}
+
+@test:Config {
+    groups: ["producer"]
+}
+isolated function testReplyToErrorForTopic() returns error? {
+    MessageProducer producer = check AUTO_ACK_SESSION.createProducer();
+    TextMessage message = {
+        content: "This is a request message",
+        correlationId: "cid-123",
+        replyTo: {
+            'type: TOPIC
+        }
+    };
+    Error? result = producer->sendTo({
+        'type: TOPIC,
+        name: "reply-to-error-topic"
+    }, message);
+    test:assertTrue(result is Error, "Sent message with errorneous replyTo field");
+    if result is Error {
+        test:assertEquals(result.message(), 
+            "JMS destination name can not be empty for destination type: TOPIC", 
+            "Invalid error message for invalid-destination error");
+    }
+}
