@@ -103,6 +103,7 @@ isolated function testCreateDurableConsumer() returns error? {
         subscriberName = "durable-subscriber"
     );
     check durableSubscriber->close();
+    check autoAckSession->unsubscribe("durable-subscriber");
 }
 
 @test:Config {
@@ -141,6 +142,20 @@ isolated function testCreateDurableConsumerWithoutNameError() returns error? {
         test:assertEquals(durableSubscriber.message(), 
             "Subscriber name cannot be empty for consumer type DURABLE", 
             "Invalid error message for consumer-creation");
+    }
+}
+
+@test:Config {
+    groups: ["session"]
+}
+isolated function tesUnsubscribeFromInvalidSubscription() returns error? {
+    Session session = check createSession(AUTO_ACKNOWLEDGE);
+    Error? result = session->unsubscribe("invalidSubscriber");
+    test:assertTrue(result is Error, "Invalid subscription removal allowed");
+    if result is Error {
+        string errorMsg = "Error while unsubscribing from the subscription session";
+        test:assertTrue(result.message().startsWith(errorMsg), 
+            "Invalid error message for ubsubscription from invalid-subscriber");
     }
 }
 
