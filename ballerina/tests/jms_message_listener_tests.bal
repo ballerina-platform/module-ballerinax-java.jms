@@ -271,6 +271,8 @@ function testNonIsolatedMessageListener() returns error? {
 
     test:assertEquals(receivedMsgCount, 3,
             "Queue message listener did not received the expected number of messages");
+    check producer->close();
+    check nonIsolatedMsgListener.gracefulStop();
 }
 
 isolated boolean msgListenerWithCallerTextMsgReceived = false;
@@ -318,7 +320,7 @@ isolated function testMessageListenerWithCaller() returns error? {
             check caller->acknowledge(message);
         }
     };
-    check msgListener.attach(consumerSvc, "non-isolated-service");
+    check msgListener.attach(consumerSvc, "test-caller-service");
     check msgListener.'start();
 
     MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {
@@ -362,6 +364,44 @@ isolated function testMessageListenerWithCaller() returns error? {
         test:assertEquals(msgListenerWithCallerReceivedMsgCount, 3,
             "Queue message listener did not received the expected number of messages");
     }
+    check producer->close();
+    check msgListener.gracefulStop();
+}
+
+@test:Config {
+    groups: ["messageListener"]
+}
+isolated function testMessageListenerReturningError() returns error? { 
+    Listener msgListener = check new (
+        connectionConfig = {
+            initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+            providerUrl: "tcp://localhost:61616"
+        },
+        acknowledgementMode = CLIENT_ACKNOWLEDGE,
+        consumerOptions = {
+            destination: {
+                'type: QUEUE,
+                name: "test-onMessage-error"
+            }
+        }
+    );
+    Service consumerSvc = service object {
+        remote function onMessage(Message message) returns error? {
+            return error("Error occurred while processing the message");
+        }
+    };
+    check msgListener.attach(consumerSvc, "test-onMessage-error-service");
+    check msgListener.'start();
+
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {
+        'type: QUEUE,
+        name: "test-onMessage-error"
+    });
+    TextMessage textMsg = {
+        content: "This is a sample message"
+    };
+    check producer->send(textMsg);
+    runtime:sleep(2);
 }
 
 @test:AfterGroups {
