@@ -78,6 +78,36 @@ isolated function testRequestReplyWithQueue() returns error? {
 @test:Config {
     groups: ["consumer"]
 }
+isolated function testRequestReplyWithTempQueue() returns error? {
+    TextMessage requestMessage = {
+        content: "This is a request message",
+        correlationId: "cid-123",
+        replyTo: {
+            'type: TEMPORARY_QUEUE,
+            name: "temp-reply-queue"
+        }
+    };
+    check queue7Producer->send(requestMessage);
+
+    Message? request = check queue7Consumer->receive(5000);
+    test:assertTrue(request is TextMessage, "Invalid message received");
+    if request is TextMessage {
+        test:assertTrue(request.replyTo is Destination, "Could not find the replyTo destination in a request-message");
+        Destination replyTo = check request.replyTo.ensureType();
+        MessageProducer replyProducer = check createProducer(AUTO_ACK_SESSION, replyTo);
+        test:assertTrue(request.correlationId is string, "Could not find the correlation Id");
+        TextMessage replyMessage = {
+            content: "This is a reply message"
+        };
+        replyMessage.correlationId = check request.correlationId.ensureType();
+        check replyProducer->send(replyMessage);
+        check replyProducer->close();
+    } 
+}
+
+@test:Config {
+    groups: ["consumer"]
+}
 isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
     map<anydata> content = {
         intPayload: 1,
