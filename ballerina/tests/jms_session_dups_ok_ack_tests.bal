@@ -33,26 +33,26 @@ final MessageConsumer queue6Consumer = check createConsumer(dupsOkAckSession, de
 isolated function testDupsOkAckWithQueue() returns error? {
     MapMessage msg1 = {
         content: {
-            "messageId": 1,
-            "payload": "This is the first message"
+            messageId: 1,
+            payload: "This is the first message"
         }
     };
     MapMessage msg2 = {
         content: {
-            "messageId": 2,
-            "payload": "This is the second message"
+            messageId: 2,
+            payload: "This is the second message"
         }
     };
     MapMessage msg3 = {
         content: {
-            "messageId": 3,
-            "payload": "This is the third message"
+            messageId: 3,
+            payload: "This is the third message"
         }
     };
     MapMessage msg4 = {
         content: {
-            "messageId": 4,
-            "payload": "This is the fourth message"
+            messageId: 4,
+            payload: "This is the fourth message"
         }
     };
     check queue6Producer->send(msg1);
@@ -90,26 +90,26 @@ final MessageConsumer topic6Consumer = check createConsumer(dupsOkAckSession, de
 isolated function testDupsOkAckWithTopic() returns error? {
     MapMessage msg1 = {
         content: {
-            "messageId": 1,
-            "payload": "This is the first message"
+            messageId: 1,
+            payload: "This is the first message"
         }
     };
     MapMessage msg2 = {
         content: {
-            "messageId": 2,
-            "payload": "This is the second message"
+            messageId: 2,
+            payload: "This is the second message"
         }
     };
     MapMessage msg3 = {
         content: {
-            "messageId": 3,
-            "payload": "This is the third message"
+            messageId: 3,
+            payload: "This is the third message"
         }
     };
     MapMessage msg4 = {
         content: {
-            "messageId": 4,
-            "payload": "This is the fourth message"
+            messageId: 4,
+            payload: "This is the fourth message"
         }
     };
     check topic6Producer->send(msg1);

@@ -46,8 +46,8 @@ isolated function testTopicWithTextMessage() returns error? {
 }
 isolated function testTopicWithMapMessage() returns error? {
     map<anydata> content = {
-        "user": "John Doe",
-        "message": "This is a sample message"
+        user: "John Doe",
+        message: "This is a sample message"
     };
     MapMessage message = {
         content: content
@@ -121,8 +121,8 @@ isolated function testTopicWithTextMessageUsingSendTo() returns error? {
 }
 isolated function testTopicWithMapMessageUsingSendTo() returns error? {
     map<anydata> content = {
-        "user": "John Doe",
-        "message": "This is a sample message"
+        user: "John Doe",
+        message: "This is a sample message"
     };
     MapMessage message = {
         content: content

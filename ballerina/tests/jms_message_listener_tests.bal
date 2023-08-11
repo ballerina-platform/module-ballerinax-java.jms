@@ -130,8 +130,8 @@ isolated function testQueueMessageListener() returns error? {
 
     MapMessage mapMessage = {
         content: {
-            "user": "John Doe",
-            "message": "This is a sample message"
+            user: "John Doe",
+            message: "This is a sample message"
         }
     };
     check queue3Producer->send(mapMessage);
@@ -173,8 +173,8 @@ isolated function testTopicMessageListener() returns error? {
 
     MapMessage mapMessage = {
         content: {
-            "user": "John Doe",
-            "message": "This is a sample message"
+            user: "John Doe",
+            message: "This is a sample message"
         }
     };
     check topic3Producer->send(mapMessage);
@@ -252,8 +252,8 @@ function testNonIsolatedMessageListener() returns error? {
 
     MapMessage mapMessage = {
         content: {
-            "user": "John Doe",
-            "message": "This is a sample message"
+            user: "John Doe",
+            message: "This is a sample message"
         }
     };
     check producer->send(mapMessage);
@@ -339,8 +339,8 @@ isolated function testMessageListenerWithCaller() returns error? {
 
     MapMessage mapMessage = {
         content: {
-            "user": "John Doe",
-            "message": "This is a sample message"
+            user: "John Doe",
+            message: "This is a sample message"
         }
     };
     check producer->send(mapMessage);

@@ -46,8 +46,8 @@ isolated function testQueueWithTextMessage() returns error? {
 }
 isolated function testQueueWithMapMessage() returns error? {
     map<anydata> content = {
-        "user": "John Doe",
-        "message": "This is a sample message"
+        user: "John Doe",
+        message: "This is a sample message"
     };
     MapMessage message = {
         content: content
@@ -136,8 +136,8 @@ isolated function testQueueWithTextMessageUsingSendTo() returns error? {
 }
 isolated function testQueueWithMapMessageUsingSendTo() returns error? {
     map<anydata> content = {
-        "user": "John Doe",
-        "message": "This is a sample message"
+        user: "John Doe",
+        message: "This is a sample message"
     };
     MapMessage message = {
         content: content
