@@ -59,7 +59,7 @@ ballerina {
     packageOrganization = packageOrg
     module = packageName
     langVersion = ballerinaLangVersion
-    testCoverageParam = "--code-coverage --coverage-format=xml --includes=io.ballerina.stdlib.*:stdlib.java.jms*"
+    testCoverageParam = "--code-coverage --coverage-format=xml --includes=*"
 }
 
 configurations {
@@ -75,6 +75,19 @@ dependencies {
     externalJars(group: 'javax.jms', name: 'javax.jms-api', version: "${javaxJmsVersion}") {
         transitive = false
     }
+
+    /**
+        Test related dependencies
+     */
+    externalJars(group: 'org.apache.activemq', name: 'activemq-client', version: "${activemqClientVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'org.apache.geronimo.specs', name: 'geronimo-j2ee-management_1.1_spec', version: "${geronimoJ2eeMng11SpecVersion}") {
+        transitive = false
+    }
+    externalJars(group: 'org.fusesource.hawtbuf', name: 'hawtbuf', version: "${hawtbufVersion}") {
+        transitive = false
+    }
 }
 
 task updateTomlFiles {
@@ -85,6 +98,9 @@ task updateTomlFiles {
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         newConfig = newConfig.replace("@slf4j.version@", stdlibDependentSlf4jVersion)
         newConfig = newConfig.replace("@javax.jms.version@", stdlibDependentJavaxJmsVersion)
+        newConfig = newConfig.replace('@activemq.client.version@', project.activemqClientVersion)
+        newConfig = newConfig.replace('@geronimoj2ee.spec.version@', project.geronimoJ2eeMng11SpecVersion)
+        newConfig = newConfig.replace('@hawtbuf.version@', project.hawtbufVersion)
         ballerinaTomlFile.text = newConfig
     }
 }
@@ -102,51 +118,51 @@ task commitTomlFiles {
     }
 }
 
-//task startMqttServer() {
-//    doLast {
-//        if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
-//            def stdOut = new ByteArrayOutputStream()
-//            exec {
-//                commandLine 'sh', '-c', "docker ps --filter name=mqtt-test"
-//                standardOutput = stdOut
-//            }
-//            if (!stdOut.toString().contains("mqtt-test")) {
-//                println "Starting Mqtt server."
-//                exec {
-//                    commandLine 'sh', '-c', "docker-compose -f tests/resources/docker-compose.yaml up -d"
-//                    standardOutput = stdOut
-//                }
-//                println stdOut.toString()
-//                sleep(5 * 1000)
-//            } else {
-//                println "Mqtt server is already running."
-//            }
-//        }
-//    }
-//}
-//
-//task stopMqttServer() {
-//    doLast {
-//        if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
-//            def stdOut = new ByteArrayOutputStream()
-//            exec {
-//                commandLine 'sh', '-c', "docker ps --filter name=mqtt-test"
-//                standardOutput = stdOut
-//            }
-//            if (stdOut.toString().contains("mqtt-test")) {
-//                println "Stopping Mqtt server."
-//                exec {
-//                    commandLine 'sh', '-c', "docker-compose -f tests/resources/docker-compose.yaml rm -svf"
-//                    standardOutput = stdOut
-//                }
-//                println stdOut.toString()
-//                sleep(5 * 1000)
-//            } else {
-//                println "Mqtt server is not started."
-//            }
-//        }
-//    }
-//}
+task startActiveMQServer() {
+   doLast {
+       if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+           def stdOut = new ByteArrayOutputStream()
+           exec {
+               commandLine 'sh', '-c', "docker ps --filter name=activemq-test"
+               standardOutput = stdOut
+           }
+           if (!stdOut.toString().contains("activemq-test")) {
+               println "Starting ActiveMQ server."
+               exec {
+                   commandLine 'sh', '-c', "docker-compose -f tests/resources/docker-compose.yaml up -d"
+                   standardOutput = stdOut
+               }
+               println stdOut.toString()
+               sleep(5 * 1000)
+           } else {
+               println "ActiveMQ server is already running."
+           }
+       }
+   }
+}
+
+task stopActiveMQServer() {
+   doLast {
+       if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+           def stdOut = new ByteArrayOutputStream()
+           exec {
+               commandLine 'sh', '-c', "docker ps --filter name=activemq-test"
+               standardOutput = stdOut
+           }
+           if (stdOut.toString().contains("activemq-test")) {
+               println "Stopping ActiveMQ server."
+               exec {
+                   commandLine 'sh', '-c', "docker-compose -f tests/resources/docker-compose.yaml rm -svf"
+                   standardOutput = stdOut
+               }
+               println stdOut.toString()
+               sleep(5 * 1000)
+           } else {
+               println "ActiveMQ server is not started."
+           }
+       }
+   }
+}
 
 publishing {
     publications {
@@ -168,8 +184,8 @@ publishing {
 
 updateTomlFiles.dependsOn copyStdlibs
 
-//test.dependsOn startMqttServer
-//build.finalizedBy stopMqttServer
+test.dependsOn startActiveMQServer
+build.finalizedBy stopActiveMQServer
 
 build.dependsOn ":java.jms-native:build"
 build.dependsOn "generatePomFileForMavenPublication"

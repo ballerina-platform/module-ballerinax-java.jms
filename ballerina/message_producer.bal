@@ -75,23 +75,27 @@ isolated function getJmsMessage(Session session, Message message) returns handle
     return jmsMessage;
 }
 
+const string TEXT = "TEXT";
+const string BYTES = "BYTES";
+const string MAP = "MAP";
+
 isolated function constructJmsMessage(Session session, Message message) returns handle|Error {
     if message is TextMessage {
-        handle jmsMessage = check session.createJmsMessage("TEXT");
+        handle jmsMessage = check session.createJmsMessage(TEXT);
         error? result = trap externWriteText(jmsMessage, java:fromString(message.content));
         if result is error {
             return error Error(result.message());
         }
         return jmsMessage;
     } else if message is BytesMessage {
-        handle jmsMessage = check session.createJmsMessage("BYTES");
+        handle jmsMessage = check session.createJmsMessage(BYTES);
         error? result = trap externWriteBytes(jmsMessage, message.content);
         if result is error {
             return error Error(result.message());
         }
         return jmsMessage;
     } else if message is MapMessage {
-        handle jmsMessage = check session.createJmsMessage("MAP");
+        handle jmsMessage = check session.createJmsMessage(MAP);
         error? result = trap populateMapMessage(jmsMessage, message.content);
         if result is error {
             return error Error(result.message());
@@ -101,7 +105,8 @@ isolated function constructJmsMessage(Session session, Message message) returns 
     return error Error("Unidentified message type");
 }
 
-isolated function updateReplyToMessageField(Session session, handle jmsMessage, Destination? replyTo = ()) returns Error? {
+isolated function updateReplyToMessageField(Session session, handle jmsMessage,
+        Destination? replyTo = ()) returns Error? {
     if replyTo is () {
         return;
     }

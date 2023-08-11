@@ -58,8 +58,8 @@ public class JmsConsumer {
     /**
      * Creates a {@link javax.jms.MessageConsumer} object with given {@link javax.jms.Session}.
      *
-     * @param consumer Ballerina consumer object
-     * @param session Ballerina session object
+     * @param consumer        Ballerina consumer object
+     * @param session         Ballerina session object
      * @param consumerOptions JMS MessageConsumer configurations
      * @return A Ballerina `jms:Error` if the JMS provider fails to create the MessageConsumer due to some
      * internal error
@@ -99,11 +99,12 @@ public class JmsConsumer {
             return session.createConsumer(jmsDestination, messageSelector, noLocal);
         } else if (DURABLE.equals(consumerType)) {
             return session.createDurableSubscriber(
-                    (Topic) destination, subscriberNameOpt.get(), messageSelector, noLocal);
+                    (Topic) jmsDestination, subscriberNameOpt.get(), messageSelector, noLocal);
         } else if (SHARED.equals(consumerType)) {
-            return session.createSharedConsumer((Topic) destination, subscriberNameOpt.get(), messageSelector);
+            return session.createSharedConsumer((Topic) jmsDestination, subscriberNameOpt.get(), messageSelector);
         } else {
-            return session.createSharedDurableConsumer((Topic) destination, subscriberNameOpt.get(), messageSelector);
+            return session.createSharedDurableConsumer(
+                    (Topic) jmsDestination, subscriberNameOpt.get(), messageSelector);
         }
     }
 
@@ -111,7 +112,7 @@ public class JmsConsumer {
      * Receives the next message that arrives within the specified timeout interval.
      *
      * @param consumer Ballerina consumer object
-     * @param timeout The timeout value (in milliseconds)
+     * @param timeout  The timeout value (in milliseconds)
      * @return A Ballerina `jms:Error` if the JMS MessageConsumer fails to receive the message due to some error
      * or else the next message produced for this message consumer, or null
      */

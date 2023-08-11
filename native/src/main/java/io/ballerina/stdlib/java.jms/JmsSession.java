@@ -84,7 +84,8 @@ public class JmsSession {
             nativeSession.unsubscribe(subscriptionId.getValue());
         } catch (JMSException exception) {
             return createError(JMS_ERROR,
-                    String.format("Error while creating session: %s", exception.getMessage()), exception);
+                    String.format("Error while unsubscribing from the subscription session: %s",
+                            exception.getMessage()), exception);
         }
         return null;
     }

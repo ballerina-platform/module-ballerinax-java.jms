@@ -43,8 +43,8 @@ public class JmsProducer {
     /**
      * Creates a {@link javax.jms.MessageProducer} object with given {@link javax.jms.Session}.
      *
-     * @param producer Ballerina producer object
-     * @param session Ballerina session object
+     * @param producer    Ballerina producer object
+     * @param session     Ballerina session object
      * @param destination Relevant JMS destination
      * @return A Ballerina `jms:Error` if the JMS provider fails to create the MessageProducer due to some
      * internal error
@@ -69,7 +69,7 @@ public class JmsProducer {
      * Sends a message using the {@code MessageProducer}'s default delivery mode, priority, and time to live.
      *
      * @param producer Ballerina producer object
-     * @param message The JMS message
+     * @param message  The JMS message
      * @return A Ballerina `jms:Error` if the JMS MessageProducer fails to send the message due to some error
      */
     public static Object send(BObject producer, Message message) {
@@ -88,10 +88,10 @@ public class JmsProducer {
      * Sends a message to a destination for an unidentified message producer using the {@code MessageProducer}'s
      * default delivery mode, priority, and time to live.
      *
-     * @param producer Ballerina producer object
-     * @param session Ballerina session object
+     * @param producer    Ballerina producer object
+     * @param session     Ballerina session object
      * @param destination Relevant JMS destination
-     * @param message The JMS message
+     * @param message     The JMS message
      * @return A Ballerina `jms:Error` if the JMS MessageProducer fails to send the message due to some error
      */
     public static Object sendTo(BObject producer, BObject session, BMap<BString, Object> destination,

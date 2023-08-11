@@ -26,3 +26,15 @@ groupId = "javax.jms"
 artifactId = "javax.jms-api"
 version = "@javax.jms.version@"
 path = "./lib/javax.jms-api-@javax.jms.version@.jar"
+
+[[platform.java11.dependency]]
+path = "./lib/activemq-client-@activemq.client.version@.jar"
+scope = "testOnly"
+
+[[platform.java11.dependency]]
+path = "./lib/geronimo-j2ee-management_1.1_spec-@geronimoj2ee.spec.version@.jar"
+scope = "testOnly"
+
+[[platform.java11.dependency]]
+path = "./lib/hawtbuf-@hawtbuf.version@.jar"
+scope = "testOnly"
