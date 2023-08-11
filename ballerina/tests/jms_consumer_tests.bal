@@ -84,7 +84,9 @@ isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
         floatPayload: 1.0,
         strPayload: "This is a sample message",
         bytePayload: "This is a sample message".toBytes(),
-        boolPayload: true
+        boolPayload: true,
+        decimalField: 12.22,
+        byteField: 1
     };
     MapMessage message = {
         content: content
