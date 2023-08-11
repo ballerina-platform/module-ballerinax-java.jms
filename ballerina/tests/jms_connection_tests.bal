@@ -148,3 +148,21 @@ isolated function testCreateSession() returns error? {
     check session->close();
     check connection->close();
 }
+
+@test:Config {
+    groups: ["connection"]
+}
+isolated function testCreateSessionAfterConnectionClose() returns error? {
+    Connection connection = check new (
+        initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+        providerUrl = "tcp://localhost:61616"
+    );
+    check connection->close();
+    Session|Error session = connection->createSession();
+    test:assertTrue(session is Error, "Created session after connection closed");
+    if session is Error {
+        test:assertEquals(session.message(), 
+            "Error while creating session: The connection is already closed", 
+            "Invalid session creation failure message");
+    }
+}
