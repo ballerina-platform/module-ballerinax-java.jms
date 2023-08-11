@@ -80,11 +80,11 @@ isolated function testRequestReplyWithQueue() returns error? {
 }
 isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
     map<anydata> content = {
-        "intPayload": 1,
-        "floatPayload": 1.0,
-        "strPayload": "This is a sample message",
-        "bytePayload": "This is a sample message".toBytes(),
-        "boolPayload": true
+        intPayload: 1,
+        floatPayload: 1.0,
+        strPayload: "This is a sample message",
+        bytePayload: "This is a sample message".toBytes(),
+        boolPayload: true
     };
     MapMessage message = {
         content: content
