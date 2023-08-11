@@ -27,7 +27,6 @@ artifactId = "javax.jms-api"
 version = "@javax.jms.version@"
 path = "./lib/javax.jms-api-@javax.jms.version@.jar"
 
-
 [[platform.java11.dependency]]
 path = "./lib/activemq-client-@activemq.client.version@.jar"
 scope = "testOnly"
