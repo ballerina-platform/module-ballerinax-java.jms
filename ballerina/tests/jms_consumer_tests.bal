@@ -17,7 +17,6 @@
 import ballerina/lang.runtime;
 import ballerina/test;
 
-
 final MessageProducer queue7Producer = check createProducer(AUTO_ACK_SESSION, {
     'type: QUEUE,
     name: "test-queue-7"
