@@ -101,7 +101,8 @@ isolated function constructJmsMessage(Session session, Message message) returns 
     return error Error("Unidentified message type");
 }
 
-isolated function updateReplyToMessageField(Session session, handle jmsMessage, Destination? replyTo = ()) returns Error? {
+isolated function updateReplyToMessageField(Session session, handle jmsMessage,
+        Destination? replyTo = ()) returns Error? {
     if replyTo is () {
         return;
     }
