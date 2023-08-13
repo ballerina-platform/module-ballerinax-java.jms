@@ -430,6 +430,32 @@ isolated function testMessageListenerImmediateStop() returns error? {
     check msgListener.immediateStop();
 }
 
+@test:Config {
+    groups: ["messageListener"]
+}
+isolated function testMessageListenerAttachWithoutSvcPath() returns error? { 
+    Listener msgListener = check new (
+        connectionConfig = {
+            initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+            providerUrl: "tcp://localhost:61616"
+        },
+        acknowledgementMode = CLIENT_ACKNOWLEDGE,
+        consumerOptions = {
+            destination: {
+                'type: QUEUE,
+                name: "test-caller"
+            }
+        }
+    );
+    Service consumerSvc = service object {
+        remote function onMessage(Message message, Caller caller) returns error? {}
+    };
+    check msgListener.attach(consumerSvc);
+    check msgListener.'start();
+    runtime:sleep(2);
+    check msgListener.immediateStop();
+}
+
 @test:AfterGroups {
     value: ["messageListener"]
 }
