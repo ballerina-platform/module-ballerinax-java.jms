@@ -23,7 +23,7 @@ import java.util.concurrent.ThreadFactory;
 /**
  * A {@link ThreadFactory} object that creates new threads on demand for JMS producer network actions.
  */
-public class ProducerThreadFactory implements ThreadFactory {
+class ProducerThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable runnable) {
