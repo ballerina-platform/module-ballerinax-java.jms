@@ -63,7 +63,7 @@ public isolated class Listener {
     # ```
     #
     # + 'service - The service to be detached
-    # + return - A `kafka:Error` if an error is encountered while detaching a service or else `()`
+    # + return - A `jms:Error` if an error is encountered while detaching a service or else `()`
     public isolated function detach(Service 'service) returns Error? {}
 
     # Starts the endpoint.

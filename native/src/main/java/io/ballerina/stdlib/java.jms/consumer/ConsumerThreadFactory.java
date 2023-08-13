@@ -27,8 +27,8 @@ class ConsumerThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable runnable) {
-        Thread kafkaProducerThread = new Thread(runnable);
-        kafkaProducerThread.setName("balx-jms-producer-network-thread");
-        return kafkaProducerThread;
+        Thread jmsConsumerThread = new Thread(runnable);
+        jmsConsumerThread.setName("balx-jms-consumer-network-thread");
+        return jmsConsumerThread;
     }
 }
