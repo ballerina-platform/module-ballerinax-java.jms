@@ -27,7 +27,7 @@ public isolated client class MessageProducer {
 
     isolated function externInit(Session session, Destination? destination) returns Error? = @java:Method {
         name: "init",
-        'class: "io.ballerina.stdlib.java.jms.JmsProducer"
+        'class: "io.ballerina.stdlib.java.jms.producer.Actions"
     } external;
 
     # Sends a message to the JMS provider.
@@ -41,7 +41,7 @@ public isolated client class MessageProducer {
 
     isolated function externSend(handle message) returns Error? = @java:Method {
         name: "send",
-        'class: "io.ballerina.stdlib.java.jms.JmsProducer"
+        'class: "io.ballerina.stdlib.java.jms.producer.Actions"
     } external;
 
     # Sends a message to a given destination of the JMS provider.
@@ -57,14 +57,14 @@ public isolated client class MessageProducer {
     isolated function externSendTo(Session session, Destination destination, handle message) 
         returns Error? = @java:Method {
         name: "sendTo",
-        'class: "io.ballerina.stdlib.java.jms.JmsProducer"
+        'class: "io.ballerina.stdlib.java.jms.producer.Actions"
     } external;
 
     # Closes the message producer.
     # 
     # + return - `jms:Error` if there is an error or else nil
     isolated remote function close() returns Error? = @java:Method {
-        'class: "io.ballerina.stdlib.java.jms.JmsProducer"
+        'class: "io.ballerina.stdlib.java.jms.producer.Actions"
     } external;
 };
 

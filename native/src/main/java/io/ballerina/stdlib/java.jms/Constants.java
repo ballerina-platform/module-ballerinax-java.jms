@@ -106,10 +106,10 @@ public class Constants {
     static final String SESSION_TRANSACTED_MODE = "SESSION_TRANSACTED";
 
     // Native properties in respective ballerina objects
-    static final String NATIVE_CONNECTION = "connection";
-    static final String NATIVE_SESSION = "session";
-    static final String NATIVE_PRODUCER = "producer";
-    static final String NATIVE_CONSUMER = "consumer";
+    public static final String NATIVE_CONNECTION = "connection";
+    public static final String NATIVE_SESSION = "session";
+    public static final String NATIVE_PRODUCER = "producer";
+    public static final String NATIVE_CONSUMER = "consumer";
 
     static final String NATIVE_MESSAGE = "message";
 
