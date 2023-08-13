@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.java.jms;
+package io.ballerina.stdlib.java.jms.listener;
 
 import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.Runtime;
@@ -30,16 +30,17 @@ import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONSUMER;
 
 /**
- * Representation of {@link javax.jms.MessageListener} with utility methods to invoke as inter-op functions.
+ * Provides utility functionalities related to setting up a {@link javax.jms.MessageListener} for a given
+ * message consumer.
  */
-public class JmsMessageListenerUtils {
+public class Utils {
 
     public static Object setMessageListener(Environment environment, BObject consumer,
                                             BObject serviceObject) {
         MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
         Runtime bRuntime = environment.getRuntime();
         try {
-            nativeConsumer.setMessageListener(new JmsListener(serviceObject, bRuntime));
+            nativeConsumer.setMessageListener(new ListenerImpl(serviceObject, bRuntime));
         } catch (JMSException e) {
             return createError(JMS_ERROR,
                     String.format("Error occurred while setting the message listener: %s", e.getMessage()), e);

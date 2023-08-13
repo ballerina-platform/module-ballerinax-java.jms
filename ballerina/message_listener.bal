@@ -94,5 +94,5 @@ public isolated class Listener {
 }
 
 isolated function setMessageListener(MessageConsumer consumer, Service 'service) returns Error? = @java:Method {
-    'class: "io.ballerina.stdlib.java.jms.JmsMessageListenerUtils"
+    'class: "io.ballerina.stdlib.java.jms.listener.Utils"
 } external;

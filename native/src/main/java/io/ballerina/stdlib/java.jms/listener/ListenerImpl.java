@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.java.jms;
+package io.ballerina.stdlib.java.jms.listener;
 
 import io.ballerina.runtime.api.Module;
 import io.ballerina.runtime.api.PredefinedTypes;
@@ -30,6 +30,9 @@ import io.ballerina.runtime.api.types.Parameter;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.stdlib.java.jms.BallerinaJmsException;
+import io.ballerina.stdlib.java.jms.Constants;
+import io.ballerina.stdlib.java.jms.ModuleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,18 +46,19 @@ import javax.jms.MessageListener;
 import static io.ballerina.runtime.api.TypeTags.OBJECT_TYPE_TAG;
 import static io.ballerina.runtime.api.TypeTags.RECORD_TYPE_TAG;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
+import static io.ballerina.stdlib.java.jms.Constants.SERVICE_RESOURCE_ON_MESSAGE;
 
 /**
  * A {@link javax.jms.MessageListener} implementation.
  */
-public class JmsListener implements MessageListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JmsListener.class);
+public class ListenerImpl implements MessageListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListenerImpl.class);
 
     private final BObject consumerService;
     private final Runtime ballerinaRuntime;
-    private final Callback callback = new ConsumerCallback();
+    private final Callback callback = new ListenerCallback();
 
-    public JmsListener(BObject consumerService, Runtime ballerinaRuntime) {
+    public ListenerImpl(BObject consumerService, Runtime ballerinaRuntime) {
         this.consumerService = consumerService;
         this.ballerinaRuntime = ballerinaRuntime;
     }
@@ -64,16 +68,16 @@ public class JmsListener implements MessageListener {
         try {
             Module module = ModuleUtils.getModule();
             StrandMetadata metadata = new StrandMetadata(
-                    module.getOrg(), module.getName(), module.getVersion(), Constants.SERVICE_RESOURCE_ON_MESSAGE);
+                    module.getOrg(), module.getName(), module.getVersion(), SERVICE_RESOURCE_ON_MESSAGE);
             ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(consumerService));
             Object[] params = methodParameters(serviceType, message);
-            if (serviceType.isIsolated() && serviceType.isIsolated(Constants.SERVICE_RESOURCE_ON_MESSAGE)) {
+            if (serviceType.isIsolated() && serviceType.isIsolated(SERVICE_RESOURCE_ON_MESSAGE)) {
                 ballerinaRuntime.invokeMethodAsyncConcurrently(
-                        consumerService, Constants.SERVICE_RESOURCE_ON_MESSAGE, null, metadata, callback,
+                        consumerService, SERVICE_RESOURCE_ON_MESSAGE, null, metadata, callback,
                         null, PredefinedTypes.TYPE_NULL, params);
             } else {
                 ballerinaRuntime.invokeMethodAsyncSequentially(
-                        consumerService, Constants.SERVICE_RESOURCE_ON_MESSAGE, null, metadata, callback,
+                        consumerService, SERVICE_RESOURCE_ON_MESSAGE, null, metadata, callback,
                         null, PredefinedTypes.TYPE_NULL, params);
             }
         } catch (JMSException | BallerinaJmsException e) {
@@ -84,7 +88,7 @@ public class JmsListener implements MessageListener {
     private Object[] methodParameters(ObjectType serviceType, Message message)
             throws JMSException, BallerinaJmsException {
         Optional<MethodType> onMessageFuncOpt = Stream.of(serviceType.getMethods())
-                .filter(methodType -> Constants.SERVICE_RESOURCE_ON_MESSAGE.equals(methodType.getName()))
+                .filter(methodType -> SERVICE_RESOURCE_ON_MESSAGE.equals(methodType.getName()))
                 .findFirst();
         if (onMessageFuncOpt.isPresent()) {
             MethodType onMessageFunction = onMessageFuncOpt.get();

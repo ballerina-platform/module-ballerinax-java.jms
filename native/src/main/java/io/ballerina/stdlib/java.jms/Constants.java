@@ -139,14 +139,14 @@ public class Constants {
     static final BString TOPIC = StringUtils.fromString("TOPIC");
     static final BString TEMPORARY_TOPIC = StringUtils.fromString("TEMPORARY_TOPIC");
 
-    static final String SERVICE_RESOURCE_ON_MESSAGE = "onMessage";
+    public static final String SERVICE_RESOURCE_ON_MESSAGE = "onMessage";
     static final String SERVICE_RESOURCE_ON_TEXT_MESSAGE = "onTextMessage";
     static final String SERVICE_RESOURCE_ON_MAP_MESSAGE = "onMapMessage";
     static final String SERVICE_RESOURCE_ON_BYTES_MESSAGE = "onBytesMessage";
     static final String SERVICE_RESOURCE_ON_STREAM_MESSAGE = "onStreamMessage";
     static final String SERVICE_RESOURCE_ON_OTHER_MESSAGE = "onOtherMessage";
 
-    static final String CALLER = "Caller";
+    public static final String CALLER = "Caller";
 
     private Constants() {
     }
