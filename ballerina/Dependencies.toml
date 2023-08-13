@@ -51,12 +51,22 @@ modules = [
 
 [[package]]
 org = "ballerinax"
+name = "activemq.driver"
+version = "0.1.0"
+scope = "testOnly"
+modules = [
+	{org = "ballerinax", packageName = "activemq.driver", moduleName = "activemq.driver"}
+]
+
+[[package]]
+org = "ballerinax"
 name = "java.jms"
 version = "0.1.3"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.runtime"},
-	{org = "ballerina", name = "test"}
+	{org = "ballerina", name = "test"},
+	{org = "ballerinax", name = "activemq.driver"}
 ]
 modules = [
 	{org = "ballerinax", packageName = "java.jms", moduleName = "java.jms"}
