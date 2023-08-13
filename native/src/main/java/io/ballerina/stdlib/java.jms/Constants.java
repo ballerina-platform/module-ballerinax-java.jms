@@ -111,7 +111,7 @@ public class Constants {
     public static final String NATIVE_PRODUCER = "producer";
     public static final String NATIVE_CONSUMER = "consumer";
 
-    static final String NATIVE_MESSAGE = "message";
+    public static final String NATIVE_MESSAGE = "message";
 
     // Ballerina JMS message types
     static final String MESSAGE_BAL_RECORD_NAME = "Message";
@@ -124,7 +124,7 @@ public class Constants {
     static final BString TIMESTAMP = StringUtils.fromString("timestamp");
     static final BString CORRELATION_ID = StringUtils.fromString("correlationId");
     static final BString REPLY_TO = StringUtils.fromString("replyTo");
-    static final BString DESTINATION = StringUtils.fromString("destination");
+    public static final BString DESTINATION = StringUtils.fromString("destination");
     static final BString DELIVERY_MODE = StringUtils.fromString("deliveryMode");
     static final BString REDELIVERED = StringUtils.fromString("redelivered");
     static final BString JMS_TYPE = StringUtils.fromString("jmsType");

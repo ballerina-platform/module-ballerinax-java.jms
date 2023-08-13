@@ -70,7 +70,7 @@ public isolated client class MessageConsumer {
 
     isolated function externInit(Session session, ConsumerOptions consumerOptions) returns Error? = @java:Method {
         name: "init",
-        'class: "io.ballerina.stdlib.java.jms.JmsConsumer"
+        'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
 
     # Receives the next message that arrives within the specified timeout interval.
@@ -78,14 +78,14 @@ public isolated client class MessageConsumer {
     # + timeoutMillis - Message receive timeout
     # + return - `jms:JmsMessage` or `jsm:Error` if there is an error in the execution
     isolated remote function receive(int timeoutMillis = 0) returns Message|Error? = @java:Method {
-        'class: "io.ballerina.stdlib.java.jms.JmsConsumer"
+        'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
 
     # Receives the next message if one is immediately available.
     #
     # + return - `jms:JmsMessage` or `jsm:Error` if there is an error in the execution
     isolated remote function receiveNoWait() returns Message|Error? = @java:Method {
-        'class: "io.ballerina.stdlib.java.jms.JmsConsumer"
+        'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
 
     # Mark a JMS message as received.
@@ -93,13 +93,13 @@ public isolated client class MessageConsumer {
     # + message - JMS message record
     # + return - `jms:Error` if there is an error in the execution or else nil
     isolated remote function acknowledge(Message message) returns Error? = @java:Method {
-        'class: "io.ballerina.stdlib.java.jms.JmsConsumer"
+        'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
 
     # Closes the message consumer.
     #
     # + return - `jms:Error` if there is an error or else nil
     isolated remote function close() returns Error? = @java:Method {
-        'class: "io.ballerina.stdlib.java.jms.JmsConsumer"
+        'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
 }

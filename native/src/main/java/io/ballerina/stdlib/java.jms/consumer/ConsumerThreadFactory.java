@@ -16,18 +16,19 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.java.jms;
+package io.ballerina.stdlib.java.jms.consumer;
+
+import java.util.concurrent.ThreadFactory;
 
 /**
- * Representation of the custom exception in the JMS module.
+ * A {@link ThreadFactory} object that creates new threads on demand for JMS consumer network actions.
  */
-public class BallerinaJmsException extends Exception {
+class ConsumerThreadFactory implements ThreadFactory {
 
-    public BallerinaJmsException(String message) {
-        super(message);
-    }
-
-    public BallerinaJmsException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public Thread newThread(Runnable runnable) {
+        Thread kafkaProducerThread = new Thread(runnable);
+        kafkaProducerThread.setName("balx-jms-producer-network-thread");
+        return kafkaProducerThread;
     }
 }
