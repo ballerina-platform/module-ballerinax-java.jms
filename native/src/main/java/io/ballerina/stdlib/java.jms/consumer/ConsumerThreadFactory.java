@@ -16,25 +16,19 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.java.jms;
+package io.ballerina.stdlib.java.jms.consumer;
 
-import io.ballerina.runtime.api.async.Callback;
-import io.ballerina.runtime.api.values.BError;
+import java.util.concurrent.ThreadFactory;
 
 /**
- * Callback code to be executed when the message-listener complete a message producing cycle to the ballerina service.
+ * A {@link ThreadFactory} object that creates new threads on demand for JMS consumer network actions.
  */
-public class ConsumerCallback implements Callback {
-    @Override
-    public void notifySuccess(Object o) {
-        if (o instanceof BError) {
-            ((BError) o).printStackTrace();
-        }
-    }
+class ConsumerThreadFactory implements ThreadFactory {
 
     @Override
-    public void notifyFailure(BError bError) {
-        bError.printStackTrace();
-        System.exit(1);
+    public Thread newThread(Runnable runnable) {
+        Thread jmsConsumerThread = new Thread(runnable);
+        jmsConsumerThread.setName("balx-jms-consumer-network-thread");
+        return jmsConsumerThread;
     }
 }

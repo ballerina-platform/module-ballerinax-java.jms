@@ -16,11 +16,18 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.java.jms;
+package io.ballerina.stdlib.java.jms.producer;
 
+import io.ballerina.runtime.api.Environment;
+import io.ballerina.runtime.api.Future;
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.java.jms.BallerinaJmsException;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -38,7 +45,8 @@ import static io.ballerina.stdlib.java.jms.Constants.NATIVE_SESSION;
 /**
  * Representation of {@link javax.jms.MessageProducer} with utility methods to invoke as inter-op functions.
  */
-public class JmsProducer {
+public class Actions {
+    private static final ExecutorService executorService = Executors.newCachedThreadPool(new ProducerThreadFactory());
 
     /**
      * Creates a {@link javax.jms.MessageProducer} object with given {@link javax.jms.Session}.
@@ -68,19 +76,25 @@ public class JmsProducer {
     /**
      * Sends a message using the {@code MessageProducer}'s default delivery mode, priority, and time to live.
      *
+     * @param env Ballerina runtime environment
      * @param producer Ballerina producer object
      * @param message  The JMS message
      * @return A Ballerina `jms:Error` if the JMS MessageProducer fails to send the message due to some error
      */
-    public static Object send(BObject producer, Message message) {
+    public static Object send(Environment env, BObject producer, Message message) {
         MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
-        try {
-            nativeProducer.send(message);
-        } catch (UnsupportedOperationException | JMSException exception) {
-            return createError(JMS_ERROR,
-                    String.format("Error occurred while sending a message to the JMS provider: %s",
-                            exception.getMessage()), exception);
-        }
+        Future balFuture = env.markAsync();
+        executorService.execute(() -> {
+            try {
+                nativeProducer.send(message);
+                balFuture.complete(null);
+            } catch (UnsupportedOperationException | JMSException exception) {
+                BError bError = createError(JMS_ERROR,
+                        String.format("Error occurred while sending a message to the JMS provider: %s",
+                                exception.getMessage()), exception);
+                balFuture.complete(bError);
+            }
+        });
         return null;
     }
 
@@ -88,26 +102,33 @@ public class JmsProducer {
      * Sends a message to a destination for an unidentified message producer using the {@code MessageProducer}'s
      * default delivery mode, priority, and time to live.
      *
+     * @param env Ballerina runtime environment
      * @param producer    Ballerina producer object
      * @param session     Ballerina session object
      * @param destination Relevant JMS destination
      * @param message     The JMS message
      * @return A Ballerina `jms:Error` if the JMS MessageProducer fails to send the message due to some error
      */
-    public static Object sendTo(BObject producer, BObject session, BMap<BString, Object> destination,
+    public static Object sendTo(Environment env, BObject producer, BObject session, BMap<BString, Object> destination,
                                 Message message) {
         MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
         Session nativeSession = (Session) session.getNativeData(NATIVE_SESSION);
-        try {
-            Destination jmsDestination = getDestination(nativeSession, destination);
-            nativeProducer.send(jmsDestination, message);
-        } catch (BallerinaJmsException exception) {
-            return createError(JMS_ERROR, exception.getMessage(), exception);
-        } catch (UnsupportedOperationException | JMSException exception) {
-            return createError(JMS_ERROR,
-                    String.format("Error occurred while sending a message to the JMS provider: %s",
-                            exception.getMessage()), exception);
-        }
+        Future balFuture = env.markAsync();
+        executorService.execute(() -> {
+            try {
+                Destination jmsDestination = getDestination(nativeSession, destination);
+                nativeProducer.send(jmsDestination, message);
+                balFuture.complete(null);
+            } catch (BallerinaJmsException exception) {
+                BError bError = createError(JMS_ERROR, exception.getMessage(), exception);
+                balFuture.complete(bError);
+            } catch (UnsupportedOperationException | JMSException exception) {
+                BError bError = createError(JMS_ERROR,
+                        String.format("Error occurred while sending a message to the JMS provider: %s",
+                                exception.getMessage()), exception);
+                balFuture.complete(bError);
+            }
+        });
         return null;
     }
 

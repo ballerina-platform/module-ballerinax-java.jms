@@ -24,6 +24,6 @@ public isolated client class Caller {
     # + message - JMS message record
     # + return - `jms:Error` if there is an error in the execution or else nil
     isolated remote function acknowledge(Message message) returns Error? = @java:Method {
-        'class: "io.ballerina.stdlib.java.jms.JmsConsumer"
+        'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
 }

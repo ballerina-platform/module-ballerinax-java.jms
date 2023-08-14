@@ -106,12 +106,12 @@ public class Constants {
     static final String SESSION_TRANSACTED_MODE = "SESSION_TRANSACTED";
 
     // Native properties in respective ballerina objects
-    static final String NATIVE_CONNECTION = "connection";
-    static final String NATIVE_SESSION = "session";
-    static final String NATIVE_PRODUCER = "producer";
-    static final String NATIVE_CONSUMER = "consumer";
+    public static final String NATIVE_CONNECTION = "connection";
+    public static final String NATIVE_SESSION = "session";
+    public static final String NATIVE_PRODUCER = "producer";
+    public static final String NATIVE_CONSUMER = "consumer";
 
-    static final String NATIVE_MESSAGE = "message";
+    public static final String NATIVE_MESSAGE = "message";
 
     // Ballerina JMS message types
     static final String MESSAGE_BAL_RECORD_NAME = "Message";
@@ -124,7 +124,7 @@ public class Constants {
     static final BString TIMESTAMP = StringUtils.fromString("timestamp");
     static final BString CORRELATION_ID = StringUtils.fromString("correlationId");
     static final BString REPLY_TO = StringUtils.fromString("replyTo");
-    static final BString DESTINATION = StringUtils.fromString("destination");
+    public static final BString DESTINATION = StringUtils.fromString("destination");
     static final BString DELIVERY_MODE = StringUtils.fromString("deliveryMode");
     static final BString REDELIVERED = StringUtils.fromString("redelivered");
     static final BString JMS_TYPE = StringUtils.fromString("jmsType");
@@ -139,14 +139,14 @@ public class Constants {
     static final BString TOPIC = StringUtils.fromString("TOPIC");
     static final BString TEMPORARY_TOPIC = StringUtils.fromString("TEMPORARY_TOPIC");
 
-    static final String SERVICE_RESOURCE_ON_MESSAGE = "onMessage";
+    public static final String SERVICE_RESOURCE_ON_MESSAGE = "onMessage";
     static final String SERVICE_RESOURCE_ON_TEXT_MESSAGE = "onTextMessage";
     static final String SERVICE_RESOURCE_ON_MAP_MESSAGE = "onMapMessage";
     static final String SERVICE_RESOURCE_ON_BYTES_MESSAGE = "onBytesMessage";
     static final String SERVICE_RESOURCE_ON_STREAM_MESSAGE = "onStreamMessage";
     static final String SERVICE_RESOURCE_ON_OTHER_MESSAGE = "onOtherMessage";
 
-    static final String CALLER = "Caller";
+    public static final String CALLER = "Caller";
 
     private Constants() {
     }
