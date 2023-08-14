@@ -7,7 +7,10 @@ keywords = ["jms"]
 repository = "https://github.com/ballerina-platform/module-ballerina-java.jms"
 icon = "icon.png"
 license = ["Apache-2.0"]
-distribution = "2201.6.0"
+distribution = "2201.7.0"
+
+[platform.java11]
+graalvmCompatible = true
 
 [[platform.java11.dependency]]
 groupId = "io.ballerina.stdlib"
@@ -26,15 +29,3 @@ groupId = "javax.jms"
 artifactId = "javax.jms-api"
 version = "@javax.jms.version@"
 path = "./lib/javax.jms-api-@javax.jms.version@.jar"
-
-[[platform.java11.dependency]]
-path = "./lib/activemq-client-@activemq.client.version@.jar"
-scope = "testOnly"
-
-[[platform.java11.dependency]]
-path = "./lib/geronimo-j2ee-management_1.1_spec-@geronimoj2ee.spec.version@.jar"
-scope = "testOnly"
-
-[[platform.java11.dependency]]
-path = "./lib/hawtbuf-@hawtbuf.version@.jar"
-scope = "testOnly"

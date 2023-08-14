@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/test;
+import ballerinax/activemq.driver as _;
 
 final Connection TEST_CONNECTION = check new (
     initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
