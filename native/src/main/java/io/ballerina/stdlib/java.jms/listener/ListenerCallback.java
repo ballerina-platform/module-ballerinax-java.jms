@@ -16,18 +16,26 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.java.jms;
+package io.ballerina.stdlib.java.jms.listener;
+
+import io.ballerina.runtime.api.async.Callback;
+import io.ballerina.runtime.api.values.BError;
 
 /**
- * Representation of the custom exception in the JMS module.
+ * Callback code to be executed when the message-listener complete a message producing cycle to the ballerina service.
  */
-public class BallerinaJmsException extends Exception {
-
-    public BallerinaJmsException(String message) {
-        super(message);
+public class ListenerCallback implements Callback {
+    @Override
+    public void notifySuccess(Object o) {
+        if (o instanceof BError) {
+            ((BError) o).printStackTrace();
+        }
     }
 
-    public BallerinaJmsException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public void notifyFailure(BError bError) {
+        bError.printStackTrace();
+        System.exit(1);
     }
+
 }
