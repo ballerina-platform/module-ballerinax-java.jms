@@ -15,7 +15,7 @@
 // under the License.
 
 plugins {
-    id 'java'
+    id 'java-library'
     id 'checkstyle'
     id 'com.github.spotbugs'
 }
