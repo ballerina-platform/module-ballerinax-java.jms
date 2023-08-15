@@ -9,22 +9,22 @@ icon = "icon.png"
 license = ["Apache-2.0"]
 distribution = "2201.7.0"
 
-[platform.java11]
+[platform.java17]
 graalvmCompatible = true
 
-[[platform.java11.dependency]]
+[[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "java.jms-native"
 version = "@toml.version@"
 path = "../native/build/libs/java.jms-native-@project.version@.jar"
 
-[[platform.java11.dependency]]
+[[platform.java17.dependency]]
 groupId = "org.slf4j"
 artifactId = "slf4j-api"
 version = "@slf4j.version@"
 path = "./lib/slf4j-api-@slf4j.version@.jar"
 
-[[platform.java11.dependency]]
+[[platform.java17.dependency]]
 groupId = "javax.jms"
 artifactId = "javax.jms-api"
 version = "@javax.jms.version@"

@@ -20,4 +20,8 @@
         <Class name="io.ballerina.stdlib.java.jms.listener.ListenerCallback"/>
         <Bug pattern="DM_EXIT"/>
     </Match>
+    <Match>
+        <Class name="io.ballerina.stdlib.java.jms.listener.ListenerImpl"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
 </FindBugsFilter>
