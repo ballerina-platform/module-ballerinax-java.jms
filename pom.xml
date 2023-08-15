@@ -56,7 +56,18 @@
                 <groupId>org.ballerinalang</groupId>
                 <artifactId>ballerina-runtime</artifactId>
                 <version>${ballerina.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.james</groupId>
+                        <artifactId>apache-mime4j-core</artifactId>
+                    </exclusion>
+                </exclusions>
                 <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-core</artifactId>
+                <version>${mime4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.ballerinalang</groupId>
@@ -133,5 +144,6 @@
         <maven.spotbugsplugin.exclude.file>spotbugs-exclude.xml</maven.spotbugsplugin.exclude.file>
         <slf4j.version>1.7.21</slf4j.version>
         <jms.version>2.0.1</jms.version>
+        <mime4j.version>0.8.9</mime4j.version>
     </properties>
 </project>
