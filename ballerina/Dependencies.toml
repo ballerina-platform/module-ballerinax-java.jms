@@ -9,6 +9,19 @@ distribution-version = "2201.8.0-20230726-145300-b2bdf796"
 
 [[package]]
 org = "ballerina"
+name = "io"
+version = "1.5.0"
+scope = "testOnly"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.value"}
+]
+modules = [
+	{org = "ballerina", packageName = "io", moduleName = "io"}
+]
+
+[[package]]
+org = "ballerina"
 name = "jballerina.java"
 version = "0.0.0"
 modules = [
@@ -38,6 +51,15 @@ modules = [
 
 [[package]]
 org = "ballerina"
+name = "lang.value"
+version = "0.0.0"
+scope = "testOnly"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"}
+]
+
+[[package]]
+org = "ballerina"
 name = "test"
 version = "0.0.0"
 scope = "testOnly"
@@ -63,6 +85,7 @@ org = "ballerinax"
 name = "java.jms"
 version = "0.2.0"
 dependencies = [
+	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.runtime"},
 	{org = "ballerina", name = "test"},
