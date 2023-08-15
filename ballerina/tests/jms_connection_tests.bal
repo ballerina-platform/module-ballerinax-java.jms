@@ -57,7 +57,7 @@ isolated function testCreateConnectionInvalidProviderUrl() returns error? {
         "Connection created with invalid provider URL");
     if connection is Error {
         test:assertEquals(connection.message(), 
-            "Error occurred while connecting to broker: Could not connect to broker URL: tcp://localhost:61615. Reason: java.net.ConnectException: Connection refused (Connection refused)", 
+            "Error occurred while connecting to broker: Could not connect to broker URL: tcp://localhost:61615. Reason: java.net.ConnectException: Connection refused", 
             "Invalid connection init error message");
     }
 }
