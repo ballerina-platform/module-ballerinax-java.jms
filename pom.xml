@@ -28,7 +28,7 @@
     <groupId>org.ballerinalang</groupId>
     <artifactId>module-jms</artifactId>
     <packaging>pom</packaging>
-    <version>0.8.4</version>
+    <version>0.8.5</version>
     <name>Ballerina JMS Module</name>
 
     <modules>
