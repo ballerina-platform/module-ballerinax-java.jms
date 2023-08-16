@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/jballerina.java;
+import ballerina/crypto;
 
 # Represents JMS Connection.
 public isolated client class Connection {
@@ -75,6 +76,7 @@ public isolated client class Connection {
 # + username - Username for the JMS connection
 # + password - Password for the JMS connection
 # + properties - Additional properties use in initializing the initial context
+# + secureSocket - Configurations related to SSL/TLS encryption
 public type ConnectionConfiguration record {|
     string initialContextFactory = "wso2mbInitialContextFactory";
     string providerUrl = "amqp://admin:admin@ballerina/default?brokerlist='tcp://localhost:5672'";
@@ -82,4 +84,44 @@ public type ConnectionConfiguration record {|
     string username?;
     string password?;
     map<string> properties = {};
+    SecureSocket secureSocket?;
 |};
+
+# Configurations for secure communication with the JMS provider.
+#
+# + cert - Configurations associated with crypto:TrustStore or single certificate file that the client trusts
+# + key - Configurations associated with crypto:KeyStore or combination of certificate and private key of the client
+# + protocol - SSL/TLS protocol related options
+# + ciphers - List of ciphers to be used. By default, all the available cipher suites are supported
+# + provider - Name of the security provider used for SSL connections. The default value is the default security provider
+#              of the JVM
+public type SecureSocket record {|
+   crypto:TrustStore|string cert;
+   record {|
+        crypto:KeyStore keyStore;
+        string keyPassword?;
+  |}|CertKey key?;
+   record {|
+        Protocol name;
+        string[] versions?;
+   |} protocol?;
+   string[] ciphers?;
+   string provider?;
+|};
+
+# Represents a combination of certificate, private key, and private key password if encrypted.
+#
+# + certFile - A file containing the certificate
+# + keyFile - A file containing the private key in PKCS8 format
+# + keyPassword - Password of the private key if it is encrypted
+public type CertKey record {|
+    string certFile;
+    string keyFile;
+    string keyPassword?;
+|};
+
+# Represents protocol options.
+public enum Protocol {
+   SSL,
+   TLS
+}
