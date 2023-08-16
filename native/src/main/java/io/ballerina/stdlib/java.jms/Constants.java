@@ -64,6 +64,25 @@ public class Constants {
     public static final String ALIAS_ACK_MODE = "acknowledgementMode";
     public static final String ALIAS_CLIENT_ID = "clientId";
     public static final String ALIAS_DURABLE_SUBSCRIBER_ID = "subscriptionId";
+
+    // SSL Configuration parameters.
+    public static final BString SECURE_SOCKET = StringUtils.fromString("secureSocket");
+    public static final BString KEYSTORE_CONFIG = StringUtils.fromString("keyStore");
+    public static final BString KEY_CONFIG = StringUtils.fromString("key");
+    public static final BString TRUSTSTORE_CONFIG = StringUtils.fromString("cert");
+    public static final BString PROTOCOL_CONFIG = StringUtils.fromString("protocol");
+    public static final BString LOCATION_CONFIG = StringUtils.fromString("path");
+    public static final BString PASSWORD_CONFIG = StringUtils.fromString("password");
+    public static final BString SSL_PROTOCOL_VERSIONS = StringUtils.fromString("versions");
+    public static final BString SECURITY_PROTOCOL_CONFIG = StringUtils.fromString("securityProtocol");
+    public static final BString SSL_PROTOCOL_NAME = StringUtils.fromString("name");
+    public static final BString SSL_PROVIDER_CONFIG = StringUtils.fromString("provider");
+    public static final BString SSL_KEY_PASSWORD_CONFIG = StringUtils.fromString("keyPassword");
+    public static final BString SSL_CIPHER_SUITES_CONFIG = StringUtils.fromString("ciphers");
+    public static final BString SSL_CERT_FILE_LOCATION_CONFIG = StringUtils.fromString("certFile");
+    public static final BString SSL_KEY_FILE_LOCATION_CONFIG = StringUtils.fromString("keyFile");
+    // SSL keystore/truststore type config
+    public static final String SSL_STORE_TYPE_CONFIG = "PEM";
     /**
      * Alias for MB initial context factory name.
      */

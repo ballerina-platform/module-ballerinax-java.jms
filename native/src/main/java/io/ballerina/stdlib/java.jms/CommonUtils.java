@@ -28,10 +28,14 @@ import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 
 import javax.jms.BytesMessage;
 import javax.jms.Destination;
@@ -59,6 +63,20 @@ public class CommonUtils {
         BError cause = ErrorCreator.createError(throwable);
         return ErrorCreator.createError(
                 ModuleUtils.getModule(), errorType, StringUtils.fromString(message), cause, null);
+    }
+
+    public static String readPasswordValueFromFile(String filePath) throws IOException {
+        return Files.readString(Paths.get(filePath));
+    }
+
+    public static void addStringParamIfPresent(String paramName, BMap<BString, Object> configs,
+                                                Properties configParams, BString key) {
+        if (Objects.nonNull(configs.get(key))) {
+            BString value = (BString) configs.get(key);
+            if (!(value == null || value.getValue().equals(""))) {
+                configParams.setProperty(paramName, value.getValue());
+            }
+        }
     }
 
     public static Optional<String> getOptionalStringProperty(BMap<BString, Object> config, BString fieldName) {

@@ -23,6 +23,7 @@ import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,10 +38,22 @@ import javax.jms.JMSException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import static io.ballerina.stdlib.java.jms.CommonUtils.addStringParamIfPresent;
 import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getOptionalStringProperty;
+import static io.ballerina.stdlib.java.jms.CommonUtils.readPasswordValueFromFile;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
+import static io.ballerina.stdlib.java.jms.Constants.KEY_CONFIG;
+import static io.ballerina.stdlib.java.jms.Constants.KEYSTORE_CONFIG;
+import static io.ballerina.stdlib.java.jms.Constants.LOCATION_CONFIG;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONNECTION;
+import static io.ballerina.stdlib.java.jms.Constants.PASSWORD_CONFIG;
+import static io.ballerina.stdlib.java.jms.Constants.SECURE_SOCKET;
+import static io.ballerina.stdlib.java.jms.Constants.SSL_CERT_FILE_LOCATION_CONFIG;
+import static io.ballerina.stdlib.java.jms.Constants.SSL_KEY_FILE_LOCATION_CONFIG;
+import static io.ballerina.stdlib.java.jms.Constants.SSL_KEY_PASSWORD_CONFIG;
+import static io.ballerina.stdlib.java.jms.Constants.SSL_STORE_TYPE_CONFIG;
+import static io.ballerina.stdlib.java.jms.Constants.TRUSTSTORE_CONFIG;
 
 /**
  * Representation of {@link javax.jms.Connection} with utility methods to invoke as inter-op functions.
@@ -125,6 +138,9 @@ public class JmsConnection {
         additionalProperties.entrySet().forEach(e -> {
             properties.setProperty(e.getKey().getValue(), e.getValue().getValue());
         });
+        if (Objects.nonNull(connectionConfigs.get(SECURE_SOCKET))) {
+            processSslProperties(connectionConfigs, properties);
+        }
         return properties;
     }
 
@@ -164,6 +180,62 @@ public class JmsConnection {
             }
         }
         configParams.putAll(tempMap);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void processSslProperties(BMap<BString, Object> configurations, Properties configParams)
+            throws BallerinaJmsException {
+        BMap<BString, Object> secureSocket = (BMap<BString, Object>) configurations.get(SECURE_SOCKET);
+        BMap<BString, Object> keyConfig = (BMap<BString, Object>) secureSocket.get(KEY_CONFIG);
+        if (keyConfig != null) {
+            if (keyConfig.containsKey(SSL_CERT_FILE_LOCATION_CONFIG)) {
+                BString certFile = (BString) keyConfig.get(SSL_CERT_FILE_LOCATION_CONFIG);
+                BString keyFile = (BString) keyConfig.get(SSL_KEY_FILE_LOCATION_CONFIG);
+                Optional<String> keyPassword = getOptionalStringProperty(keyConfig, SSL_KEY_PASSWORD_CONFIG);
+                String certValue;
+                String keyValue;
+                try {
+                    certValue = readPasswordValueFromFile(certFile.getValue());
+                } catch (IOException e) {
+                    throw new BallerinaJmsException("Error reading certificate file : " + e.getMessage(), e);
+                }
+                try {
+                    keyValue = readPasswordValueFromFile(keyFile.getValue());
+                } catch (IOException e) {
+                    throw new BallerinaJmsException("Error reading private key file : " + e.getMessage(), e);
+                }
+                configParams.setProperty("ssl.keystore.key", keyValue);
+                configParams.setProperty("ssl.keystore.certificate.chain", certValue);
+                keyPassword.ifPresent(s -> configParams.setProperty("ssl.key.password", s));
+                configParams.setProperty("ssl.keystore.type", SSL_STORE_TYPE_CONFIG);
+            } else {
+                addStringParamIfPresent("javax.net.ssl.keyStore",
+                        (BMap<BString, Object>) keyConfig.get(KEYSTORE_CONFIG), configParams,
+                        LOCATION_CONFIG);
+                addStringParamIfPresent("javax.net.ssl.keyStorePassword",
+                        (BMap<BString, Object>) keyConfig.get(KEYSTORE_CONFIG), configParams, PASSWORD_CONFIG);
+                addStringParamIfPresent("javax.net.ssl.keyPassword", keyConfig, configParams,
+                        SSL_KEY_PASSWORD_CONFIG);
+            }
+        }
+        Object cert = secureSocket.get(TRUSTSTORE_CONFIG);
+        if (cert instanceof BString) {
+            String trustCertValue;
+            try {
+                trustCertValue = readPasswordValueFromFile(((BString) cert).getValue());
+            } catch (IOException e) {
+                throw new BallerinaJmsException("Error reading certificate file : " + e.getMessage(), e);
+            }
+            configParams.setProperty("ssl.truststore.certificates", trustCertValue);
+            configParams.setProperty("ssl.truststore.type", SSL_STORE_TYPE_CONFIG);
+        } else {
+            addStringParamIfPresent("javax.net.ssl.trustStore",
+                    (BMap<BString, Object>) secureSocket.get(TRUSTSTORE_CONFIG),
+                    configParams, LOCATION_CONFIG);
+            addStringParamIfPresent("javax.net.ssl.trustStorePassword",
+                    (BMap<BString, Object>) secureSocket.get(TRUSTSTORE_CONFIG),
+                    configParams, PASSWORD_CONFIG);
+        }
     }
 
     /** Starts (or restarts) a connection's delivery of incoming messages.
