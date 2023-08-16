@@ -1,0 +1,17 @@
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost">
+        <transportConnectors>
+            <!-- Non-authenticated port without username/password -->
+            <transportConnector name="non-authenticated" uri="tcp://0.0.0.0:61616" />
+
+            <!-- Authenticated port with username/password -->
+            <transportConnector name="authenticated"
+                uri="tcp://0.0.0.0:61617?anonymousAccessAllowed=false" />
+        </transportConnectors>
+    </broker>
+</beans>

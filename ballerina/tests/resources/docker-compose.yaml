@@ -5,4 +5,8 @@ services:
         image: 'apache/activemq-classic:latest'
         container_name: activemq-test-server
         ports:
-            - '61616:61616'
+            - '61616:61616' # Non authenticated port
+            - '61617:61617' # Authenticated port
+        volumes:
+            - ./activemq.xml:/opt/apache-activemq/conf/activemq.xml
+            - ./users.properties:/opt/apache-activemq/conf/users.properties
