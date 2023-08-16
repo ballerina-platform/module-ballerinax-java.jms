@@ -89,35 +89,24 @@ public type ConnectionConfiguration record {|
 
 # Configurations for secure communication with the JMS provider.
 #
-# + cert - Configurations associated with crypto:TrustStore or single certificate file that the client trusts
-# + key - Configurations associated with crypto:KeyStore or combination of certificate and private key of the client
+# + cert - Configurations associated with crypto:TrustStore that the client trusts
+# + key - Configurations associated with crypto:KeyStore of the client
 # + protocol - SSL/TLS protocol related options
 # + ciphers - List of ciphers to be used. By default, all the available cipher suites are supported
 # + provider - Name of the security provider used for SSL connections. The default value is the default security provider
 #              of the JVM
 public type SecureSocket record {|
-   crypto:TrustStore|string cert;
+   crypto:TrustStore cert;
    record {|
         crypto:KeyStore keyStore;
         string keyPassword?;
-  |}|CertKey key?;
+  |} key?;
    record {|
         Protocol name;
         string[] versions?;
    |} protocol?;
    string[] ciphers?;
    string provider?;
-|};
-
-# Represents a combination of certificate, private key, and private key password if encrypted.
-#
-# + certFile - A file containing the certificate
-# + keyFile - A file containing the private key in PKCS8 format
-# + keyPassword - Password of the private key if it is encrypted
-public type CertKey record {|
-    string certFile;
-    string keyFile;
-    string keyPassword?;
 |};
 
 # Represents protocol options.
