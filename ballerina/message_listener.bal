@@ -82,8 +82,11 @@ public isolated class Listener {
     public isolated function detach(Service 'service) returns Error? {}
 
     # Starts the endpoint.
+    # ```ballerina
+    # check messageListener.'start();
+    # ```
     #
-    # + return - Returns nil or an error upon failure to start.
+    # + return - A `jms:Error` if there is an error or else `()`
     public isolated function 'start() returns Error? {}
 
 
