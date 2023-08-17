@@ -77,7 +77,7 @@ public isolated client class MessageConsumer {
     #
     # + timeoutMillis - Message receive timeout
     # + return - `jms:JmsMessage` or `jsm:Error` if there is an error in the execution
-    isolated remote function receive(int timeoutMillis = 0) returns Message|Error? = @java:Method {
+    isolated remote function receive(int timeoutMillis = 10000) returns Message|Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
 
