@@ -74,31 +74,45 @@ public isolated client class MessageConsumer {
     } external;
 
     # Receives the next message that arrives within the specified timeout interval.
+    # ```ballerina
+    # jms:Message? message = check consumer->receive(10000);
+    # ```
     #
     # + timeoutMillis - Message receive timeout
-    # + return - `jms:JmsMessage` or `jsm:Error` if there is an error in the execution
+    # + return - A `jms:JmsMessage` if there is a new message, `()` if there is no any new message, 
+    # or else a `jsm:Error` if there is an error in the execution
     isolated remote function receive(int timeoutMillis = 10000) returns Message|Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
 
     # Receives the next message if one is immediately available.
-    #
-    # + return - `jms:JmsMessage` or `jsm:Error` if there is an error in the execution
+    # ```ballerina
+    # jms:Message? message = check consumer->receiveNoWait();
+    # ```
+    # 
+    # + return - A `jms:JmsMessage` if there is a new message, `()` if there is no any new message, 
+    # or else a `jsm:Error` if there is an error in the execution
     isolated remote function receiveNoWait() returns Message|Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
 
     # Mark a JMS message as received.
+    # ```ballerina
+    # check consumer->acknowledge(message);
+    # ```
     #
     # + message - JMS message record
-    # + return - `jms:Error` if there is an error in the execution or else nil
+    # + return - A `jms:Error` if there is an error in the execution or else `()`
     isolated remote function acknowledge(Message message) returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
 
     # Closes the message consumer.
+    # ```ballerina
+    # check consumer->close();
+    # ```
     #
-    # + return - `jms:Error` if there is an error or else nil
+    # + return - A `jms:Error` if there is an error or else `()`
     isolated remote function close() returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
