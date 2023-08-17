@@ -16,7 +16,7 @@
 
 import ballerina/jballerina.java;
 
-# Represents a JMS caller, which can be used to commit the offsets consumed by the service.
+# Represents a JMS caller, which can be used to mark JMS message as received.
 public isolated client class Caller {
 
     # Mark a JMS message as received.

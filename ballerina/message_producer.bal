@@ -31,9 +31,12 @@ public isolated client class MessageProducer {
     } external;
 
     # Sends a message to the JMS provider.
+    # ```ballerina
+    # check producer->send(message);
+    # ```
     #
     # + message - Message to be sent to the JMS provider
-    # + return - Error if unable to send the message to the queue
+    # + return - A `jms:Error` if there is an error or else `()`
     isolated remote function send(Message message) returns Error? {
         handle jmsMessage = check getJmsMessage(self.session, message);
         return self.externSend(jmsMessage);
@@ -45,10 +48,13 @@ public isolated client class MessageProducer {
     } external;
 
     # Sends a message to a given destination of the JMS provider.
+    # ```ballerina
+    # check producer->sendTo({ 'type: QUEUE, name: "test-queue" }, message);
+    # ```
     #
     # + destination - Destination used for the message sender
     # + message - Message to be sent to the JMS provider
-    # + return - Error if sending to the given destination fails
+    # + return - A `jms:Error` if there is an error or else `()`
     isolated remote function sendTo(Destination destination, Message message) returns Error? {
         handle jmsMessage = check getJmsMessage(self.session, message);
         return self.externSendTo(self.session, destination, jmsMessage);
@@ -61,8 +67,10 @@ public isolated client class MessageProducer {
     } external;
 
     # Closes the message producer.
-    # 
-    # + return - `jms:Error` if there is an error or else nil
+    # ```ballerina
+    # check producer->close();
+    # ```
+    # + return - A `jms:Error` if there is an error or else `()`
     isolated remote function close() returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.producer.Actions"
     } external;
