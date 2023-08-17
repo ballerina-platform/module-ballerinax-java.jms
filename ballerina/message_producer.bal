@@ -67,7 +67,7 @@ public isolated client class MessageProducer {
     } external;
 
     # Closes the message producer.
-    # ```
+    # ```ballerina
     # check producer->close();
     # ```
     # + return - A `jms:Error` if there is an error or else `()`
