@@ -340,8 +340,8 @@ public type Message record {
     string messageId?;
     int timestamp?;
     string correlationId?;
-    Destination replyTo?;
-    Destination destination?;
+    jms:Destination replyTo?;
+    jms:Destination destination?;
     int deliveryMode?;
     boolean redelivered?;
     string jmsType?;
