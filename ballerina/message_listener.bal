@@ -37,33 +37,48 @@ public isolated class Listener {
     private final MessageConsumer consumer;
 
     # Creates a new `jms:Listener`.
-    #
-    # + consumer - The relevant JMS consumer.
-    public isolated function init(*MessageListenerConfigurations consumerConfig) returns error? {
-        Connection connection = check new (consumerConfig.connectionConfig);
-        Session session = check connection->createSession(consumerConfig.acknowledgementMode);
-        self.consumer = check new(session, consumerConfig.consumerOptions);
+    # ```ballerina
+    # listener jms:Listener messageListener = check new(
+    #   connectionConfig = {
+    #       initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+    #       providerUrl: "tcp://localhost:61616"
+    #   },
+    #   consumerOptions = {
+    #       destination: {
+    #           'type: jms:QUEUE,
+    #           name: "test-queue"
+    #       }
+    #   }
+    # );
+    # ```
+    # 
+    # + listenerConfig - Message listener configurations
+    # + return - The relevant JMS consumer or a `jms:Error` if there is any error
+    public isolated function init(*MessageListenerConfigurations listenerConfig) returns Error? {
+        Connection connection = check new (listenerConfig.connectionConfig);
+        Session session = check connection->createSession(listenerConfig.acknowledgementMode);
+        self.consumer = check new(session, listenerConfig.consumerOptions);
     }
 
     # Attaches a message consumer service to a listener.
     # ```ballerina
-    # error? result = listener.attach(jmsService);
+    # check messageListener.attach(jmsService);
     # ```
     # 
-    # + 'service - The service instance.
-    # + name - Name of the service.
-    # + return - Returns nil or an error upon failure to register the listener.
+    # + 'service - The service instance
+    # + name - Name of the service
+    # + return - A `jms:Error` if there is an error or else `()`
     public isolated function attach(Service 'service, string[]|string? name = ()) returns Error? {
         return setMessageListener(self.consumer, 'service);
     }
 
     # Detaches a message consumer service from the the listener.
     # ```ballerina
-    # error? result = listener.detach(jmsService);
+    # check messageListener.detach(jmsService);
     # ```
     #
     # + 'service - The service to be detached
-    # + return - A `jms:Error` if an error is encountered while detaching a service or else `()`
+    # + return - A `jms:Error` if there is an error or else `()`
     public isolated function detach(Service 'service) returns Error? {}
 
     # Starts the endpoint.
@@ -74,20 +89,20 @@ public isolated class Listener {
 
     # Stops the JMS listener gracefully.
     # ```ballerina
-    # error? result = listener.gracefulStop();
+    # check messageListener.gracefulStop();
     # ```
     #
-    # + return - A `jms:JmsError` if an error is encountered during the listener-stopping process or else `()`
+    # + return - A `jms:Error` if there is an error or else `()`
     public isolated function gracefulStop() returns Error? {
         return self.consumer->close();
     }
 
     # Stops the JMS listener immediately.
     # ```ballerina
-    # error? result = listener.immediateStop();
+    # check messageListener.immediateStop();
     # ```
     #
-    # + return - A `jms:JmsError` if an error is encountered during the listener-stopping process or else `()`
+    # + return - A `jms:Error` if there is an error or else `()`
     public isolated function immediateStop() returns Error? {
         return self.consumer->close();
     }
