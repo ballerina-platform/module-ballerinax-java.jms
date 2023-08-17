@@ -242,7 +242,7 @@ public type ConsumerOptions record {|
 
 ### 3.2. Functions
 
-To  unsubscribe a durable subscription that has been created by the JMS session, `unsubscribe` function can be used.
+To unsubscribe a durable subscription that has been created by the JMS session, `unsubscribe` function can be used.
 ```ballerina
 # Unsubscribe a durable subscription that has been created by this session.
 # It is erroneous for a client to delete a durable subscription while there is an active (not closed) consumer
@@ -431,7 +431,7 @@ It's created from a JMS session and provides methods to receive messages synchro
 
 ### 6.1. Functions
 
-To receive the next message arrived within the specified timeout interval, `receive` function can be used.
+To receive the next message arriving within the specified timeout interval, `receive` function can be used.
 ```ballerina
 # Receives the next message that arrives within the specified timeout interval.
 # ```
@@ -487,7 +487,7 @@ destination of the message listener, the callback method of the registered liste
 
 ### 7.1. Configuration
 
-When initializing a `jms:Listener`, following configurations can be provided.
+When initializing a `jms:Listener`, the following configurations can be provided.
 ```ballerina
 # Message listener configurations.
 #
