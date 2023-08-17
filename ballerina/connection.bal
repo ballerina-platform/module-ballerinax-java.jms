@@ -21,6 +21,12 @@ public isolated client class Connection {
     private final readonly & ConnectionConfiguration config;
 
     # Initialize and starts a JMS connection.
+    # ```ballerina
+    # jms:Connection connection = check new (
+    #   initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+    #   providerUrl = "tcp://localhost:61616"
+    # );
+    # ```
     #
     # + connectionConfig - The configurations to be used when initializing the JMS connection
     # + return - The `jms:Connection` or an `jms:Error` if the initialization failed
@@ -35,6 +41,9 @@ public isolated client class Connection {
     } external;
 
     # Create a Session object, specifying transacted and acknowledgeMode.
+    # ```ballerina
+    # jms:Session session = check connection->createSession();
+    # ```
     #
     # + ackMode - Configuration indicating how messages received by the session will be acknowledged
     # + return - Returns the Session or an error if it fails.
@@ -44,6 +53,9 @@ public isolated client class Connection {
 
     # Starts (or restarts) a connection's delivery of incoming messages.
     # A call to start on a connection that has already been started is ignored.
+    # ```ballerina
+    # check connection->'start();
+    # ```
     #
     # + return - A `jms:Error` if threre is an error while starting the connection
     isolated remote function 'start() returns Error? = @java:Method {
@@ -53,6 +65,9 @@ public isolated client class Connection {
 
     # Temporarily stops a connection's delivery of incoming messages.
     # Delivery can be restarted using the connection's start method.
+    # ```ballerina
+    # check connection->stop();
+    # ```
     #
     # + return - A `jms:Error` if threre is an error while stopping the connection
     isolated remote function stop() returns Error? = @java:Method {
@@ -60,6 +75,9 @@ public isolated client class Connection {
     } external;
 
     # Closes the connection.
+    # ```ballerina
+    # check connection->close();
+    # ```
     #
     # + return - A `jms:Error` if threre is an error while closing the connection
     isolated remote function close() returns Error? = @java:Method {
