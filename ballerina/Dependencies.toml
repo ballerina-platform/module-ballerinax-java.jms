@@ -52,7 +52,7 @@ modules = [
 [[package]]
 org = "ballerinax"
 name = "activemq.driver"
-version = "0.2.0"
+version = "1.0.0"
 scope = "testOnly"
 modules = [
 	{org = "ballerinax", packageName = "activemq.driver", moduleName = "activemq.driver"}
