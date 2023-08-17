@@ -45,7 +45,7 @@ public isolated client class Session {
     # Creates a MessageProducer to send messages to the specified destination.
     # ```ballerina
     # jms:MessageProducer producer = check session.createProducer({
-    #   'type: QUEUE,
+    #   'type: jms:QUEUE,
     #   name: "test-queue"
     # });
     # ```
@@ -59,7 +59,7 @@ public isolated client class Session {
     # Creates a MessageConsumer for the specified destination.
     # ```ballerina
     # jms:MessageConsumer consumer = check session.createConsumer(destination = {
-    #   'type: QUEUE,
+    #   'type: jms:QUEUE,
     #   name: "test-queue"
     # });
     # ```
