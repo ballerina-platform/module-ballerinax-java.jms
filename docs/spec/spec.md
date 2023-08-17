@@ -36,6 +36,13 @@ specification is considered a bug.
    * 5.1. [Functions](#51-functions)
 6. [Message consumer](#6-message-consumer)
    * 6.1. [Functions](#61-functions)
+7. [Message listener](#7-message-listener)
+   * 7.1. [Configuration](#71-configuration)
+   * 7.2. [Initialization](#72-initialization)
+   * 7.3. [Functions](#73-functions)
+   * 7.4. [Caller](#74-caller)
+     * 7.4.1. [Functions](#741-functions)
+   * 7.5. [Usage](#75-usage)
 
 ## 1. Overview  
 
@@ -62,7 +69,6 @@ connections, and provides a context for creating JMS sessions.
 ### 2.1. Configuration
 
 When initializing a `jms:Connection`, following configurations can be provided.
-
 ```ballerina
 # Configurations related to a JMS connection.
 #
@@ -473,3 +479,138 @@ To close the JMS consumer, `close` function can be used.
 isolated remote function close() returns jms:Error?;
 ```
 
+## 7. Message listener
+
+A JMS message listener is a mechanism for asynchronously receiving messages using event-driven programming. Instead of 
+actively polling for messages, you can register a message listener. Upon the arrival of a message at the subscribed 
+destination of the message listener, the callback method of the registered listener is triggered.
+
+### 7.1. Configuration
+
+When initializing a `jms:Listener`, following configurations can be provided.
+```ballerina
+# Message listener configurations.
+#
+# + connectionConfig - Configurations related to the broker connection  
+# + acknowledgementMode - Configuration indicating how messages received by the session will be acknowledged
+# + consumerOptions - Underlying JMS message consumer configurations
+public type MessageListenerConfigurations record {|
+    ConnectionConfiguration connectionConfig;
+    AcknowledgementMode acknowledgementMode = AUTO_ACKNOWLEDGE;
+    ConsumerOptions consumerOptions;
+|};
+```
+
+### 7.2. Initialization
+
+The `jms:Listener` can be initialized by providing the `jms:MessageListenerConfigurations`.
+```ballerina
+# Creates a new `jms:Listener`.
+# ```ballerina
+# listener jms:Listener messageListener = check new(
+#   connectionConfig = {
+#       initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+#       providerUrl: "tcp://localhost:61616"
+#   },
+#   consumerOptions = {
+#       destination: {
+#           'type: jms:QUEUE,
+#           name: "test-queue"
+#       }
+#   }
+# );
+# ```
+# 
+# + consumerConfig - Underlying JMS consumer configurations
+# + return - The relevant JMS consumer or a `jms:Error` if there is any error
+public isolated function init(*jms:MessageListenerConfigurations listenerConfig) returns jms:Error?;
+```
+
+### 7.3. Functions
+
+To attach a service to the listener, `attach` function can be used.
+```ballerina
+# Attaches a message consumer service to a listener.
+# ```
+# check messageListener.attach(jmsService);
+# ```
+# 
+# + 'service - The service instance
+# + name - Name of the service
+# + return - A `jms:Error` if there is an error or else `()`
+public isolated function attach(jms:Service 'service, string[]|string? name = ()) returns jms:Error?;
+```
+
+To detach a service from the listener, `detach` function can be used.
+```ballerina
+# Detaches a message consumer service from the the listener.
+# ```
+# check messageListener.detach(jmsService);
+# ```
+#
+# + 'service - The service to be detached
+# + return - A `jms:Error` if there is an error or else `()`
+public isolated function detach(jms:Service 'service) returns jms:Error?;
+```
+
+To start the listener, `'start` function can be used.
+```ballerina
+# Starts the endpoint.
+# ```
+# check messageListener.'start();
+# ```
+#
+# + return - A `jms:Error` if there is an error or else `()`
+public isolated function 'start() returns jms:Error?;
+```
+
+To stop the listener gracefully, `gracefulStop` function can be used.
+```ballerina
+# Stops the JMS listener gracefully.
+# ```
+# check messageListener.gracefulStop();
+# ```
+#
+# + return - A `jms:Error` if there is an error or else `()`
+public isolated function gracefulStop() returns jms:Error?;
+```
+
+To stop the listener immediately, `immediateStop` function can be used.
+```ballerina
+# Stops the JMS listener immediately.
+# ```
+# check messageListener.immediateStop();
+# ```
+#
+# + return - A `jms:Error` if there is an error or else `()`
+public isolated function immediateStop() returns jms:Error?;
+```
+
+### 7.4. Caller
+
+A `jms:Caller` can be used to mark JMS message as received. The caller is used in association with the `jms:Listener`.
+
+#### 7.4.1. Functions
+
+To mark a JMS message as received, `acknowledge` function can be used.
+```ballerina
+# Mark a JMS message as received.
+# ```
+# check caller->acknowledge(message);
+# ```
+#
+# + message - JMS message record
+# + return - A `jms:Error` if there is an error in the execution or else `()`
+isolated remote function acknowledge(jms:Message message) returns jms:Error?;
+```
+
+### 7.5. Usage
+
+After initializing the `jms:Listener` a `jms:Service` must be attached to it.
+```ballerina
+service jms:Service "consumer-service" on messageListener {
+    remote function onMessage(jms:Caller caller, jms:Message message) returns error? {
+        // process results
+    }
+}
+```
