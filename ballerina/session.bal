@@ -28,50 +28,74 @@ public isolated client class Session {
         'class: "io.ballerina.stdlib.java.jms.JmsSession"
     } external;
 
-    # Unsubscribe a durable subscription that has been created by a client.
+    # Unsubscribe a durable subscription that has been created by this session.
     # It is erroneous for a client to delete a durable subscription while there is an active (not closed) consumer
     # for the subscription, or while a consumed message being part of a pending transaction or has not been
     # acknowledged in the session.
+    # ```ballerina
+    # check session->unsubscribe("subscription-1");
+    # ```
     #
-    # + subscriptionId - The name, which is used to identify the subscription.
-    # + return - Cancels the subscription.
+    # + subscriptionId - The name, which is used to identify the subscription
+    # + return - A `jms:Error` if there is an error or else `()`
     isolated remote function unsubscribe(string subscriptionId) returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.JmsSession"
     } external;
 
     # Creates a MessageProducer to send messages to the specified destination.
+    # ```ballerina
+    # jms:MessageProducer producer = check session.createProducer({
+    #   'type: QUEUE,
+    #   name: "test-queue"
+    # });
+    # ```
     #
     # + destination - The Destination to send to, or nil if this is a producer which does not have a specified destination
-    # + return - Returns jms:MessageProducer
+    # + return - Returns `jms:MessageProducer` or `jms:Error` if there is an error
     public isolated function createProducer(Destination? destination = ()) returns MessageProducer|Error {
         return new MessageProducer(self, destination);
     }
 
     # Creates a MessageConsumer for the specified destination.
+    # ```ballerina
+    # jms:MessageConsumer consumer = check session.createConsumer(destination = {
+    #   'type: QUEUE,
+    #   name: "test-queue"
+    # });
+    # ```
     #
     # + consumerOptions - The relevant consumer configurations
-    # + return - Returns a jms:MessageConsumer
+    # + return - Returns a `jms:MessageConsumer` or else `jms:Error` if there is an error
     public isolated function createConsumer(*ConsumerOptions consumerOptions) returns MessageConsumer|Error {
         return new MessageConsumer(self, consumerOptions);
     }
 
-    # Commits all messages done in this transaction and releases any locks currently held.
+    # Commits all messages sent/received in this transaction and releases any locks currently held.
+    # ```ballerina
+    # check session->'commit();
+    # ```
     # 
-    # + return - `jms:Error` if there is an error or else nil
+    # + return - A `jms:Error` if there is an error or else `()`
     isolated remote function 'commit() returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.JmsSession"
     } external;
 
-    # Rolls back any messages done in this transaction and releases any locks currently held.
+    # Rolls back any messages sent/received in this transaction and releases any locks currently held.
+    # ```ballerina
+    # check session->'rollback();
+    # ```
     # 
-    # + return - `jms:Error` if there is an error or else nil
+    # + return - A `jms:Error` if there is an error or else `()`
     isolated remote function 'rollback() returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.JmsSession"
     } external;
 
-    # Closes the session.
+    # Closes the current JMS session.
+    # ```ballerina
+    # check session->close();
+    # ```
     # 
-    # + return - `jms:Error` if there is an error or else nil
+    # + return - A `jms:Error` if there is an error or else `()`
     isolated remote function close() returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.JmsSession"
     } external;
