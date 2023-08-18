@@ -12,7 +12,7 @@ This is the specification for the `java.jms` standard library of [Ballerina lang
 functionality to send and receive messages by connecting to a JMS provider. 
 
 The `java.jms` library specification has evolved and may continue to evolve in the future. The released versions of the 
-specification can be found under the relevant Github tag.
+specification can be found under the relevant GitHub tag.
 
 If you have any feedback or suggestions about the library, start a discussion via a GitHub issue or in the Discord 
 server. Based on the outcome of the discussion, the specification and implementation can be updated. Community feedback 
@@ -50,7 +50,7 @@ Java Message Service (JMS) is a Java-based API that provides a standardized way 
 receive, and consume messages in a loosely coupled, reliable, and asynchronous manner. JMS is part of the Java EE 
 (Enterprise Edition) specification and is commonly used for building distributed, decoupled, and scalable applications 
 that need to exchange information or events between different components. This specification elaborates on the usage of 
-JMS connection, session, message producer, and message consumer. These clients allow writing distributed applications 
+JMS connection, session, message producer, and message consumer. These clients allow the writing of distributed applications 
 and microservices that read, write, and process messages using a JMS provider. 
 
 Ballerina `java.jms` provides several core apis:
@@ -68,11 +68,11 @@ connections, and provides a context for creating JMS sessions.
 
 ### 2.1. Configuration
 
-When initializing a `jms:Connection`, following configurations can be provided.
+When initializing a `jms:Connection`, the following configurations can be provided.
 ```ballerina
 # Configurations related to a JMS connection.
 #
-# + initialContextFactory - JMS provider specific inital context factory
+# + initialContextFactory - JMS provider-specific inital context factory
 # + providerUrl - JMS provider specific provider URL used to configure a connection
 # + connectionFactoryName - JMS connection factory to be used in creating JMS connections
 # + username - Username for the JMS connection
@@ -115,7 +115,7 @@ To start (or restart) a connection's delivery of incoming messages for a connect
 # check connection->'start()
 # ```
 #
-# + return - A `jms:Error` if threre is an error while starting the connection
+# + return - A `jms:Error` if there is an error while starting the connection
 isolated remote function 'start() returns jms:Error?;
 ```
 
@@ -127,7 +127,7 @@ To temporarily stop the connection's delivery of incoming messages for a connect
 # check connection->stop();
 # ```
 #
-# + return - A `jms:Error` if threre is an error while stopping the connection
+# + return - A `jms:Error` if there is an error while stopping the connection
 isolated remote function stop() returns jms:Error?;
 ```
 
@@ -157,7 +157,7 @@ public enum AcknowledgementMode {
     # MessageConsumer's or Caller's `acknowledge` method. Acknowledging a consumed message 
     # acknowledges all messages that the session has consumed.
     CLIENT_ACKNOWLEDGE = "CLIENT_ACKNOWLEDGE",
-    # Indicates that the session to lazily acknowledge the delivery of messages. 
+    # Indicates that the session lazily acknowledges the delivery of messages. 
     # This is likely to result in the delivery of some duplicate messages if the JMS provider fails, 
     # so it should only be used by consumers that can tolerate duplicate messages. 
     # Use of this mode can reduce session overhead by minimizing the work the session does to prevent duplicates.
@@ -246,7 +246,7 @@ To unsubscribe a durable subscription that has been created by the JMS session, 
 ```ballerina
 # Unsubscribe a durable subscription that has been created by this session.
 # It is erroneous for a client to delete a durable subscription while there is an active (not closed) consumer
-# for the subscription, or while a consumed message being part of a pending transaction or has not been
+# for the subscription, or while a consumed message is part of a pending transaction or has not been
 # acknowledged in the session.
 # ```
 # check session->unsubscribe("subscription-1");
@@ -332,7 +332,7 @@ Ballerina `java.jms` library supports messages of type text, binary data, and ma
 #
 # + messageId - Unique identifier for a JMS message  
 # + timestamp - Time a message was handed off to a provider to be sent 
-# + correlationId - Id which can be use to correlate multiple messages 
+# + correlationId - Id which can be used to correlate multiple messages 
 # + replyTo - JMS destination to which a reply to this message should be sent
 # + destination - JMS destination of this message 
 # + deliveryMode - Delivery mode of this message  
@@ -439,7 +439,7 @@ To receive the next message arriving within the specified timeout interval, `rec
 # ```
 #
 # + timeoutMillis - Message receive timeout
-# + return - A `jms:JmsMessage` if there is a new message, `()` if there is no any new message, 
+# + return - A `jms:JmsMessage` if there is a new message, `()` if there is no new message, 
 # or else a `jsm:Error` if there is an error in the execution
 isolated remote function receive(int timeoutMillis = 10000) returns jms:Message|jms:Error?;
 ```
@@ -456,7 +456,7 @@ To receive the next message if one is immediately available, `receiveNoWait` fun
 isolated remote function receiveNoWait() returns jms:Message|jms:Error?;
 ```
 
-To mark a JMS message as received, `acknowledge` function can be used.
+To mark a JMS message as received, the `acknowledge` function can be used.
 ```ballerina
 # Mark a JMS message as received.
 # ```
