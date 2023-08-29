@@ -94,8 +94,8 @@ public isolated client class Connection {
 # + password - Password for the JMS connection
 # + properties - Additional properties use in initializing the initial context
 public type ConnectionConfiguration record {|
-    string initialContextFactory = "wso2mbInitialContextFactory";
-    string providerUrl = "amqp://admin:admin@ballerina/default?brokerlist='tcp://localhost:5672'";
+    string initialContextFactory;
+    string providerUrl;
     string connectionFactoryName = "ConnectionFactory";
     string username?;
     string password?;
