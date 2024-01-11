@@ -2,7 +2,7 @@ version: '2'
 
 services:
     activemq:
-        image: 'apache/activemq-classic:latest'
+        image: 'apache/activemq-classic:5.18.2'
         container_name: activemq-test-server
         ports:
             - '61616:61616'
