@@ -1,0 +1,3 @@
+[activeMqConnectionConfig]
+initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory"
+providerUrl = "tcp://localhost:61616"
