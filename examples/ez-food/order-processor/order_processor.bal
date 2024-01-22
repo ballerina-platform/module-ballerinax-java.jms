@@ -15,12 +15,14 @@
 // under the License.
 import orderprocessor.store;
 
+import ballerina/http;
 import ballerina/lang.runtime;
 import ballerina/log;
 import ballerina/time;
 import ballerinax/activemq.driver as _;
 import ballerinax/java.jms;
 
+final http:Client menu = check new ("localhost:9090/menu");
 final store:Client store = check new ();
 
 public function main() {

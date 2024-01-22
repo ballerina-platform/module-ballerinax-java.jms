@@ -40,3 +40,11 @@ type OrderConfirmation record {|
 |};
 
 type ProducerPayload OrderStatusUpdate|OrderConfirmation;
+
+type MenuItem record {|
+    int id;
+    string name;
+    decimal price;
+    string description;
+    int preparationTimeMinutes;
+|};

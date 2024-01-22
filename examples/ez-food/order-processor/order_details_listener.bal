@@ -69,7 +69,7 @@ isolated function processRequest(OrderProcessingRequest request) returns error? 
 isolated function mapToStoreItems(OrderProcessingRequest request) returns store:Item[]|error {
     store:Item[] result = [];
     foreach var item in request.details.items {
-        MenuItem itemDetails = check getMenuItem(item.itemId);
+        MenuItem itemDetails = check menu->/[item.itemId].get();
         result.push({
             id: getNextOrderItemId(),
             orderId: request.orderId,
