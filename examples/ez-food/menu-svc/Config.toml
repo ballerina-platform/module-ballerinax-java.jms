@@ -3,207 +3,207 @@ id = 1
 name = "Margherita Pizza"
 price = 10.99
 description = "Classic tomato, mozzarella, and basil pizza"
-estimationPreparationTime = 15
+preparationTimeMinutes = 15
 
 [[menu]]
 id = 2
 name = "Chicken Alfredo Pasta"
 price = 14.99
 description = "Creamy Alfredo sauce with grilled chicken"
-estimationPreparationTime = 20
+preparationTimeMinutes = 20
 
 [[menu]]
 id = 3
 name = "Caesar Salad"
 price = 8.99
 description = "Fresh romaine lettuce, croutons, and Caesar dressing"
-estimationPreparationTime = 10
+preparationTimeMinutes = 10
 
 [[menu]]
 id = 4
 name = "Cheeseburger"
 price = 12.99
 description = "Classic cheeseburger with lettuce, tomato, and pickles"
-estimationPreparationTime = 18
+preparationTimeMinutes = 18
 
 [[menu]]
 id = 5
 name = "Chocolate Brownie Sundae"
 price = 7.99
 description = "Warm chocolate brownie topped with vanilla ice cream"
-estimationPreparationTime = 12
+preparationTimeMinutes = 12
 
 [[menu]]
 id = 6
 name = "Vegetarian Sushi Roll"
 price = 11.99
 description = "Assorted vegetables rolled in sushi rice and seaweed"
-estimationPreparationTime = 15
+preparationTimeMinutes = 15
 
 [[menu]]
 id = 7
 name = "BBQ Pulled Pork Sandwich"
 price = 13.99
 description = "Slow-cooked pulled pork with barbecue sauce"
-estimationPreparationTime = 25
+preparationTimeMinutes = 25
 
 [[menu]]
 id = 8
 name = "Mango Tango Smoothie"
 price = 5.99
 description = "Fresh mango blended with yogurt and ice"
-estimationPreparationTime = 8
+preparationTimeMinutes = 8
 
 [[menu]]
 id = 9
 name = "Spinach and Feta Stuffed Chicken"
 price = 16.99
 description = "Chicken breast stuffed with spinach and feta cheese"
-estimationPreparationTime = 22
+preparationTimeMinutes = 22
 
 [[menu]]
 id = 10
 name = "Vegetable Spring Rolls"
 price = 6.99
 description = "Crispy spring rolls filled with mixed vegetables"
-estimationPreparationTime = 12
+preparationTimeMinutes = 12
 
 [[menu]]
 id = 11
 name = "Caprese Panini"
 price = 9.99
 description = "Tomato, mozzarella, and basil pressed in ciabatta bread"
-estimationPreparationTime = 14
+preparationTimeMinutes = 14
 
 [[menu]]
 id = 12
 name = "Shrimp Scampi"
 price = 17.99
 description = "Sauteed shrimp in garlic and white wine sauce"
-estimationPreparationTime = 18
+preparationTimeMinutes = 18
 
 [[menu]]
 id = 13
 name = "Classic Chicken Noodle Soup"
 price = 7.99
 description = "Homemade chicken noodle soup with vegetables"
-estimationPreparationTime = 15
+preparationTimeMinutes = 15
 
 [[menu]]
 id = 14
 name = "Margherita Flatbread"
 price = 11.99
 description = "Flatbread topped with tomato, mozzarella, and basil"
-estimationPreparationTime = 14
+preparationTimeMinutes = 14
 
 [[menu]]
 id = 15
 name = "Fruit Salad Bowl"
 price = 8.99
 description = "Assorted fresh fruits in a refreshing salad"
-estimationPreparationTime = 10
+preparationTimeMinutes = 10
 
 [[menu]]
 id = 16
 name = "Penne alla Vodka"
 price = 13.99
 description = "Penne pasta in a creamy vodka sauce"
-estimationPreparationTime = 18
+preparationTimeMinutes = 18
 
 [[menu]]
 id = 17
 name = "Vegetable Curry with Rice"
 price = 12.99
 description = "Mixed vegetables in a flavorful curry served with rice"
-estimationPreparationTime = 20
+preparationTimeMinutes = 20
 
 [[menu]]
 id = 18
 name = "Classic Caesar Wrap"
 price = 9.99
 description = "Caesar salad wrapped in a flour tortilla"
-estimationPreparationTime = 12
+preparationTimeMinutes = 12
 
 [[menu]]
 id = 19
 name = "Tiramisu"
 price = 6.99
 description = "Italian coffee-flavored dessert with layers of sponge cake"
-estimationPreparationTime = 15
+preparationTimeMinutes = 15
 
 [[menu]]
 id = 20
 name = "Turkey and Avocado Sandwich"
 price = 10.99
 description = "Roasted turkey with avocado on whole grain bread"
-estimationPreparationTime = 14
+preparationTimeMinutes = 14
 
 [[menu]]
 id = 21
 name = "Vegetarian Quinoa Bowl"
 price = 11.99
 description = "Quinoa bowl with assorted vegetables and tahini dressing"
-estimationPreparationTime = 18
+preparationTimeMinutes = 18
 
 [[menu]]
 id = 22
 name = "Chicken Teriyaki Skewers"
 price = 15.99
 description = "Grilled chicken skewers glazed with teriyaki sauce"
-estimationPreparationTime = 22
+preparationTimeMinutes = 22
 
 [[menu]]
 id = 23
 name = "Mediterranean Hummus Platter"
 price = 8.99
 description = "Hummus served with pita bread and assorted vegetables"
-estimationPreparationTime = 12
+preparationTimeMinutes = 12
 
 [[menu]]
 id = 24
 name = "Spaghetti Bolognese"
 price = 12.99
 description = "Spaghetti with rich meat sauce"
-estimationPreparationTime = 18
+preparationTimeMinutes = 18
 
 [[menu]]
 id = 25
 name = "Avocado Mango Salad"
 price = 9.99
 description = "Fresh salad with avocado, mango, and citrus vinaigrette"
-estimationPreparationTime = 10
+preparationTimeMinutes = 10
 
 [[menu]]
 id = 26
 name = "Sushi Combo Platter"
 price = 18.99
 description = "Assorted sushi rolls and sashimi"
-estimationPreparationTime = 25
+preparationTimeMinutes = 25
 
 [[menu]]
 id = 27
 name = "Beef Stir-Fry"
 price = 14.99
 description = "Tender beef strips stir-fried with vegetables"
-estimationPreparationTime = 20
+preparationTimeMinutes = 20
 
 [[menu]]
 id = 28
 name = "Greek Gyro Wrap"
 price = 10.99
 description = "Grilled gyro meat wrapped in a warm pita with tzatziki sauce"
-estimationPreparationTime = 15
+preparationTimeMinutes = 15
 
 [[menu]]
 id = 29
 name = "Vegetable Lasagna"
 price = 13.99
 description = "Layered lasagna with assorted vegetables and marinara sauce"
-estimationPreparationTime = 22
+preparationTimeMinutes = 22
 
 [[menu]]
 id = 30
 name = "Strawberry Cheesecake"
 price = 7.99
 description = "Creamy cheesecake with fresh strawberry topping"
-estimationPreparationTime = 18
+preparationTimeMinutes = 18
