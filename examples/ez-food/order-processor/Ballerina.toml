@@ -1,0 +1,17 @@
+[package]
+org = "example"
+name = "orderprocessor"
+version = "0.1.0"
+
+[build-options]
+observabilityIncluded = true
+
+[persist]
+datastore = "inmemory"
+module = "orderprocessor.store"
+
+[[platform.java17.dependency]]
+groupId = "io.ballerina.stdlib"
+artifactId = "persist.inmemory-native"
+version = "1.2.0"
+
