@@ -14,36 +14,31 @@
 // specific language governing permissions and limitations
 // under the License.
 import ballerina/http;
+import ballerina/log;
 
 type MenuItem record {|
     int id;
     string name;
     decimal price;
     string description;
-    int estimationPreparationTime;
+    int preparationTimeMinutes;
 |};
 
-configurable MenuItem[] menuItems = ?;
+configurable MenuItem[] menu = ?;
 
 # A service representing a menu for an online food ordering system
 service /menu on new http:Listener(9090) {
 
-    # Resource to retrieve the complete menu.
-    #
-    # + return - Array of MenuItem records representing the complete menu
-    resource function get .() returns MenuItem[] {
-        return menuItems;
+    function init() {
+        log:printInfo("Started Menu Serivce");
     }
 
-    # Resource to retrieves details for a specific menu item by Id.
-    #
-    # + id - Unique identifier for the menu item
-    # + return - If a menu item with the specified ID is found, the function 
-    # returns the details as a MenuItem record. If no matching record is found, 
-    # it returns an `http:NotFound` response. In case of an invalid result, 
-    # an `http:InternalServerError` is returned.
+    resource function get .() returns MenuItem[] {
+        return menu;
+    }
+
     resource function get [int id]() returns MenuItem|http:NotFound|http:InternalServerError {
-        MenuItem[] items = from MenuItem item in menuItems
+        MenuItem[] items = from MenuItem item in menu
             where item.id == id
             select item;
         if items.length() == 1 {
