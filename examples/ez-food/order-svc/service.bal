@@ -17,9 +17,9 @@ import ordersvc.store;
 
 import ballerina/http;
 import ballerina/persist;
-import ballerina/time;
 import ballerinax/java.jms;
 
+// Holds the Id of the next order
 isolated int nextOrderId = 1;
 
 isolated function getNextOrderId() returns int {
@@ -30,16 +30,27 @@ isolated function getNextOrderId() returns int {
     }
 }
 
+const string ORDERS_QUEUE = "orders";
+
+configurable jms:ConnectionConfiguration activeMqConnectionConfig = {
+    initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+    providerUrl: "tcp://localhost:61616"
+};
+
+final store:Client datastore = check new ();
+
 # A service representing an online food ordering system
 service /orders on new http:Listener(9091) {
-    private final store:Client datastore;
+    private final jms:MessageProducer producer;
 
     function init() returns error? {
-        self.datastore = check new ();
+        jms:Connection connection = check new (activeMqConnectionConfig);
+        jms:Session session = check connection->createSession();
+        self.producer = check session.createProducer();
     }
 
     resource function post .(NewOrder 'order) returns OrderCreated|error {
-        int[] ids = check self.datastore->/foodorders.post([
+        int[] ids = check datastore->/foodorders.post([
             {
                 id: getNextOrderId(),
                 status: store:PENDING,
@@ -47,7 +58,7 @@ service /orders on new http:Listener(9091) {
                 estimatedCompletionTime: ()
             }
         ]);
-        check produceMessage(ORDERS_QUEUE, jms:QUEUE, {
+        check self.produceMessage(ORDERS_QUEUE, jms:QUEUE, {
             orderId: ids[0],
             details: 'order
         });
@@ -63,7 +74,7 @@ service /orders on new http:Listener(9091) {
     }
 
     resource function get [int id]() returns store:FoodOrder|OrderNotFound|error {
-        store:FoodOrder|error 'order = self.datastore->/foodorders/[id]();
+        store:FoodOrder|error 'order = datastore->/foodorders/[id]();
         if 'order is persist:NotFoundError {
             return {
                 body: {
@@ -77,7 +88,7 @@ service /orders on new http:Listener(9091) {
 
     resource function post [int id]/payment(PaymentDetails paymentDetails)
             returns http:Ok|OrderNotFound|PaymentNotAccepted|error {
-        store:FoodOrder|error 'order = self.datastore->/foodorders/[id]();
+        store:FoodOrder|error 'order = datastore->/foodorders/[id]();
         if 'order is persist:NotFoundError {
             return <OrderNotFound>{
                 body: {
@@ -97,53 +108,25 @@ service /orders on new http:Listener(9091) {
                 }
             };
         }
-        // todo: complete the payment
-        _ = check self.datastore->/foodorders/[id].put({
+        _ = check datastore->/foodorders/[id].put({
             status: store:ACCEPTED
         });
-        check produceMessage(ORDER_STATUS_UPDATE_TOPIC, jms:TOPIC, {
+        check self.produceMessage(ORDER_STATUS_UPDATE_TOPIC, jms:TOPIC, {
             orderId: id,
             status: store:ACCEPTED
         });
         return http:OK;
     }
+
+    isolated function produceMessage(string destinationName, jms:DestinationType destinationType,
+            ProducerPayload payload) returns error? {
+        string jsonStr = payload.toJsonString();
+        jms:BytesMessage message = {
+            content: jsonStr.toBytes()
+        };
+        check self.producer->sendTo({
+            'type: destinationType,
+            name: destinationName
+        }, message);
+    }
 }
-
-type NewOrder record {|
-    record {|
-        int itemId;
-        int quantity;
-    |}[] items;
-    string specialInstructions;
-|};
-
-type PaymentDetails record {|
-    string cardNumber;
-    string expiryDate;
-    string cvv;
-|};
-
-type OrderCreated record {|
-    *http:Created;
-    map<string> headers;
-    record {|
-        int id;
-        string status;
-    |} body;
-|};
-
-type OrderNotFound record {|
-    *http:NotFound;
-    ErrorDetails body;
-|};
-
-type PaymentNotAccepted record {|
-    *http:NotAcceptable;
-    ErrorDetails body;
-|};
-
-type ErrorDetails record {|
-    time:Utc timeStamp = time:utcNow();
-    string message;
-    string path;
-|};
