@@ -1,0 +1,24 @@
+### Creat a new order-request
+POST http://localhost:9091/orders
+content-type: application/json
+
+{
+    "items": [
+        {"itemId": 1, "quantity": 2},
+        {"itemId": 3, "quantity": 1}
+    ],
+    "specialInstructions": "No onions, please"
+}
+
+### Get a specific order
+GET http://localhost:9091/orders/1
+
+### Complete the payment for an order
+POST http://localhost:9091/orders/1/payment
+content-type: application/json
+
+{
+    "cardNumber": "**** **** **** 1234",
+    "expiryDate": "MM/YY",
+    "cvv": "123"
+}
