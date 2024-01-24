@@ -18,6 +18,7 @@ import ordersvc.store;
 import ballerina/http;
 import ballerina/persist;
 import ballerinax/java.jms;
+import ballerina/log;
 
 // Holds the Id of the next order
 isolated int nextOrderId = 1;
@@ -47,6 +48,7 @@ service /orders on new http:Listener(9091) {
         jms:Connection connection = check new (activeMqConnectionConfig);
         jms:Session session = check connection->createSession();
         self.producer = check session.createProducer();
+        log:printInfo("Started Order Serivce");
     }
 
     resource function post .(NewOrder 'order) returns OrderCreated|error {
