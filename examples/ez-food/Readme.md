@@ -1,4 +1,4 @@
-# EzFood - Online Food Ordering Platform
+# EzFood: Online Food Ordering Platform
 
 [![Star on Github](https://img.shields.io/badge/-Star%20on%20Github-blue?style=social&logo=github)](https://github.com/ballerina-platform/module-ballerinax-java.jms)
 
@@ -30,19 +30,9 @@ This application is written using the [Ballerina](https://ballerina.io/) program
 
 The EzFood system follows a microservices architecture, with distinct components handling specific functionalities. The communication between services is facilitated by Java Message Service (JMS), ensuring a reliable and asynchronous messaging pattern.
 
-```
-+---------------------+          +---------------------+          +----------------+
-|   Order Service     |  <-----> |   Order Processor   |  <-----> |   Menu Service  |
-|   (REST API)        |          |   (Backend Service) |          | (REST API)      |
-+---------------------+          +---------------------+          +----------------+
-               |                           |
-               +---------------------------+
-                           |
-                   +-------+--------+
-                   | JMS Message |
-                   |   Broker    |
-                   +--------------+
-```
+| ![system-components.png](./ezfood.png) | 
+|:--------------------------------------------------------------------------------:| 
+|                          *Image 1: System components*                            |
 
 ## Deploying the system
 
