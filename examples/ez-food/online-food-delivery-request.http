@@ -1,3 +1,6 @@
+### View the menu
+GET http://localhost:9090/menu
+
 ### Creat a new order-request
 POST http://localhost:9091/orders
 content-type: application/json
