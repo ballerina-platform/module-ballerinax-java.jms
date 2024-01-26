@@ -16,9 +16,9 @@
 import ordersvc.store;
 
 import ballerina/http;
+import ballerina/log;
 import ballerina/persist;
 import ballerinax/java.jms;
-import ballerina/log;
 
 // Holds the Id of the next order
 isolated int nextOrderId = 1;
