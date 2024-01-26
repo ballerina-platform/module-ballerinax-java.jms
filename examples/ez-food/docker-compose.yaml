@@ -28,7 +28,7 @@ services:
         network_mode: "host"
     
     activemq:
-        image: 'apache/activemq-classic:5.18.2'
+        image: 'apache/activemq-classic:6.0.0'
         container_name: activemq-test-server
         ports:
             - '61616:61616'
