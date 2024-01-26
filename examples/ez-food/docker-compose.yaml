@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+    order-svc:
+        image: 'ballerina/ordersvc:1.0.0'
+        ports:
+            - '9091:9091'
+        depends_on: 
+            order-processor: 
+                condition: service_started
+            activemq: 
+                condition: service_healthy
+        network_mode: "host"
+
+    order-processor:
+        image: 'ballerina/orderprocessor:1.0.0'
+        depends_on: 
+            menu-svc: 
+                condition: service_started
+            activemq: 
+                condition: service_healthy
+        network_mode: "host"
+
+    menu-svc:
+        image: 'ballerina/menusvc:1.0.0'
+        ports:
+            - '9090:9090'
+        network_mode: "host"
+    
+    activemq:
+        image: 'apache/activemq-classic:5.18.2'
+        container_name: activemq-test-server
+        ports:
+            - '61616:61616'
+            - '8161:8161'
+        network_mode: "host"
+        healthcheck:
+            test: ["CMD-SHELL", "curl -u admin:admin http://localhost:8161/admin"]
+            interval: 10s
+            timeout: 5s
+            retries: 3
