@@ -33,7 +33,7 @@ isolated function createProducer() returns jms:MessageProducer|error {
     return session.createProducer();
 }
 
-service "order-details-receiver" on new jms:Listener(
+listener jms:Listener orderDetailsListener = check new (
     connectionConfig = activeMqConnectionConfig,
     consumerOptions = {
         destination: {
@@ -41,7 +41,9 @@ service "order-details-receiver" on new jms:Listener(
             name: ORDERS_QUEUE
         }
     }
-) {
+);
+
+service "order-details-receiver" on orderDetailsListener {
     remote function onMessage(jms:Message message) returns error? {
         if message !is jms:BytesMessage {
             return;
