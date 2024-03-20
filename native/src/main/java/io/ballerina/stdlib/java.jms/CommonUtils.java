@@ -106,7 +106,9 @@ public class CommonUtils {
         BMap<BString, Object> ballerinaMessage = ValueCreator.createRecordValue(ModuleUtils.getModule(), messageType);
         ballerinaMessage.put(Constants.MESSAGE_ID, StringUtils.fromString(message.getJMSMessageID()));
         ballerinaMessage.put(Constants.TIMESTAMP, message.getJMSTimestamp());
-        ballerinaMessage.put(Constants.CORRELATION_ID, StringUtils.fromString(message.getJMSCorrelationID()));
+        if (Objects.nonNull(message.getJMSCorrelationID())) {
+            ballerinaMessage.put(Constants.CORRELATION_ID, StringUtils.fromString(message.getJMSCorrelationID()));
+        }
         if (Objects.nonNull(message.getJMSReplyTo())) {
             ballerinaMessage.put(Constants.REPLY_TO, getJmsDestinationField(message.getJMSReplyTo()));
         }
@@ -115,9 +117,16 @@ public class CommonUtils {
         }
         ballerinaMessage.put(Constants.DELIVERY_MODE, message.getJMSDeliveryMode());
         ballerinaMessage.put(Constants.REDELIVERED, message.getJMSRedelivered());
-        ballerinaMessage.put(Constants.JMS_TYPE, StringUtils.fromString(message.getJMSType()));
+        if (Objects.nonNull(message.getJMSType())) {
+            ballerinaMessage.put(Constants.JMS_TYPE, StringUtils.fromString(message.getJMSType()));
+        }
         ballerinaMessage.put(Constants.EXPIRATION, message.getJMSExpiration());
-        ballerinaMessage.put(Constants.DELIVERED_TIME, message.getJMSDeliveryTime());
+        try {
+            ballerinaMessage.put(Constants.DELIVERED_TIME, message.getJMSDeliveryTime());
+        } catch (UnsupportedOperationException e) {
+            // This exception occurs when the client connect to a JMS provider who supports JMS 1.x.
+            // Hence, ignoring this exception.
+        }
         ballerinaMessage.put(Constants.PRIORITY, message.getJMSPriority());
         ballerinaMessage.put(Constants.PROPERTIES, getMessageProperties(message));
         Object content = getMessageContent(message);

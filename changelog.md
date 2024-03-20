@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - [Add observability support to the JMS module](https://github.com/ballerina-platform/ballerina-library/issues/5932)
 
+### Fixed
+- [JMS message retrieval fails for JMS 1.x unsupported properties](https://github.com/ballerina-platform/ballerina-library/issues/6204)
+
 ## [0.1.0] - 2023-07-24
 
 ### Changed
