@@ -117,7 +117,12 @@ public class CommonUtils {
         ballerinaMessage.put(Constants.REDELIVERED, message.getJMSRedelivered());
         ballerinaMessage.put(Constants.JMS_TYPE, StringUtils.fromString(message.getJMSType()));
         ballerinaMessage.put(Constants.EXPIRATION, message.getJMSExpiration());
-        ballerinaMessage.put(Constants.DELIVERED_TIME, message.getJMSDeliveryTime());
+        try {
+            ballerinaMessage.put(Constants.DELIVERED_TIME, message.getJMSDeliveryTime());
+        } catch (UnsupportedOperationException e) {
+            // This exception occurs when the client connect to a JMS provider who supports JMS 1.x.
+            // Hence, ignoring this exception.
+        }
         ballerinaMessage.put(Constants.PRIORITY, message.getJMSPriority());
         ballerinaMessage.put(Constants.PROPERTIES, getMessageProperties(message));
         Object content = getMessageContent(message);
