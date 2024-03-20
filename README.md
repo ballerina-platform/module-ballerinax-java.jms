@@ -118,15 +118,20 @@ This repository only contains the source code for the library.
 
 ### Set up the prerequisites
 
-* Download and install Java SE Development Kit (JDK) version 17 (from one of the following locations).
+1. Download and install Java SE Development Kit (JDK) version 17 (from one of the following locations).
 
    * [Oracle](https://www.oracle.com/java/technologies/downloads/)
-
    * [OpenJDK](https://adoptium.net/)
 
         > **Note:** Set the JAVA_HOME environment variable to the path name of the directory into which you installed JDK.
 
-2. Download and install [Docker](https://www.docker.com/). This is required to run the tests.
+2. Generate a Github access token with read package permissions, then set the following `env` variables:
+    ```sh
+   export packageUser=<Your GitHub Username>
+   export packagePAT=<GitHub Personal Access Token>
+    ```
+
+3. Download and install [Docker](https://www.docker.com/). This is required to run the tests.
 
 ### Build the source
 
