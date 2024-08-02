@@ -1,5 +1,3 @@
-version: '2'
-
 services:
     activemq:
         image: 'apache/activemq-classic:6.0.0'
