@@ -113,7 +113,7 @@ task startActiveMQServer() {
            if (!stdOut.toString().contains("activemq-test")) {
                println "Starting ActiveMQ server."
                exec {
-                   commandLine 'sh', '-c', "docker-compose -f tests/resources/docker-compose.yaml up -d"
+                   commandLine 'sh', '-c', "docker compose -f tests/resources/docker-compose.yaml up -d"
                    standardOutput = stdOut
                }
                println stdOut.toString()
@@ -136,7 +136,7 @@ task stopActiveMQServer() {
            if (stdOut.toString().contains("activemq-test")) {
                println "Stopping ActiveMQ server."
                exec {
-                   commandLine 'sh', '-c', "docker-compose -f tests/resources/docker-compose.yaml rm -svf"
+                   commandLine 'sh', '-c', "docker compose -f tests/resources/docker-compose.yaml rm -svf"
                    standardOutput = stdOut
                }
                println stdOut.toString()

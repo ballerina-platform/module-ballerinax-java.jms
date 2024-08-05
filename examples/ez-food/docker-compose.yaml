@@ -1,5 +1,3 @@
-version: '2'
-
 services:
     order-svc:
         image: 'ballerina/ordersvc:1.0.0'
