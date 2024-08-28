@@ -168,10 +168,15 @@ publishing {
 
 updateTomlFiles.dependsOn copyStdlibs
 
-test.dependsOn startActiveMQServer
+build.dependsOn "generatePomFileForMavenPublication"
+build.dependsOn ":${packageName}-native:build"
+build.dependsOn startActiveMQServer
 build.finalizedBy stopActiveMQServer
 
-build.dependsOn ":java.jms-native:build"
-build.dependsOn "generatePomFileForMavenPublication"
-publishToMavenLocal.dependsOn build
+test.dependsOn ":${packageName}-native:build"
+test.dependsOn startActiveMQServer
+test.finalizedBy stopActiveMQServer
+
 publish.dependsOn build
+publishToMavenLocal.dependsOn build
+
