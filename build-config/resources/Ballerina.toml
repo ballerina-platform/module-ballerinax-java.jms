@@ -7,27 +7,27 @@ keywords = ["jms"]
 repository = "https://github.com/ballerina-platform/module-ballerina-java.jms"
 icon = "icon.png"
 license = ["Apache-2.0"]
-distribution = "2201.8.0"
+distribution = "2201.10.0-20241011-161100-51978649"
 
 [build-options]
 observabilityIncluded = true
 
-[platform.java17]
+[platform.java21]
 graalvmCompatible = true
 
-[[platform.java17.dependency]]
+[[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "java.jms-native"
 version = "@toml.version@"
 path = "../native/build/libs/java.jms-native-@project.version@.jar"
 
-[[platform.java17.dependency]]
+[[platform.java21.dependency]]
 groupId = "org.slf4j"
 artifactId = "slf4j-api"
 version = "@slf4j.version@"
 path = "./lib/slf4j-api-@slf4j.version@.jar"
 
-[[platform.java17.dependency]]
+[[platform.java21.dependency]]
 groupId = "javax.jms"
 artifactId = "javax.jms-api"
 version = "@javax.jms.version@"

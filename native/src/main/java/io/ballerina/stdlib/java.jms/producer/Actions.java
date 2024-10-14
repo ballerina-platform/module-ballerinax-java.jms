@@ -19,13 +19,14 @@
 package io.ballerina.stdlib.java.jms.producer;
 
 import io.ballerina.runtime.api.Environment;
-import io.ballerina.runtime.api.Future;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
+import io.ballerina.stdlib.java.jms.Util;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -83,19 +84,21 @@ public class Actions {
      */
     public static Object send(Environment env, BObject producer, Message message) {
         MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
-        Future balFuture = env.markAsync();
-        executorService.execute(() -> {
-            try {
-                nativeProducer.send(message);
-                balFuture.complete(null);
-            } catch (UnsupportedOperationException | JMSException exception) {
-                BError bError = createError(JMS_ERROR,
-                        String.format("Error occurred while sending a message to the JMS provider: %s",
-                                exception.getMessage()), exception);
-                balFuture.complete(bError);
-            }
+        return env.yieldAndRun(() -> {
+            CompletableFuture<Object> balFuture = new CompletableFuture<>();
+            executorService.execute(() -> {
+                try {
+                    nativeProducer.send(message);
+                    balFuture.complete(null);
+                } catch (UnsupportedOperationException | JMSException exception) {
+                    BError bError = createError(JMS_ERROR,
+                            String.format("Error occurred while sending a message to the JMS provider: %s",
+                                    exception.getMessage()), exception);
+                    balFuture.complete(bError);
+                }
+            });
+            return Util.getResult(balFuture);
         });
-        return null;
     }
 
     /**
@@ -113,23 +116,25 @@ public class Actions {
                                 Message message) {
         MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
         Session nativeSession = (Session) session.getNativeData(NATIVE_SESSION);
-        Future balFuture = env.markAsync();
-        executorService.execute(() -> {
-            try {
-                Destination jmsDestination = getDestination(nativeSession, destination);
-                nativeProducer.send(jmsDestination, message);
-                balFuture.complete(null);
-            } catch (BallerinaJmsException exception) {
-                BError bError = createError(JMS_ERROR, exception.getMessage(), exception);
-                balFuture.complete(bError);
-            } catch (UnsupportedOperationException | JMSException exception) {
-                BError bError = createError(JMS_ERROR,
-                        String.format("Error occurred while sending a message to the JMS provider: %s",
-                                exception.getMessage()), exception);
-                balFuture.complete(bError);
-            }
+        return env.yieldAndRun(() -> {
+            CompletableFuture<Object> balFuture = new CompletableFuture<>();
+            executorService.execute(() -> {
+                try {
+                    Destination jmsDestination = getDestination(nativeSession, destination);
+                    nativeProducer.send(jmsDestination, message);
+                    balFuture.complete(null);
+                } catch (BallerinaJmsException exception) {
+                    BError bError = createError(JMS_ERROR, exception.getMessage(), exception);
+                    balFuture.complete(bError);
+                } catch (UnsupportedOperationException | JMSException exception) {
+                    BError bError = createError(JMS_ERROR,
+                            String.format("Error occurred while sending a message to the JMS provider: %s",
+                                    exception.getMessage()), exception);
+                    balFuture.complete(bError);
+                }
+            });
+            return Util.getResult(balFuture);
         });
-        return null;
     }
 
     /**

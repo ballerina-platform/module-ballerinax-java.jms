@@ -19,16 +19,17 @@
 package io.ballerina.stdlib.java.jms.consumer;
 
 import io.ballerina.runtime.api.Environment;
-import io.ballerina.runtime.api.Future;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
+import io.ballerina.stdlib.java.jms.Util;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -128,31 +129,33 @@ public class Actions {
      */
     public static Object receive(Environment env, BObject consumer, long timeout) {
         MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
-        Future balFuture = env.markAsync();
-        executorService.execute(() -> {
-            try {
-                Message message = nativeConsumer.receive(timeout);
-                if (Objects.isNull(message)) {
-                    balFuture.complete(null);
-                } else {
-                    BMap<BString, Object> ballerinaMsg = getBallerinaMessage(message);
-                    balFuture.complete(ballerinaMsg);
+        return env.yieldAndRun(() -> {
+            CompletableFuture<Object> balFuture = new CompletableFuture<>();
+            executorService.execute(() -> {
+                try {
+                    Message message = nativeConsumer.receive(timeout);
+                    if (Objects.isNull(message)) {
+                        balFuture.complete(null);
+                    } else {
+                        BMap<BString, Object> ballerinaMsg = getBallerinaMessage(message);
+                        balFuture.complete(ballerinaMsg);
+                    }
+                } catch (JMSException exception) {
+                    BError bError = createError(JMS_ERROR,
+                            String.format("Error occurred while receiving messages: %s", exception.getMessage()),
+                            exception);
+                    balFuture.complete(bError);
+                } catch (BallerinaJmsException exception) {
+                    balFuture.complete(createError(JMS_ERROR, exception.getMessage(), exception));
+                } catch (Exception exception) {
+                    BError bError = createError(JMS_ERROR,
+                            String.format("Unknown error occurred while processing the received messages: %s",
+                                    exception.getMessage()), exception);
+                    balFuture.complete(bError);
                 }
-            } catch (JMSException exception) {
-                BError bError = createError(JMS_ERROR,
-                        String.format("Error occurred while receiving messages: %s", exception.getMessage()),
-                        exception);
-                balFuture.complete(bError);
-            } catch (BallerinaJmsException exception) {
-                balFuture.complete(createError(JMS_ERROR, exception.getMessage(), exception));
-            } catch (Exception exception) {
-                BError bError = createError(JMS_ERROR,
-                        String.format("Unknown error occurred while processing the received messages: %s",
-                                exception.getMessage()), exception);
-                balFuture.complete(bError);
-            }
+            });
+            return Util.getResult(balFuture);
         });
-        return null;
     }
 
     /**
@@ -165,31 +168,33 @@ public class Actions {
      */
     public static Object receiveNoWait(Environment env, BObject consumer) {
         MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
-        Future balFuture = env.markAsync();
-        executorService.execute(() -> {
-            try {
-                Message message = nativeConsumer.receiveNoWait();
-                if (Objects.isNull(message)) {
-                    balFuture.complete(null);
-                } else {
-                    BMap<BString, Object> ballerinaMsg = getBallerinaMessage(message);
-                    balFuture.complete(ballerinaMsg);
+        return env.yieldAndRun(() -> {
+            CompletableFuture<Object> balFuture = new CompletableFuture<>();
+            executorService.execute(() -> {
+                try {
+                    Message message = nativeConsumer.receiveNoWait();
+                    if (Objects.isNull(message)) {
+                        balFuture.complete(null);
+                    } else {
+                        BMap<BString, Object> ballerinaMsg = getBallerinaMessage(message);
+                        balFuture.complete(ballerinaMsg);
+                    }
+                } catch (JMSException exception) {
+                    BError bError = createError(JMS_ERROR,
+                            String.format("Error occurred while receiving messages: %s", exception.getMessage()),
+                            exception);
+                    balFuture.complete(bError);
+                } catch (BallerinaJmsException exception) {
+                    balFuture.complete(createError(JMS_ERROR, exception.getMessage(), exception));
+                } catch (Exception exception) {
+                    BError bError = createError(JMS_ERROR,
+                            String.format("Unknown error occurred while processing the received messages: %s",
+                                    exception.getMessage()), exception);
+                    balFuture.complete(bError);
                 }
-            } catch (JMSException exception) {
-                BError bError = createError(JMS_ERROR,
-                        String.format("Error occurred while receiving messages: %s", exception.getMessage()),
-                        exception);
-                balFuture.complete(bError);
-            } catch (BallerinaJmsException exception) {
-                balFuture.complete(createError(JMS_ERROR, exception.getMessage(), exception));
-            } catch (Exception exception) {
-                BError bError = createError(JMS_ERROR,
-                        String.format("Unknown error occurred while processing the received messages: %s",
-                                exception.getMessage()), exception);
-                balFuture.complete(bError);
-            }
+            });
+            return Util.getResult(balFuture);
         });
-        return null;
     }
 
     /**
