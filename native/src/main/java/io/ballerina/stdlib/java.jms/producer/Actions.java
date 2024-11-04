@@ -19,15 +19,14 @@
 package io.ballerina.stdlib.java.jms.producer;
 
 import io.ballerina.runtime.api.Environment;
-import io.ballerina.runtime.api.Future;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
+import io.ballerina.stdlib.java.jms.Util;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -46,8 +45,6 @@ import static io.ballerina.stdlib.java.jms.Constants.NATIVE_SESSION;
  * Representation of {@link javax.jms.MessageProducer} with utility methods to invoke as inter-op functions.
  */
 public class Actions {
-    private static final ExecutorService executorService = Executors.newCachedThreadPool(new ProducerThreadFactory());
-
     /**
      * Creates a {@link javax.jms.MessageProducer} object with given {@link javax.jms.Session}.
      *
@@ -83,8 +80,8 @@ public class Actions {
      */
     public static Object send(Environment env, BObject producer, Message message) {
         MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
-        Future balFuture = env.markAsync();
-        executorService.execute(() -> {
+        CompletableFuture<Object> balFuture = new CompletableFuture<>();
+        Thread.startVirtualThread(() -> {
             try {
                 nativeProducer.send(message);
                 balFuture.complete(null);
@@ -95,7 +92,7 @@ public class Actions {
                 balFuture.complete(bError);
             }
         });
-        return null;
+        return Util.getResult(balFuture);
     }
 
     /**
@@ -113,8 +110,8 @@ public class Actions {
                                 Message message) {
         MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
         Session nativeSession = (Session) session.getNativeData(NATIVE_SESSION);
-        Future balFuture = env.markAsync();
-        executorService.execute(() -> {
+        CompletableFuture<Object> balFuture = new CompletableFuture<>();
+        Thread.startVirtualThread(() -> {
             try {
                 Destination jmsDestination = getDestination(nativeSession, destination);
                 nativeProducer.send(jmsDestination, message);
@@ -129,7 +126,7 @@ public class Actions {
                 balFuture.complete(bError);
             }
         });
-        return null;
+            return Util.getResult(balFuture);
     }
 
     /**

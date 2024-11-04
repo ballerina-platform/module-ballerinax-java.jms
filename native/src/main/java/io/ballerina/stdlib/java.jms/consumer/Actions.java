@@ -19,18 +19,17 @@
 package io.ballerina.stdlib.java.jms.consumer;
 
 import io.ballerina.runtime.api.Environment;
-import io.ballerina.runtime.api.Future;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
+import io.ballerina.stdlib.java.jms.Util;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -53,8 +52,6 @@ import static io.ballerina.stdlib.java.jms.Constants.NATIVE_SESSION;
  * Represents {@link javax.jms.MessageConsumer} related utility functions.
  */
 public class Actions {
-    private static final ExecutorService executorService = Executors.newCachedThreadPool(new ConsumerThreadFactory());
-
     private static final BString CONSUMER_TYPE = StringUtils.fromString("type");
     private static final BString MESSAGE_SELECTOR = StringUtils.fromString("messageSelector");
     private static final BString NO_LOCAL = StringUtils.fromString("noLocal");
@@ -128,8 +125,8 @@ public class Actions {
      */
     public static Object receive(Environment env, BObject consumer, long timeout) {
         MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
-        Future balFuture = env.markAsync();
-        executorService.execute(() -> {
+        CompletableFuture<Object> balFuture = new CompletableFuture<>();
+        Thread.startVirtualThread(() -> {
             try {
                 Message message = nativeConsumer.receive(timeout);
                 if (Objects.isNull(message)) {
@@ -152,7 +149,7 @@ public class Actions {
                 balFuture.complete(bError);
             }
         });
-        return null;
+        return Util.getResult(balFuture);
     }
 
     /**
@@ -165,8 +162,8 @@ public class Actions {
      */
     public static Object receiveNoWait(Environment env, BObject consumer) {
         MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
-        Future balFuture = env.markAsync();
-        executorService.execute(() -> {
+        CompletableFuture<Object> balFuture = new CompletableFuture<>();
+        Thread.startVirtualThread(() -> {
             try {
                 Message message = nativeConsumer.receiveNoWait();
                 if (Objects.isNull(message)) {
@@ -189,7 +186,7 @@ public class Actions {
                 balFuture.complete(bError);
             }
         });
-        return null;
+        return Util.getResult(balFuture);
     }
 
     /**
