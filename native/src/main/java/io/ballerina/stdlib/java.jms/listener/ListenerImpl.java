@@ -64,26 +64,28 @@ public class ListenerImpl implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        try {
-            Module module = ModuleUtils.getModule();
-            StrandMetadata metadata = new StrandMetadata(
-                    module.getOrg(), module.getName(), module.getVersion(), SERVICE_RESOURCE_ON_MESSAGE);
-            ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(consumerService));
-            Object[] params = methodParameters(serviceType, message);
-            Object result;
-            if (serviceType.isIsolated() && serviceType.isIsolated(SERVICE_RESOURCE_ON_MESSAGE)) {
-                result = ballerinaRuntime.startIsolatedWorker(
+        Thread.startVirtualThread(() -> {
+            try {
+                Module module = ModuleUtils.getModule();
+                StrandMetadata metadata = new StrandMetadata(
+                        module.getOrg(), module.getName(), module.getVersion(), SERVICE_RESOURCE_ON_MESSAGE);
+                ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(consumerService));
+                Object[] params = methodParameters(serviceType, message);
+                Object result;
+                if (serviceType.isIsolated() && serviceType.isIsolated(SERVICE_RESOURCE_ON_MESSAGE)) {
+                    result = ballerinaRuntime.startIsolatedWorker(
                             consumerService, SERVICE_RESOURCE_ON_MESSAGE, null, metadata, null, params).get();
-            } else {
-                result = ballerinaRuntime.startNonIsolatedWorker(
-                        consumerService, SERVICE_RESOURCE_ON_MESSAGE, null, metadata, null, params);
+                } else {
+                    result = ballerinaRuntime.startNonIsolatedWorker(
+                            consumerService, SERVICE_RESOURCE_ON_MESSAGE, null, metadata, null, params);
+                }
+                Util.notifySuccess(result);
+            } catch (JMSException | BallerinaJmsException e) {
+                LOGGER.error("Unexpected error occurred while async message processing", e);
+            } catch (BError bError) {
+                Util.notifyFailure(bError);
             }
-            Util.notifySuccess(result);
-        } catch (JMSException | BallerinaJmsException e) {
-            LOGGER.error("Unexpected error occurred while async message processing", e);
-        } catch (BError bError) {
-            Util.notifyFailure(bError);
-        }
+        });
     }
 
     private Object[] methodParameters(ObjectType serviceType, Message message)
