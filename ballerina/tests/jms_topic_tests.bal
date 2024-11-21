@@ -16,11 +16,11 @@
 
 import ballerina/test;
 
-final MessageProducer topic1Producer = check createProducer(AUTO_ACK_SESSION, {
+final MessageProducer topic1Producer = check createProducer(autoAckSession, {
     'type: TOPIC,
     name: "test-topic-1"
 });
-final MessageConsumer topic1Consumer = check createConsumer(AUTO_ACK_SESSION, destination = {
+final MessageConsumer topic1Consumer = check createConsumer(autoAckSession, destination = {
     'type: TOPIC,
     name: "test-topic-1"
 });
@@ -80,7 +80,7 @@ isolated function testTopicWithBytesMessage() returns error? {
     groups: ["topic"]
 }
 isolated function testTempTopic() returns error? {
-    MessageProducer tempTopicProducer = check createProducer(AUTO_ACK_SESSION, {
+    MessageProducer tempTopicProducer = check createProducer(autoAckSession, {
         'type: TEMPORARY_TOPIC
     });
     string content = "This is a sample message";
@@ -91,8 +91,8 @@ isolated function testTempTopic() returns error? {
     check tempTopicProducer->close();
 }
 
-final MessageProducer topicProducerWithoutDestination = check createProducerWithoutDestination(AUTO_ACK_SESSION);
-final MessageConsumer topic2Consumer = check createConsumer(AUTO_ACK_SESSION, destination = {
+final MessageProducer topicProducerWithoutDestination = check createProducerWithoutDestination(autoAckSession);
+final MessageConsumer topic2Consumer = check createConsumer(autoAckSession, destination = {
     'type: TOPIC,
     name: "test-topic-2"
 });
@@ -161,7 +161,7 @@ isolated function testTopicProducerSendToBytesMessage() returns error? {
     groups: ["queue"]
 }
 isolated function testTempTopicUsingSendTo() returns error? {
-    MessageProducer tempTopicProducer = check createProducerWithoutDestination(AUTO_ACK_SESSION);
+    MessageProducer tempTopicProducer = check createProducerWithoutDestination(autoAckSession);
     string content = "This is a sample message";
     TextMessage message = {
         content: content

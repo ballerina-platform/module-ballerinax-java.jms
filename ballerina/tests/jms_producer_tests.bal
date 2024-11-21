@@ -20,7 +20,7 @@ import ballerina/test;
     groups: ["producer"]
 }
 isolated function testCreateProducerWithoutQueueName() returns error? {
-    MessageProducer|Error producer = AUTO_ACK_SESSION.createProducer({
+    MessageProducer|Error producer = autoAckSession.createProducer({
         'type: QUEUE
     });
     test:assertTrue(producer is Error, "Allowing creating a queue-producer without queue-name");
@@ -35,7 +35,7 @@ isolated function testCreateProducerWithoutQueueName() returns error? {
     groups: ["producer"]
 }
 isolated function testProducerSendToWithoutQueueName() returns error? {
-    MessageProducer producer = check AUTO_ACK_SESSION.createProducer();
+    MessageProducer producer = check autoAckSession.createProducer();
     TextMessage message = {
         content: "This is a sample message"
     };
@@ -52,7 +52,7 @@ isolated function testProducerSendToWithoutQueueName() returns error? {
     groups: ["producer"]
 }
 isolated function testReplyToErrorForQueue() returns error? {
-    MessageProducer producer = check AUTO_ACK_SESSION.createProducer();
+    MessageProducer producer = check autoAckSession.createProducer();
     TextMessage message = {
         content: "This is a request message",
         correlationId: "cid-123",
@@ -76,7 +76,7 @@ isolated function testReplyToErrorForQueue() returns error? {
     groups: ["producer"]
 }
 isolated function testReplyToErrorForTopic() returns error? {
-    MessageProducer producer = check AUTO_ACK_SESSION.createProducer();
+    MessageProducer producer = check autoAckSession.createProducer();
     TextMessage message = {
         content: "This is a request message",
         correlationId: "cid-123",
