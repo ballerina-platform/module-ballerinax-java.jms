@@ -16,11 +16,11 @@
 
 import ballerina/test;
 
-final MessageProducer queue1Producer = check createProducer(autoAckSession, {
+final MessageProducer queue1Producer = check createProducer(AUTO_ACK_SESSION, {
     'type: QUEUE,
     name: "test-queue-1"
 });
-final MessageConsumer queue1Consumer = check createConsumer(autoAckSession, destination = {
+final MessageConsumer queue1Consumer = check createConsumer(AUTO_ACK_SESSION, destination = {
     'type: QUEUE,
     name: "test-queue-1"
 });
@@ -80,7 +80,7 @@ isolated function testQueueWithBytesMessage() returns error? {
     groups: ["queue"]
 }
 isolated function testTempQueue() returns error? {
-    MessageProducer tempQueueProducer = check createProducer(autoAckSession, {
+    MessageProducer tempQueueProducer = check createProducer(AUTO_ACK_SESSION, {
         'type: TEMPORARY_QUEUE
     });
     string content = "This is a sample message";
@@ -106,8 +106,8 @@ isolated function testQueueProducerSendToError() returns error? {
         "Allowing to send messages to other destination rather than the configured destination");
 }
 
-final MessageProducer queueProducerWithoutDestination = check createProducerWithoutDestination(autoAckSession);
-final MessageConsumer queue2Consumer = check createConsumer(autoAckSession, destination = {
+final MessageProducer queueProducerWithoutDestination = check createProducerWithoutDestination(AUTO_ACK_SESSION);
+final MessageConsumer queue2Consumer = check createConsumer(AUTO_ACK_SESSION, destination = {
     'type: QUEUE,
     name: "test-queue-2"
 });
@@ -176,7 +176,7 @@ isolated function testQueueWithBytesMessageUsingSendTo() returns error? {
     groups: ["queue"]
 }
 isolated function testTempQueueUsingSendTo() returns error? {
-    MessageProducer tempQueueProducer = check createProducerWithoutDestination(autoAckSession);
+    MessageProducer tempQueueProducer = check createProducerWithoutDestination(AUTO_ACK_SESSION);
     string content = "This is a sample message";
     TextMessage message = {
         content: content

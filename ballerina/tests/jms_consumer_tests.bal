@@ -17,11 +17,11 @@
 import ballerina/lang.runtime;
 import ballerina/test;
 
-final MessageProducer queue7Producer = check createProducer(autoAckSession, {
+final MessageProducer queue7Producer = check createProducer(AUTO_ACK_SESSION, {
     'type: QUEUE,
     name: "test-queue-7"
 });
-final MessageConsumer queue7Consumer = check createConsumer(autoAckSession, destination = {
+final MessageConsumer queue7Consumer = check createConsumer(AUTO_ACK_SESSION, destination = {
     'type: QUEUE,
     name: "test-queue-7"
 });
@@ -61,7 +61,7 @@ isolated function testRequestReplyWithQueue() returns error? {
     Message? request = check queue7Consumer->receive(5000);
     test:assertTrue(request is TextMessage, "Invalid message received");
     if request is TextMessage {
-        MessageProducer replyProducer = check createProducer(autoAckSession, {
+        MessageProducer replyProducer = check createProducer(AUTO_ACK_SESSION, {
             'type: QUEUE,
             name: "reply-queue"
         });
@@ -94,7 +94,7 @@ isolated function testRequestReplyWithTempQueue() returns error? {
     if request is TextMessage {
         test:assertTrue(request.replyTo is Destination, "Could not find the replyTo destination in a request-message");
         Destination replyTo = check request.replyTo.ensureType();
-        MessageProducer replyProducer = check createProducer(autoAckSession, replyTo);
+        MessageProducer replyProducer = check createProducer(AUTO_ACK_SESSION, replyTo);
         test:assertTrue(request.correlationId is string, "Could not find the correlation Id");
         TextMessage replyMessage = {
             content: "This is a reply message"
@@ -130,11 +130,11 @@ isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
     }
 }
 
-final MessageProducer topic7Producer = check createProducer(autoAckSession, {
+final MessageProducer topic7Producer = check createProducer(AUTO_ACK_SESSION, {
     'type: TOPIC,
     name: "test-topic-7"
 });
-final MessageConsumer topic7Consumer = check createConsumer(autoAckSession, destination = {
+final MessageConsumer topic7Consumer = check createConsumer(AUTO_ACK_SESSION, destination = {
     'type: TOPIC,
     name: "test-topic-7"
 });

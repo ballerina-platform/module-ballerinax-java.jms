@@ -17,7 +17,7 @@
 import ballerina/lang.runtime;
 import ballerina/test;
 
-final MessageProducer queue3Producer = check createProducer(autoAckSession, {
+final MessageProducer queue3Producer = check createProducer(AUTO_ACK_SESSION, {
     'type: QUEUE,
     name: "test-queue-3"
 });
@@ -38,7 +38,7 @@ isolated boolean queue3ServiceReceivedTextMsg = false;
 isolated boolean queue3ServiceReceivedMapMsg = false;
 isolated boolean queue3ServiceReceivedBytesMsg = false;
 
-final MessageProducer topic3Producer = check createProducer(autoAckSession, {
+final MessageProducer topic3Producer = check createProducer(AUTO_ACK_SESSION, {
     'type: TOPIC,
     name: "test-topic-3"
 });
@@ -238,7 +238,7 @@ function testNonIsolatedMessageListener() returns error? {
     check nonIsolatedMsgListener.attach(nonIsolatedSvc, "non-isolated-service");
     check nonIsolatedMsgListener.'start();
 
-    MessageProducer producer = check createProducer(autoAckSession, {
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {
         'type: QUEUE,
         name: "test-isolation"
     });
@@ -323,7 +323,7 @@ isolated function testMessageListenerWithCaller() returns error? {
     check msgListener.attach(consumerSvc, "test-caller-service");
     check msgListener.'start();
 
-    MessageProducer producer = check createProducer(autoAckSession, {
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {
         'type: QUEUE,
         name: "test-caller"
     });
@@ -393,7 +393,7 @@ isolated function testMessageListenerReturningError() returns error? {
     check msgListener.attach(consumerSvc, "test-onMessage-error-service");
     check msgListener.'start();
 
-    MessageProducer producer = check createProducer(autoAckSession, {
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {
         'type: QUEUE,
         name: "test-onMessage-error"
     });

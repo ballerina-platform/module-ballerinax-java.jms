@@ -17,15 +17,15 @@
 import ballerina/test;
 import ballerinax/activemq.driver as _;
 
-final Connection testConnection = check new (
+final Connection TEST_CONNECTION = check new (
     initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
     providerUrl = "tcp://localhost:61616"
 );
 
-final Session autoAckSession = check createSession(AUTO_ACKNOWLEDGE);
+final Session AUTO_ACK_SESSION = check createSession(AUTO_ACKNOWLEDGE);
 
 isolated function createSession(AcknowledgementMode acknowledgementMode) returns Session|error {
-    return testConnection->createSession(acknowledgementMode);
+    return TEST_CONNECTION->createSession(acknowledgementMode);
 }
 
 isolated function createProducer(Session session, Destination destination) returns MessageProducer|error {
@@ -44,6 +44,6 @@ isolated function createConsumer(Session session, *ConsumerOptions options) retu
     alwaysRun: true
 }
 isolated function afterSuite() returns error? {
-    check autoAckSession->close();
-    check testConnection->close();
+    check AUTO_ACK_SESSION->close();
+    check TEST_CONNECTION->close();
 }

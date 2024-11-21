@@ -17,26 +17,26 @@
 import ballerina/test;
 import ballerinax/activemq.driver as _;
 
-final Connection testFailoverConnection = check new (
+final Connection TEST_FAILOVER_CONNECTION = check new (
     initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
     providerUrl = "failover:(tcp://localhost:61616)"
 );
 
-final Session failoverAutoAckSession = check createSession(AUTO_ACKNOWLEDGE);
+final Session FAILOVER_AUTO_ACK_SESSION = check createSession(AUTO_ACKNOWLEDGE);
 
 isolated function createFailoverSession(AcknowledgementMode acknowledgementMode) returns Session|error {
-    return testFailoverConnection->createSession(acknowledgementMode);
+    return TEST_FAILOVER_CONNECTION->createSession(acknowledgementMode);
 }
 
 @test:Config {
     groups: ["failover"]
 }
 isolated function testQueueWithTextMessageWithFailover() returns error? {
-    MessageProducer failoverQueueProducer = check createProducer(failoverAutoAckSession, {
+    MessageProducer failoverQueueProducer = check createProducer(FAILOVER_AUTO_ACK_SESSION, {
         'type: QUEUE,
         name: "test-failover-queue"
     });
-    final MessageConsumer failoverQueueConsumer = check createConsumer(failoverAutoAckSession, destination = {
+    final MessageConsumer failoverQueueConsumer = check createConsumer(FAILOVER_AUTO_ACK_SESSION, destination = {
         'type: QUEUE,
         name: "test-failover-queue"
     });
@@ -60,11 +60,11 @@ isolated function testQueueWithTextMessageWithFailover() returns error? {
     groups: ["failover"]
 }
 isolated function testTopicWithTextMessageWithFailover() returns error? {
-    MessageProducer failoverTopicProducer = check createProducer(autoAckSession, {
+    MessageProducer failoverTopicProducer = check createProducer(AUTO_ACK_SESSION, {
         'type: TOPIC,
         name: "test-failover-topic"
     });
-    MessageConsumer failoverTopicConsumer = check createConsumer(autoAckSession, destination = {
+    MessageConsumer failoverTopicConsumer = check createConsumer(AUTO_ACK_SESSION, destination = {
         'type: TOPIC,
         name: "test-failover-topic"
     });
@@ -83,13 +83,4 @@ isolated function testTopicWithTextMessageWithFailover() returns error? {
     check failoverTopicProducer->close();
     check failoverTopicConsumer->close();
 }
-
-@test:AfterGroups {
-    groups: ["failover"]
-}
-isolated function afterSuite() returns error? {
-    check failoverAutoAckSession->close();
-    check testFailoverConnection->close();
-}
-
 
