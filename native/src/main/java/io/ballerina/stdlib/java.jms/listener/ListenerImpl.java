@@ -18,21 +18,21 @@
 
 package io.ballerina.stdlib.java.jms.listener;
 
-import io.ballerina.runtime.api.Module;
-import io.ballerina.runtime.api.PredefinedTypes;
 import io.ballerina.runtime.api.Runtime;
-import io.ballerina.runtime.api.async.Callback;
-import io.ballerina.runtime.api.async.StrandMetadata;
+import io.ballerina.runtime.api.concurrent.StrandMetadata;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.MethodType;
 import io.ballerina.runtime.api.types.ObjectType;
 import io.ballerina.runtime.api.types.Parameter;
 import io.ballerina.runtime.api.types.Type;
+import io.ballerina.runtime.api.types.TypeTags;
 import io.ballerina.runtime.api.utils.TypeUtils;
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
 import io.ballerina.stdlib.java.jms.Constants;
 import io.ballerina.stdlib.java.jms.ModuleUtils;
+import io.ballerina.stdlib.java.jms.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,10 +43,9 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
-import static io.ballerina.runtime.api.TypeTags.OBJECT_TYPE_TAG;
-import static io.ballerina.runtime.api.TypeTags.RECORD_TYPE_TAG;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
 import static io.ballerina.stdlib.java.jms.Constants.SERVICE_RESOURCE_ON_MESSAGE;
+import static io.ballerina.stdlib.java.jms.ModuleUtils.getProperties;
 
 /**
  * A {@link javax.jms.MessageListener} implementation.
@@ -56,7 +55,6 @@ public class ListenerImpl implements MessageListener {
 
     private final BObject consumerService;
     private final Runtime ballerinaRuntime;
-    private final Callback callback = new ListenerCallback();
 
     public ListenerImpl(BObject consumerService, Runtime ballerinaRuntime) {
         this.consumerService = consumerService;
@@ -65,24 +63,23 @@ public class ListenerImpl implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        try {
-            Module module = ModuleUtils.getModule();
-            StrandMetadata metadata = new StrandMetadata(
-                    module.getOrg(), module.getName(), module.getVersion(), SERVICE_RESOURCE_ON_MESSAGE);
-            ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(consumerService));
-            Object[] params = methodParameters(serviceType, message);
-            if (serviceType.isIsolated() && serviceType.isIsolated(SERVICE_RESOURCE_ON_MESSAGE)) {
-                ballerinaRuntime.invokeMethodAsyncConcurrently(
-                        consumerService, SERVICE_RESOURCE_ON_MESSAGE, null, metadata, callback,
-                        null, PredefinedTypes.TYPE_NULL, params);
-            } else {
-                ballerinaRuntime.invokeMethodAsyncSequentially(
-                        consumerService, SERVICE_RESOURCE_ON_MESSAGE, null, metadata, callback,
-                        null, PredefinedTypes.TYPE_NULL, params);
+        Thread.startVirtualThread(() -> {
+            try {
+                ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(consumerService));
+                boolean isConcurrentSafe = serviceType.isIsolated() &&
+                        serviceType.isIsolated(SERVICE_RESOURCE_ON_MESSAGE);
+                Object[] params = methodParameters(serviceType, message);
+                StrandMetadata metadata = new StrandMetadata(isConcurrentSafe,
+                        getProperties(SERVICE_RESOURCE_ON_MESSAGE));
+                Object result = ballerinaRuntime.callMethod(consumerService, SERVICE_RESOURCE_ON_MESSAGE,
+                        metadata, params);
+                Util.notifySuccess(result);
+            } catch (JMSException | BallerinaJmsException e) {
+                LOGGER.error("Unexpected error occurred while async message processing", e);
+            } catch (BError bError) {
+                Util.notifyFailure(bError);
             }
-        } catch (JMSException | BallerinaJmsException e) {
-            LOGGER.error("Unexpected error occurred while async message processing", e);
-        }
+        });
     }
 
     private Object[] methodParameters(ObjectType serviceType, Message message)
@@ -93,18 +90,16 @@ public class ListenerImpl implements MessageListener {
         if (onMessageFuncOpt.isPresent()) {
             MethodType onMessageFunction = onMessageFuncOpt.get();
             Parameter[] parameters = onMessageFunction.getParameters();
-            Object[] args = new Object[parameters.length * 2];
+            Object[] args = new Object[parameters.length];
             int idx = 0;
             for (Parameter param: parameters) {
                 Type referredType = TypeUtils.getReferredType(param.type);
                 switch (referredType.getTag()) {
-                    case OBJECT_TYPE_TAG:
+                    case TypeTags.OBJECT_TYPE_TAG:
                         args[idx++] = ValueCreator.createObjectValue(ModuleUtils.getModule(), Constants.CALLER);
-                        args[idx++] = true;
                         break;
-                    case RECORD_TYPE_TAG:
+                    case TypeTags.RECORD_TYPE_TAG:
                         args[idx++] = getBallerinaMessage(message);
-                        args[idx++] = true;
                         break;
                     default:
                         throw new BallerinaJmsException(
