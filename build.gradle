@@ -66,9 +66,13 @@ subprojects {
 
     configurations {
         ballerinaStdLibs
+        jbalTools
     }
 
     dependencies {
+        jbalTools("org.ballerinalang:jballerina-tools:${ballerinaLangVersion}") {
+            transitive = false
+        }
         /* Standard libraries */
         ballerinaStdLibs "io.ballerina.stdlib:time-ballerina:${stdlibTimeVersion}"
         ballerinaStdLibs "io.ballerina.stdlib:log-ballerina:${stdlibLogVersion}"
