@@ -19,7 +19,7 @@ graalvmCompatible = true
 groupId = "io.ballerina.stdlib"
 artifactId = "java.jms-native"
 version = "1.1.0"
-path = "../native/build/libs/java.jms-native-1.1.0-SNAPSHOT.jar"
+path = "../native/build/libs/java.jms-native-1.1.0.jar"
 
 [[platform.java21.dependency]]
 groupId = "org.slf4j"
