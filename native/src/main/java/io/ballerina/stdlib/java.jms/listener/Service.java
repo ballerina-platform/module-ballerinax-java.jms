@@ -18,13 +18,24 @@
 
 package io.ballerina.stdlib.java.jms.listener;
 
-import io.ballerina.runtime.api.types.MethodType;
-import io.ballerina.runtime.api.types.ObjectType;
+import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.types.Parameter;
+import io.ballerina.runtime.api.types.RemoteMethodType;
+import io.ballerina.runtime.api.types.ServiceType;
+import io.ballerina.runtime.api.types.Type;
+import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
+import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.java.jms.CommonUtils;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Objects;
+
+import static io.ballerina.stdlib.java.jms.Constants.CALLER;
+import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
+import static io.ballerina.stdlib.java.jms.Constants.MESSAGE_BAL_RECORD_NAME;
+import static io.ballerina.stdlib.java.jms.ModuleUtils.getModule;
 
 /**
  * This is the native representation of the Ballerina JMS service object.
@@ -34,16 +45,89 @@ import java.util.List;
  * @since 1.2.0
  */
 public class Service {
+    private static final Type MSG_TYPE = ValueCreator.createRecordValue(getModule(), MESSAGE_BAL_RECORD_NAME)
+            .getType();
+    private static final Type CALLER_TYPE = ValueCreator.createRecordValue(getModule(), CALLER)
+            .getType();
+    private static final BString SERVICE_CONFIG_ANNOTATION = StringUtils.fromString("ServiceConfig");
+
     private final BObject consumerService;
-    private final boolean isIsolated;
-    private final List<MethodType> methods;
+    private final ServiceType serviceType;
+    private final ServiceConfig serviceConfig;
+    private final RemoteMethodType onMessage;
 
     public Service(BObject consumerService) {
         this.consumerService = consumerService;
-        ObjectType serviceType = (ObjectType) TypeUtils.getReferredType(TypeUtils.getType(consumerService));
-        this.isIsolated = serviceType.isIsolated();
+        ServiceType svcType = (ServiceType) TypeUtils.getType(consumerService);
+        validateService(svcType);
+        this.serviceType = svcType;
+        this.serviceConfig = new ServiceConfig((BMap<BString, Object>)svcType.getAnnotation(SERVICE_CONFIG_ANNOTATION));
+        this.onMessage = svcType.getRemoteMethods()[0];
+    }
 
-        // validate the methods here
-        this.methods = Arrays.asList(serviceType.getMethods());
+    private void validateService(ServiceType service) {
+        Object svcConfig = service.getAnnotation(SERVICE_CONFIG_ANNOTATION);
+        if (Objects.isNull(svcConfig)) {
+            throw CommonUtils.createError(JMS_ERROR, "Service configuration annotation is required");
+        }
+
+        if (service.getResourceMethods().length > 0) {
+            throw CommonUtils.createError(JMS_ERROR, "JMS service cannot have resource methods");
+        }
+
+        RemoteMethodType[] remoteMethods = service.getRemoteMethods();
+        if (remoteMethods.length != 1) {
+            throw CommonUtils.createError(JMS_ERROR, "JMS service must have exactly one remote methods");
+        }
+
+        RemoteMethodType existingRemoteMethod = remoteMethods[0];
+        if (existingRemoteMethod.getName().equals("onMessage")) {
+            throw CommonUtils.createError(JMS_ERROR,
+                    "JMS service does not contain the required `onMessage` method");
+        }
+
+        validateOnMessageMethod(existingRemoteMethod);
+    }
+
+    private void validateOnMessageMethod(RemoteMethodType onMessageMethod) {
+        Parameter[] parameters = onMessageMethod.getParameters();
+        if (parameters.length < 1 || parameters.length > 2) {
+            throw CommonUtils.createError(JMS_ERROR,
+                    "onMessage method can have only have either one or two parameters");
+        }
+
+        Parameter message = null;
+        for (Parameter parameter: parameters) {
+            Type parameterType = TypeUtils.getReferredType(parameter.type);
+            if (TypeUtils.isSameType(MSG_TYPE, parameterType)) {
+                message = parameter;
+                continue;
+            }
+            if (TypeUtils.isSameType(CALLER_TYPE, parameterType)) {
+                continue;
+            }
+            throw CommonUtils.createError(JMS_ERROR,
+                    "onMessage method parameters must be of type 'jms:Message' or `jms:Caller`");
+        }
+
+        if (Objects.isNull(message)) {
+            throw CommonUtils.createError(JMS_ERROR, "Required parameter 'jms:Message' can not be found");
+        }
+    }
+
+    public boolean isIsolated() {
+        return this.serviceType.isIsolated();
+    }
+
+    public BObject getConsumerService() {
+        return consumerService;
+    }
+
+    public ServiceConfig getServiceConfig() {
+        return serviceConfig;
+    }
+
+    public RemoteMethodType getOnMessage() {
+        return onMessage;
     }
 }
