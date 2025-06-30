@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- [Support `jms:Service` per Queue/Topic in JMS listener-service based message consumption](https://github.com/ballerina-platform/ballerina-library/issues/8063)
+
+## [1.0.1] - 2024-05-20
+
 ### Added
 - [Add observability support to the JMS module](https://github.com/ballerina-platform/ballerina-library/issues/5932)
 
