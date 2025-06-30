@@ -52,6 +52,9 @@ public final class Listener {
     static final String NATIVE_SESSION = "native.session";
     static final String NATIVE_CONSUMER = "native.consumer";
 
+    private Listener() {
+    }
+
     public static Object init(BObject bListener, BMap<BString, Object> connectionConfig) {
         try {
             Connection jmsConnection = createJmsConnection(connectionConfig);
@@ -80,7 +83,8 @@ public final class Listener {
             boolean transacted = Session.SESSION_TRANSACTED == sessionAckMode;
             Session session = connection.createSession(transacted, sessionAckMode);
             MessageConsumer consumer = getConsumer(session, svcConfig.subscriptionConfig());
-            MessageDispatcher messageDispatcher = new MessageDispatcher(environment.getRuntime(), nativeService);
+            MessageDispatcher messageDispatcher = new MessageDispatcher(
+                    environment.getRuntime(), nativeService, session);
             consumer.setMessageListener(messageDispatcher);
             bService.addNativeData(NATIVE_SERVICE, nativeService);
             bService.addNativeData(NATIVE_SESSION, session);

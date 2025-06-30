@@ -26,6 +26,7 @@ import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.types.TypeTags;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BError;
+import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
 import io.ballerina.stdlib.java.jms.Constants;
 import io.ballerina.stdlib.java.jms.ModuleUtils;
@@ -36,9 +37,11 @@ import java.io.PrintStream;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.Session;
 
 import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
 import static io.ballerina.stdlib.java.jms.ModuleUtils.getProperties;
+import static io.ballerina.stdlib.java.jms.listener.Listener.NATIVE_SESSION;
 
 /**
  * A {@link javax.jms.MessageListener} implementation used to dispatch messages to a Ballerina JMS service.
@@ -47,14 +50,16 @@ import static io.ballerina.stdlib.java.jms.ModuleUtils.getProperties;
  */
 public class MessageDispatcher implements MessageListener {
     private static final String ON_MESSAGE_METHOD = "onMessage";
-
     private static final PrintStream ERR_OUT = System.err;
+
     private final Runtime ballerinaRuntime;
     private final Service nativeService;
+    private final Session session;
 
-    public MessageDispatcher(Runtime ballerinaRuntime, Service nativeService) {
+    MessageDispatcher(Runtime ballerinaRuntime, Service nativeService, Session session) {
         this.ballerinaRuntime = ballerinaRuntime;
         this.nativeService = nativeService;
+        this.session = session;
     }
 
     @Override
@@ -84,7 +89,7 @@ public class MessageDispatcher implements MessageListener {
             Type referredType = TypeUtils.getReferredType(param.type);
             switch (referredType.getTag()) {
                 case TypeTags.OBJECT_TYPE_TAG:
-                    args[idx++] = ValueCreator.createObjectValue(ModuleUtils.getModule(), Constants.CALLER);
+                    args[idx++] = getCaller();
                     break;
                 case TypeTags.RECORD_TYPE_TAG:
                     args[idx++] = getBallerinaMessage(message);
@@ -92,5 +97,11 @@ public class MessageDispatcher implements MessageListener {
             }
         }
         return args;
+    }
+
+    private BObject getCaller() {
+        BObject caller = ValueCreator.createObjectValue(ModuleUtils.getModule(), Constants.CALLER);
+        caller.addNativeData(NATIVE_SESSION, session);
+        return caller;
     }
 }

@@ -50,8 +50,7 @@ import static io.ballerina.stdlib.java.jms.ModuleUtils.getModule;
 public class Service {
     private static final Type MSG_TYPE = ValueCreator.createRecordValue(getModule(), MESSAGE_BAL_RECORD_NAME)
             .getType();
-    private static final Type CALLER_TYPE = ValueCreator.createObjectValue(getModule(), CALLER)
-            .getType();
+    private static final Type CALLER_TYPE = ValueCreator.createObjectValue(getModule(), CALLER).getOriginalType();
     private static final BString SERVICE_CONFIG_ANNOTATION  = StringUtils.fromString(
             getModule().getOrg() + ORG_NAME_SEPARATOR + getModule().getName() + VERSION_SEPARATOR +
                     getModule().getMajorVersion() + VERSION_SEPARATOR + "ServiceConfig");

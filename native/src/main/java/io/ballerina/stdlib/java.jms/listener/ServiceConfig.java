@@ -40,7 +40,7 @@ public record ServiceConfig(String ackMode, SubscriptionConfig subscriptionConfi
     private static final BString QUEUE_NAME = StringUtils.fromString("queueName");
 
     @SuppressWarnings("unchecked")
-    public ServiceConfig(BMap<BString, Object> configurations) {
+    ServiceConfig(BMap<BString, Object> configurations) {
         this(
                 configurations.getStringValue(ACK_MODE).getValue(),
                 getConsumerConfig((BMap<BString, Object>) configurations.getMapValue(SUBSCRIPTION_CONFIG))

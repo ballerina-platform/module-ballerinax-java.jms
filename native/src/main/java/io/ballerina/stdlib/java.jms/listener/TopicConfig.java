@@ -51,7 +51,7 @@ public record TopicConfig(String topicName, String messageSelector, boolean noLo
     private static final BString SUBSCRIBER_NAME = StringUtils.fromString("subscriberName");
 
     @SuppressWarnings("unchecked")
-    public TopicConfig(BMap<BString, Object> configurations) {
+    TopicConfig(BMap<BString, Object> configurations) {
         this(
                 configurations.getStringValue(TOPIC_NAME).getValue(),
                 configurations.containsKey(MSG_SELECTOR) ?

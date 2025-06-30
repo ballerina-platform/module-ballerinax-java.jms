@@ -36,7 +36,7 @@ public record QueueConfig(String queueName, String messageSelector) implements S
     private static final BString MSG_SELECTOR = StringUtils.fromString("messageSelector");
 
     @SuppressWarnings("unchecked")
-    public QueueConfig(BMap<BString, Object> configurations) {
+    QueueConfig(BMap<BString, Object> configurations) {
         this(
                 configurations.getStringValue(QUEUE_NAME).getValue(),
                 configurations.containsKey(MSG_SELECTOR) ? configurations.getStringValue(MSG_SELECTOR).getValue() : null
