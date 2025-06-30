@@ -29,18 +29,20 @@ import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
 import io.ballerina.stdlib.java.jms.Constants;
-import io.ballerina.stdlib.java.jms.ModuleUtils;
-import io.ballerina.stdlib.java.jms.Util;
 
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Session;
 
+import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
-import static io.ballerina.stdlib.java.jms.ModuleUtils.getProperties;
+import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
+import static io.ballerina.stdlib.java.jms.ModuleUtils.getModule;
 import static io.ballerina.stdlib.java.jms.listener.Listener.NATIVE_SESSION;
 
 /**
@@ -67,17 +69,26 @@ public class MessageDispatcher implements MessageListener {
         Thread.startVirtualThread(() -> {
             try {
                 boolean isConcurrentSafe = this.nativeService.isOnMessageMethodIsolated();
+                StrandMetadata metadata = new StrandMetadata(isConcurrentSafe, getPropertiesForOnMsgMethod());
                 Object[] params = getOnMessageParams(message);
-                StrandMetadata metadata = new StrandMetadata(isConcurrentSafe, getProperties(ON_MESSAGE_METHOD));
                 Object result = ballerinaRuntime.callMethod(
                         this.nativeService.getConsumerService(), ON_MESSAGE_METHOD, metadata, params);
-                Util.notifySuccess(result);
-            } catch (JMSException | BallerinaJmsException e) {
+                notifySuccess(result);
+            } catch (Throwable e) {
                 ERR_OUT.println("Unexpected error occurred while async message processing: " + e.getMessage());
-            } catch (BError bError) {
-                bError.printStackTrace();
+                BError error = createError(JMS_ERROR, "Failed to fetch the message", e);
+                throw error;
             }
         });
+    }
+
+    private Map<String, Object> getPropertiesForOnMsgMethod() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("moduleOrg", getModule().getOrg());
+        properties.put("moduleName", getModule().getName());
+        properties.put("moduleVersion", getModule().getMajorVersion());
+        properties.put("parentFunctionName", ON_MESSAGE_METHOD);
+        return properties;
     }
 
     private Object[] getOnMessageParams(Message message)
@@ -100,8 +111,14 @@ public class MessageDispatcher implements MessageListener {
     }
 
     private BObject getCaller() {
-        BObject caller = ValueCreator.createObjectValue(ModuleUtils.getModule(), Constants.CALLER);
+        BObject caller = ValueCreator.createObjectValue(getModule(), Constants.CALLER);
         caller.addNativeData(NATIVE_SESSION, session);
         return caller;
+    }
+
+    private void notifySuccess(Object o) {
+        if (o instanceof BError) {
+            ((BError) o).printStackTrace();
+        }
     }
 }

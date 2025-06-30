@@ -38,15 +38,4 @@ public class Util {
             throw ErrorCreator.createError(throwable);
         }
     }
-
-    public static void notifySuccess(Object o) {
-        if (o instanceof BError) {
-            ((BError) o).printStackTrace();
-        }
-    }
-
-    public static void notifyFailure(BError bError) {
-        bError.printStackTrace();
-    }
-
 }
