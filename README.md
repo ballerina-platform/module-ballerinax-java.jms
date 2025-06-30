@@ -88,23 +88,23 @@ import ballerinax/activemq.driver as _;
 import ballerina/log;
 import ballerinax/java.jms;
 
-service "consumer-service" on new jms:Listener(
-    connectionConfig = {
-        initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-        providerUrl: "tcp://localhost:61616"
-    },
-    consumerOptions = {
-        destination: {
-            'type: jms:QUEUE,
-            name: "MyQueue"
-        }
-    }
-) {
-    remote function onMessage(jms:Message message) returns error? {
-        if message is jms:TextMessage {
-            log:printInfo("Text message received", content = message.content);
-        }
-    }
+listener jms:Listener jmsListener = check new (
+    initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+    providerUrl = "tcp://localhost:61616"
+);
+
+@jms:ServiceConfig {
+   subscriptionConfig: {
+      queueName: "MyQueue"
+   }
+}
+service "consumer-service" on jmsListener {
+   
+   remote function onMessage(jms:Message message) returns error? {
+      if message is jms:TextMessage {
+         log:printInfo("Text message received", content = message.content);
+      }
+   }
 }
 ```
 
