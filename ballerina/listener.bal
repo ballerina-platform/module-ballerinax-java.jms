@@ -16,10 +16,8 @@
 
 import ballerina/jballerina.java;
 
-// todo: implement this method properly
-
 # Represents a JMS Listener endpoint that can be used to receive messages from an JMS topic or a queue.
-public isolated class Listener2 {
+public isolated class Listener {
 
     # Initializes a new `jms:Listener`.
     # ```ballerina
@@ -48,7 +46,7 @@ public isolated class Listener2 {
     # + 'service - The service instance
     # + name - Name of the service
     # + return - A `jms:Error` if there is an error or else `()`
-    public isolated function attach(Service s, string[]|string? name = ()) returns Error? = @java:Method {
+    public isolated function attach(Service 'service, string[]|string? name = ()) returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.listener.Listener"
     } external;
 
@@ -57,9 +55,9 @@ public isolated class Listener2 {
     # check messageListener.detach(jmsService);
     # ```
     #
-    # + 'service - The service to be detached
+    # + service - The service to be detached
     # + return - A `jms:Error` if there is an error or else `()`
-    public isolated function detach(Service s) returns Error? = @java:Method {
+    public isolated function detach(Service 'service) returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.listener.Listener"
     } external;
 
