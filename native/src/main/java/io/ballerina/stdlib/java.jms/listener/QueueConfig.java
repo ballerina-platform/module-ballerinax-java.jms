@@ -26,11 +26,9 @@ import io.ballerina.runtime.api.values.BString;
  * Represents configuration details for consuming messages from a JMS queue.
  *
  * @param queueName       The name of the JMS queue to consume messages from.
- *
  * @param messageSelector An optional JMS message selector expression. Only messages with properties
  *                        matching this selector will be delivered to the consumer.
  *                        If this value is {@code null}, no selector is applied.
- *
  * @since 1.2.0
  */
 public record QueueConfig(String queueName, String messageSelector) implements SubscriptionConfig {
@@ -41,7 +39,7 @@ public record QueueConfig(String queueName, String messageSelector) implements S
     public QueueConfig(BMap<BString, Object> configurations) {
         this(
                 configurations.getStringValue(QUEUE_NAME).getValue(),
-                configurations.containsKey(MSG_SELECTOR) ? configurations.getStringValue(MSG_SELECTOR).getValue(): null
+                configurations.containsKey(MSG_SELECTOR) ? configurations.getStringValue(MSG_SELECTOR).getValue() : null
         );
     }
 }

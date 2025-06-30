@@ -114,7 +114,7 @@ public class Constants {
     public static final String NATIVE_MESSAGE = "message";
 
     // Ballerina JMS message types
-    static final String MESSAGE_BAL_RECORD_NAME = "Message";
+    public static final String MESSAGE_BAL_RECORD_NAME = "Message";
     static final String TEXT_MESSAGE_BAL_RECORD_NAME = "TextMessage";
     static final String MAP_MESSAGE_BAL_RECORD_NAME = "MapMessage";
     static final String BYTE_MESSAGE_BAL_RECORD_NAME = "BytesMessage";

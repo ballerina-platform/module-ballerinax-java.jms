@@ -18,8 +18,7 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.PrintStream;
 
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
@@ -28,10 +27,10 @@ import javax.jms.JMSException;
  * Logging exception listener class for JMS {@link javax.jms.Connection}.
  */
 public class LoggingExceptionListener implements ExceptionListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingExceptionListener.class);
+    private static final PrintStream ERR_OUT = System.err;
 
     @Override
     public void onException(JMSException connectionException) {
-        LOGGER.error("Connection exception received.", connectionException);
+        ERR_OUT.println("Connection exception received from the JMS provider: " + connectionException.getMessage());
     }
 }

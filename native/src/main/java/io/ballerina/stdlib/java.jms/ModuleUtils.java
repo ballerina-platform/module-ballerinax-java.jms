@@ -41,12 +41,12 @@ public class ModuleUtils {
         return module;
     }
 
-    public static Map<String, Object> getProperties(String resourceName) {
+    public static Map<String, Object> getProperties(String remoteMethodName) {
         Map<String, Object> properties = new HashMap<>();
         properties.put("moduleOrg", getModule().getOrg());
         properties.put("moduleName", getModule().getName());
         properties.put("moduleVersion", getModule().getMajorVersion());
-        properties.put("parentFunctionName", resourceName);
+        properties.put("parentFunctionName", remoteMethodName);
         return properties;
     }
 }

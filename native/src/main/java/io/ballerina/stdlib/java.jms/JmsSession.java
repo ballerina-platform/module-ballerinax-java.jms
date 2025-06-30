@@ -58,7 +58,7 @@ public class JmsSession {
         return null;
     }
 
-    private static int getSessionAckMode(String ackMode) {
+    public static int getSessionAckMode(String ackMode) {
         if (Constants.SESSION_TRANSACTED_MODE.equals(ackMode)) {
             return Session.SESSION_TRANSACTED;
         } else if (Constants.AUTO_ACKNOWLEDGE_MODE.equals(ackMode)) {

@@ -25,6 +25,7 @@ import io.ballerina.runtime.api.types.ServiceType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -32,6 +33,8 @@ import io.ballerina.stdlib.java.jms.CommonUtils;
 
 import java.util.Objects;
 
+import static io.ballerina.runtime.api.constants.RuntimeConstants.ORG_NAME_SEPARATOR;
+import static io.ballerina.runtime.api.constants.RuntimeConstants.VERSION_SEPARATOR;
 import static io.ballerina.stdlib.java.jms.Constants.CALLER;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.MESSAGE_BAL_RECORD_NAME;
@@ -47,9 +50,11 @@ import static io.ballerina.stdlib.java.jms.ModuleUtils.getModule;
 public class Service {
     private static final Type MSG_TYPE = ValueCreator.createRecordValue(getModule(), MESSAGE_BAL_RECORD_NAME)
             .getType();
-    private static final Type CALLER_TYPE = ValueCreator.createRecordValue(getModule(), CALLER)
+    private static final Type CALLER_TYPE = ValueCreator.createObjectValue(getModule(), CALLER)
             .getType();
-    private static final BString SERVICE_CONFIG_ANNOTATION = StringUtils.fromString("ServiceConfig");
+    private static final BString SERVICE_CONFIG_ANNOTATION  = StringUtils.fromString(
+            getModule().getOrg() + ORG_NAME_SEPARATOR + getModule().getName() + VERSION_SEPARATOR +
+                    getModule().getMajorVersion() + VERSION_SEPARATOR + "ServiceConfig");
 
     private final BObject consumerService;
     private final ServiceType serviceType;
@@ -59,13 +64,14 @@ public class Service {
     Service(BObject consumerService) {
         this.consumerService = consumerService;
         ServiceType svcType = (ServiceType) TypeUtils.getType(consumerService);
-        validateService(svcType);
         this.serviceType = svcType;
-        this.serviceConfig = new ServiceConfig((BMap<BString, Object>)svcType.getAnnotation(SERVICE_CONFIG_ANNOTATION));
+        this.serviceConfig = new ServiceConfig(
+                (BMap<BString, Object>) svcType.getAnnotation(SERVICE_CONFIG_ANNOTATION));
         this.onMessage = svcType.getRemoteMethods()[0];
     }
 
-    private void validateService(ServiceType service) {
+    public static void validateService(BObject consumerService) throws BError {
+        ServiceType service = (ServiceType) TypeUtils.getType(consumerService);
         Object svcConfig = service.getAnnotation(SERVICE_CONFIG_ANNOTATION);
         if (Objects.isNull(svcConfig)) {
             throw CommonUtils.createError(JMS_ERROR, "Service configuration annotation is required");
@@ -81,7 +87,7 @@ public class Service {
         }
 
         RemoteMethodType existingRemoteMethod = remoteMethods[0];
-        if (existingRemoteMethod.getName().equals("onMessage")) {
+        if (!existingRemoteMethod.getName().equals("onMessage")) {
             throw CommonUtils.createError(JMS_ERROR,
                     "JMS service does not contain the required `onMessage` method");
         }
@@ -89,7 +95,7 @@ public class Service {
         validateOnMessageMethod(existingRemoteMethod);
     }
 
-    private void validateOnMessageMethod(RemoteMethodType onMessageMethod) {
+    private static void validateOnMessageMethod(RemoteMethodType onMessageMethod) {
         Parameter[] parameters = onMessageMethod.getParameters();
         if (parameters.length < 1 || parameters.length > 2) {
             throw CommonUtils.createError(JMS_ERROR,
@@ -97,7 +103,7 @@ public class Service {
         }
 
         Parameter message = null;
-        for (Parameter parameter: parameters) {
+        for (Parameter parameter : parameters) {
             Type parameterType = TypeUtils.getReferredType(parameter.type);
             if (TypeUtils.isSameType(MSG_TYPE, parameterType)) {
                 message = parameter;
@@ -115,8 +121,8 @@ public class Service {
         }
     }
 
-    public boolean isIsolated() {
-        return this.serviceType.isIsolated();
+    public boolean isOnMessageMethodIsolated() {
+        return this.serviceType.isIsolated() && this.onMessage.isIsolated();
     }
 
     public BObject getConsumerService() {
@@ -127,7 +133,7 @@ public class Service {
         return serviceConfig;
     }
 
-    public RemoteMethodType getOnMessage() {
+    public RemoteMethodType getOnMessageMethod() {
         return onMessage;
     }
 }
