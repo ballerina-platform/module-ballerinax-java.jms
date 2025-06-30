@@ -1,4 +1,4 @@
-// Copyright (c) 2023, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2025, WSO2 LLC. (http://www.wso2.org).
 //
 // WSO2 LLC. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -17,7 +17,7 @@
 import ballerina/lang.runtime;
 import ballerina/test;
 
-final Listener jmsMessageListener = check new (
+listener Listener jmsMessageListener = check new (
     initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
     providerUrl = "tcp://localhost:61616"
 );
