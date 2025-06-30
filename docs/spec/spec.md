@@ -487,7 +487,7 @@ The JMS listener in Ballerina enables applications to receive messages **asynchr
 
 ### 7.1. Initialization
 
-In Ballerina, a `jms:Listener` represents a JMS connection. To initialize a listener, you must provide the appropriate JMS connection configuration.
+In Ballerina, a `jms:Listener` represents a JMS connection. To initialize a listener, the appropriate JMS connection configuration should be provided.
 
 ```ballerina
 # Initializes a new `jms:Listener`.
@@ -569,7 +569,7 @@ A JMS service in Ballerina is used to receive messages from a JMS provider. It i
 
 #### 7.3.1. Configuration
 
-To subscribe a service to a JMS destination, you must use the `jms:ServiceConfig` annotation. This annotation defines how the service should connect to the destination and how messages should be acknowledged.
+To subscribe a service to a JMS destination, the subscription configurations should be provided using the `jms:ServiceConfig` annotation.
 
 ```ballerina
 # Represents configurations for a JMS queue.
