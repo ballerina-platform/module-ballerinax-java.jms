@@ -56,7 +56,7 @@ public class Service {
     private final ServiceConfig serviceConfig;
     private final RemoteMethodType onMessage;
 
-    public Service(BObject consumerService) {
+    Service(BObject consumerService) {
         this.consumerService = consumerService;
         ServiceType svcType = (ServiceType) TypeUtils.getType(consumerService);
         validateService(svcType);

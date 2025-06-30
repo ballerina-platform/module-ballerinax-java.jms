@@ -33,7 +33,7 @@ import io.ballerina.runtime.api.values.BString;
  *
  * @since 1.2.0
  */
-public record QueueConfig(String queueName, String messageSelector) implements ConsumerConfig {
+public record QueueConfig(String queueName, String messageSelector) implements SubscriptionConfig {
     private static final BString QUEUE_NAME = StringUtils.fromString("queueName");
     private static final BString MSG_SELECTOR = StringUtils.fromString("messageSelector");
 

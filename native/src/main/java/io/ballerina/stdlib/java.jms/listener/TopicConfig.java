@@ -43,7 +43,7 @@ import io.ballerina.runtime.api.values.BString;
  * @since 1.2.0
  */
 public record TopicConfig(String topicName, String messageSelector, boolean noLocal, String consumerType,
-                          String subscriberName) implements ConsumerConfig {
+                          String subscriberName) implements SubscriptionConfig {
     private static final BString TOPIC_NAME = StringUtils.fromString("topicName");
     private static final BString MSG_SELECTOR = StringUtils.fromString("messageSelector");
     private static final BString NO_LOCAL = StringUtils.fromString("noLocal");

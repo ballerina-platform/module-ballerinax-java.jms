@@ -29,25 +29,25 @@ import io.ballerina.runtime.api.values.BString;
  *                messages received by the session are acknowledged.
  *                Common values include "AUTO_ACKNOWLEDGE", "CLIENT_ACKNOWLEDGE", and "DUPS_OK_ACKNOWLEDGE".
  *
- * @param config  The configuration for the destination to consume from.
- *                This can be a queue or topic configuration, represented by {@link ConsumerConfig}.
+ * @param subscriptionConfig  The configuration for the subscription configuration
+ *                            represented by {@link SubscriptionConfig}.
  *
  * @since 1.2.0
  */
-public record ServiceConfig(String ackMode, ConsumerConfig config) {
+public record ServiceConfig(String ackMode, SubscriptionConfig subscriptionConfig) {
     private static final BString ACK_MODE = StringUtils.fromString("acknowledgementMode");
-    private static final BString CONSUMER_CONFIG = StringUtils.fromString("config");
+    private static final BString SUBSCRIPTION_CONFIG = StringUtils.fromString("subscriptionConfig");
     private static final BString QUEUE_NAME = StringUtils.fromString("queueName");
 
     @SuppressWarnings("unchecked")
     public ServiceConfig(BMap<BString, Object> configurations) {
         this(
                 configurations.getStringValue(ACK_MODE).getValue(),
-                getConsumerConfig((BMap<BString, Object>) configurations.getMapValue(CONSUMER_CONFIG))
+                getConsumerConfig((BMap<BString, Object>) configurations.getMapValue(SUBSCRIPTION_CONFIG))
         );
     }
 
-    private static ConsumerConfig getConsumerConfig(BMap<BString, Object> config) {
+    private static SubscriptionConfig getConsumerConfig(BMap<BString, Object> config) {
         if (config.containsKey(QUEUE_NAME)) {
             return new QueueConfig(config);
         }

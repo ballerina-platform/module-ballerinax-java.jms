@@ -19,9 +19,9 @@
 package io.ballerina.stdlib.java.jms.listener;
 
 /**
- * {@code ConsumerConfig} represents message consumer configuration for a JMS service.
+ * {@code SubscriptionConfig} represents consumer subscription configuration for a JMS service.
  *
  * @since 1.2.0
  */
-public interface ConsumerConfig {
+public interface SubscriptionConfig {
 }
