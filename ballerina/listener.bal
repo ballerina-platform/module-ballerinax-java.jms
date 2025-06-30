@@ -26,7 +26,7 @@ public isolated class Listener {
     #   providerUrl = "tcp://localhost:61616"
     # );
     # ```
-    # 
+    #
     # + connectionConfig - The configurations to be used when initializing the JMS listener
     # + return - The relevant JMS consumer or a `jms:Error` if there is any error
     public isolated function init(*ConnectionConfiguration connectionConfig) returns Error? {
@@ -42,7 +42,7 @@ public isolated class Listener {
     # ```ballerina
     # check messageListener.attach(jmsService);
     # ```
-    # 
+    #
     # + 'service - The service instance
     # + name - Name of the service
     # + return - A `jms:Error` if there is an error or else `()`
@@ -70,7 +70,6 @@ public isolated class Listener {
     public isolated function 'start() returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.listener.Listener"
     } external;
-
 
     # Stops the JMS listener gracefully.
     # ```ballerina
