@@ -240,7 +240,7 @@ isolated boolean serviceWithCallerBytesMsgReceived = false;
 isolated int serviceWithCallerReceivedMsgCount = 0;
 
 @test:Config {
-    groups: ["messageListener", "msgLisFailing"]
+    groups: ["messageListener"]
 }
 isolated function testServiceWithCaller() returns error? {
     Service consumerSvc = @ServiceConfig {
@@ -304,6 +304,45 @@ isolated function testServiceWithCaller() returns error? {
         test:assertEquals(serviceWithCallerReceivedMsgCount, 3, "'test-caller' queue did not received the expected number of messages");
     }
     check producer->close();
+}
+
+isolated int ServiceWithTransactionsMsgCount = 0;
+
+@test:Config {
+    groups: ["messageListener", "svcTrx"]
+}
+isolated function testServiceWithTransactions() returns error? {
+    Service consumerSvc = @ServiceConfig {
+        acknowledgementMode: SESSION_TRANSACTED,
+        subscriptionConfig: {
+            queueName: "test-transactions"
+        }
+    } service object {
+        isolated remote function onMessage(Message message, Caller caller) returns error? {
+            if message is TextMessage {
+                lock {
+                    ServiceWithTransactionsMsgCount += 1;
+                }
+                if message.content == "End of messages" {
+                    check caller->'commit();
+                }
+            }
+        }
+    };
+    check jmsMessageListener.attach(consumerSvc, "test-transacted-service");
+
+    Session transactedSession = check createSession(SESSION_TRANSACTED);
+    MessageProducer producer = check createProducer(transactedSession, { 'type: QUEUE, name: "test-transactions" });
+    check producer->send(<TextMessage>{ content: "This is the first message" });
+    check producer->send(<TextMessage>{ content: "This is the second message" });
+    check producer->send(<TextMessage>{ content: "This is the third message" });
+    check producer->send(<TextMessage>{ content: "End of messages" });
+    check transactedSession->'commit();
+
+    runtime:sleep(5);
+    lock {
+        test:assertEquals(ServiceWithTransactionsMsgCount, 4, "Invalid number of received messages");
+    }
 }
 
 @test:Config {
