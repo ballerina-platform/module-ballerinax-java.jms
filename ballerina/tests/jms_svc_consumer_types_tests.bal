@@ -15,10 +15,9 @@
 // under the License.
 
 import ballerina/lang.runtime;
-import ballerina/io;
 import ballerina/test;
 
-final MessageProducer durableTopicProducer = check createProducer(AUTO_ACK_SESSION, { 'type: TOPIC, name: "durable-topic" });
+final MessageProducer durableTopicProducer = check createProducer(AUTO_ACK_SESSION, {'type: TOPIC, name: "durable-topic"});
 
 isolated int durableConsumerMsgCount = 0;
 
@@ -59,8 +58,8 @@ isolated function testSvcWithDurableSubscription() returns error? {
 }
 
 isolated function sendMessages(MessageProducer producer, int numberOfMessages) returns error? {
-    foreach int i in 0..<numberOfMessages {
+    foreach int i in 0 ..< numberOfMessages {
         string content = string `This is the message number: ${i}`;
-        check producer->send(<TextMessage> { content });
+        check producer->send(<TextMessage>{content});
     }
 }

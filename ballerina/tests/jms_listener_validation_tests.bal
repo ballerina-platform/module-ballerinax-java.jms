@@ -28,9 +28,9 @@ isolated function testAnnotationNotFound() returns error? {
     test:assertTrue(result is Error);
     if result is Error {
         test:assertEquals(
-            result.message(), 
-            "Failed to attach service to listener: Service configuration annotation is required", 
-            "Invalid error message received");
+                result.message(),
+                "Failed to attach service to listener: Service configuration annotation is required",
+                "Invalid error message received");
     }
 }
 
@@ -45,7 +45,8 @@ isolated function testSvcWithResourceMethods() returns error? {
         }
     } service object {
 
-        resource function get . () returns error? {}
+        resource function get .() returns error? {
+        }
 
         remote function onMessage(Message message, Caller caller) returns error? {
         }
@@ -54,9 +55,9 @@ isolated function testSvcWithResourceMethods() returns error? {
     test:assertTrue(result is Error);
     if result is Error {
         test:assertEquals(
-            result.message(), 
-            "Failed to attach service to listener: JMS service cannot have resource methods", 
-            "Invalid error message received");
+                result.message(),
+                "Failed to attach service to listener: JMS service cannot have resource methods",
+                "Invalid error message received");
     }
 }
 
@@ -74,9 +75,9 @@ isolated function testSvcWithNoRemoteMethods() returns error? {
     test:assertTrue(result is Error);
     if result is Error {
         test:assertEquals(
-            result.message(), 
-            "Failed to attach service to listener: JMS service must have exactly one remote method", 
-            "Invalid error message received");
+                result.message(),
+                "Failed to attach service to listener: JMS service must have exactly one remote method",
+                "Invalid error message received");
     }
 }
 
@@ -98,9 +99,9 @@ isolated function testSvcWithInvalidRemoteMethod() returns error? {
     test:assertTrue(result is Error);
     if result is Error {
         test:assertEquals(
-            result.message(), 
-            "Failed to attach service to listener: JMS service does not contain the required `onMessage` method", 
-            "Invalid error message received");
+                result.message(),
+                "Failed to attach service to listener: JMS service does not contain the required `onMessage` method",
+                "Invalid error message received");
     }
 }
 
@@ -122,9 +123,9 @@ isolated function testSvcMethodWithAdditionalParameters() returns error? {
     test:assertTrue(result is Error);
     if result is Error {
         test:assertEquals(
-            result.message(), 
-            "Failed to attach service to listener: onMessage method can have only have either one or two parameters", 
-            "Invalid error message received");
+                result.message(),
+                "Failed to attach service to listener: onMessage method can have only have either one or two parameters",
+                "Invalid error message received");
     }
 }
 
@@ -146,9 +147,9 @@ isolated function testSvcMethodWithInvalidParams() returns error? {
     test:assertTrue(result is Error);
     if result is Error {
         test:assertEquals(
-            result.message(), 
-            "Failed to attach service to listener: onMessage method parameters must be of type 'jms:Message' or `jms:Caller`", 
-            "Invalid error message received");
+                result.message(),
+                "Failed to attach service to listener: onMessage method parameters must be of type 'jms:Message' or `jms:Caller`",
+                "Invalid error message received");
     }
 }
 
@@ -170,8 +171,8 @@ isolated function testSvcMethodMandatoryParamMissing() returns error? {
     test:assertTrue(result is Error);
     if result is Error {
         test:assertEquals(
-            result.message(), 
-            "Failed to attach service to listener: Required parameter 'jms:Message' can not be found", 
-            "Invalid error message received");
-    }    
+                result.message(),
+                "Failed to attach service to listener: Required parameter 'jms:Message' can not be found",
+                "Invalid error message received");
+    }
 }

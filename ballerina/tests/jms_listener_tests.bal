@@ -22,14 +22,14 @@ listener Listener jmsMessageListener = check new (
     providerUrl = "tcp://localhost:61616"
 );
 
-final MessageProducer queue3Producer = check createProducer(AUTO_ACK_SESSION, { 'type: QUEUE, name: "test-queue-3" });
+final MessageProducer queue3Producer = check createProducer(AUTO_ACK_SESSION, {'type: QUEUE, name: "test-queue-3"});
 
 isolated int queue3ServiceReceivedMessageCount = 0;
 isolated boolean queue3ServiceReceivedTextMsg = false;
 isolated boolean queue3ServiceReceivedMapMsg = false;
 isolated boolean queue3ServiceReceivedBytesMsg = false;
 
-final MessageProducer topic3Producer = check createProducer(AUTO_ACK_SESSION, { 'type: TOPIC, name: "test-topic-3" });
+final MessageProducer topic3Producer = check createProducer(AUTO_ACK_SESSION, {'type: TOPIC, name: "test-topic-3"});
 
 isolated int topic3ServiceReceivedMessageCount = 0;
 isolated boolean topic3ServiceReceivedTextMsg = false;
@@ -64,7 +64,7 @@ isolated function beforeMessageListenerTests() returns error? {
             lock {
                 queue3ServiceReceivedMessageCount += 1;
             }
-        }    
+        }
     };
 
     Service topic3Service = @ServiceConfig {
@@ -205,7 +205,7 @@ function testNonIsolatedService() returns error? {
     };
     check jmsMessageListener.attach(nonIsolatedSvc, "non-isolated-service");
 
-    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, { 'type: QUEUE, name: "test-isolation" });
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {'type: QUEUE, name: "test-isolation"});
     TextMessage textMsg = {
         content: "This is a sample message"
     };
@@ -273,7 +273,7 @@ isolated function testServiceWithCaller() returns error? {
     };
     check jmsMessageListener.attach(consumerSvc, "test-caller-service");
 
-    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, { 'type: QUEUE, name: "test-caller" });
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {'type: QUEUE, name: "test-caller"});
     TextMessage textMsg = {
         content: "This is a sample message"
     };
@@ -284,7 +284,7 @@ isolated function testServiceWithCaller() returns error? {
             message: "This is a sample message"
         }
     };
-    check producer->send(mapMessage);    
+    check producer->send(mapMessage);
     BytesMessage bytesMessage = {
         content: "This is a sample message".toBytes()
     };
@@ -332,11 +332,11 @@ isolated function testServiceWithTransactions() returns error? {
     check jmsMessageListener.attach(consumerSvc, "test-transacted-service");
 
     Session transactedSession = check createSession(SESSION_TRANSACTED);
-    MessageProducer producer = check createProducer(transactedSession, { 'type: QUEUE, name: "test-transactions" });
-    check producer->send(<TextMessage>{ content: "This is the first message" });
-    check producer->send(<TextMessage>{ content: "This is the second message" });
-    check producer->send(<TextMessage>{ content: "This is the third message" });
-    check producer->send(<TextMessage>{ content: "End of messages" });
+    MessageProducer producer = check createProducer(transactedSession, {'type: QUEUE, name: "test-transactions"});
+    check producer->send(<TextMessage>{content: "This is the first message"});
+    check producer->send(<TextMessage>{content: "This is the second message"});
+    check producer->send(<TextMessage>{content: "This is the third message"});
+    check producer->send(<TextMessage>{content: "End of messages"});
     check transactedSession->'commit();
 
     runtime:sleep(5);
@@ -361,7 +361,7 @@ isolated function testServiceReturningError() returns error? {
     };
     check jmsMessageListener.attach(consumerSvc, "test-onMessage-error-service");
 
-    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, { 'type: QUEUE, name: "test-onMessage-error" });
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {'type: QUEUE, name: "test-onMessage-error"});
     TextMessage textMsg = {
         content: "This is a sample message"
     };
@@ -442,9 +442,9 @@ isolated function testDetachFailure() returns error? {
     test:assertTrue(result is Error);
     if result is Error {
         test:assertEquals(
-            result.message(), 
-            "Failed to detach a service from the listener: Could not find the native JMS session", 
-            "Invalid error message");
+                result.message(),
+                "Failed to detach a service from the listener: Could not find the native JMS session",
+                "Invalid error message");
     }
 }
 
@@ -456,11 +456,11 @@ isolated function testListenerInitWithInvalidInitialContextFactory() returns err
         initialContextFactory = "io.sample.SampleMQInitialContextFactory",
         providerUrl = "tcp://localhost:61616"
     );
-    test:assertTrue(jmsListener is Error,  "Listener initialized with invalid initial context factory");
+    test:assertTrue(jmsListener is Error, "Listener initialized with invalid initial context factory");
     if jmsListener is Error {
-        test:assertEquals(jmsListener.message(), 
-            "Error occurred while connecting to broker: Cannot instantiate class: io.sample.SampleMQInitialContextFactory", 
-            "Invalid listener init error message");
+        test:assertEquals(jmsListener.message(),
+                "Error occurred while connecting to broker: Cannot instantiate class: io.sample.SampleMQInitialContextFactory",
+                "Invalid listener init error message");
     }
 }
 
@@ -474,9 +474,9 @@ isolated function testListenerInitWithInvalidProviderUrl() returns error? {
     );
     test:assertTrue(jmsListener is Error, "Listener initialized with invalid provider URL");
     if jmsListener is Error {
-        test:assertEquals(jmsListener.message(), 
-            "Error occurred while connecting to broker: Could not connect to broker URL: tcp://localhost:61615. Reason: java.net.ConnectException: Connection refused", 
-            "Invalid listener init error message");
+        test:assertEquals(jmsListener.message(),
+                "Error occurred while connecting to broker: Could not connect to broker URL: tcp://localhost:61615. Reason: java.net.ConnectException: Connection refused",
+                "Invalid listener init error message");
     }
 }
 
