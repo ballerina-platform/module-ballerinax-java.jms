@@ -425,6 +425,38 @@ isolated function testServiceDetach() returns error? {
     check jmsMessageListener.detach(consumerSvc);
 }
 
+@test:Config {
+    groups: ["messageListener"]
+}
+isolated function testListenerInitWithInvalidInitialContextFactory() returns error? {
+    Listener|Error jmsListener = new (
+        initialContextFactory = "io.sample.SampleMQInitialContextFactory",
+        providerUrl = "tcp://localhost:61616"
+    );
+    test:assertTrue(jmsListener is Error,  "Listener initialized with invalid initial context factory");
+    if jmsListener is Error {
+        test:assertEquals(jmsListener.message(), 
+            "Error occurred while connecting to broker: Cannot instantiate class: io.sample.SampleMQInitialContextFactory", 
+            "Invalid listener init error message");
+    }
+}
+
+@test:Config {
+    groups: ["messageListener"]
+}
+isolated function testListenerInitWithInvalidProviderUrl() returns error? {
+    Listener|Error jmsListener = new (
+        initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+        providerUrl = "tcp://localhost:61615"
+    );
+    test:assertTrue(jmsListener is Error, "Listener initialized with invalid provider URL");
+    if jmsListener is Error {
+        test:assertEquals(jmsListener.message(), 
+            "Error occurred while connecting to broker: Could not connect to broker URL: tcp://localhost:61615. Reason: java.net.ConnectException: Connection refused", 
+            "Invalid listener init error message");
+    }
+}
+
 @test:AfterGroups {
     value: ["messageListener"]
 }
