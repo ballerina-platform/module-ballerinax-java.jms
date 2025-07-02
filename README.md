@@ -94,9 +94,7 @@ listener jms:Listener jmsListener = check new (
 );
 
 @jms:ServiceConfig {
-   subscriptionConfig: {
-      queueName: "MyQueue"
-   }
+   queueName: "MyQueue"
 }
 service "consumer-service" on jmsListener {
    
