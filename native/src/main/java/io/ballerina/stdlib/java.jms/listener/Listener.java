@@ -126,6 +126,13 @@ public final class Listener {
         Session session = (Session) bService.getNativeData(NATIVE_SESSION);
         MessageConsumer consumer = (MessageConsumer) bService.getNativeData(NATIVE_CONSUMER);
         try {
+            if (Objects.isNull(session)) {
+                throw new BallerinaJmsException("Could not find the native JMS session");
+            }
+            if (Objects.isNull(consumer)) {
+                throw new BallerinaJmsException("Could not find the native JMS consumer");
+            }
+
             consumer.close();
             session.close();
         } catch (Exception e) {
