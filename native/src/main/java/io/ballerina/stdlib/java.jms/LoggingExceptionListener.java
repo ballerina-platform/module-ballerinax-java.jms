@@ -32,5 +32,6 @@ public class LoggingExceptionListener implements ExceptionListener {
     @Override
     public void onException(JMSException connectionException) {
         ERR_OUT.println("Connection exception received from the JMS provider: " + connectionException.getMessage());
+        connectionException.printStackTrace();
     }
 }
