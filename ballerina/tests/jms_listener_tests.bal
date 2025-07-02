@@ -408,6 +408,23 @@ isolated function testServiceAttachWithoutSvcPath() returns error? {
     check jmsMessageListener.attach(consumerSvc);
 }
 
+@test:Config {
+    groups: ["messageListener"]
+}
+isolated function testServiceDetach() returns error? {
+    Service consumerSvc = @ServiceConfig {
+        acknowledgementMode: CLIENT_ACKNOWLEDGE,
+        subscriptionConfig: {
+            queueName: "test-svc-attach"
+        }
+    } service object {
+        remote function onMessage(Message message, Caller caller) returns error? {
+        }
+    };
+    check jmsMessageListener.attach(consumerSvc, "consumer-svc");
+    check jmsMessageListener.detach(consumerSvc);
+}
+
 @test:AfterGroups {
     value: ["messageListener"]
 }
