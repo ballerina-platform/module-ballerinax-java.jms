@@ -90,7 +90,8 @@ public final class Listener {
             bService.addNativeData(NATIVE_SESSION, session);
             bService.addNativeData(NATIVE_CONSUMER, consumer);
         } catch (BError | JMSException e) {
-            return createError(JMS_ERROR, "Failed to attach service to listener", e);
+            String errorMsg = Objects.isNull(e.getMessage()) ? "Unknown error" : e.getMessage();
+            return createError(JMS_ERROR, String.format("Failed to attach service to listener: %s", errorMsg), e);
         }
         return null;
     }
@@ -128,7 +129,9 @@ public final class Listener {
             consumer.close();
             session.close();
         } catch (Exception e) {
-            return createError(JMS_ERROR, "Failed to detach a service from the listener", e);
+            String errorMsg = Objects.isNull(e.getMessage()) ? "Unknown error" : e.getMessage();
+            return createError(JMS_ERROR,
+                    String.format("Failed to detach a service from the listener: %s", errorMsg), e);
         }
         return null;
     }

@@ -82,7 +82,7 @@ public class Service {
 
         RemoteMethodType[] remoteMethods = service.getRemoteMethods();
         if (remoteMethods.length != 1) {
-            throw CommonUtils.createError(JMS_ERROR, "JMS service must have exactly one remote methods");
+            throw CommonUtils.createError(JMS_ERROR, "JMS service must have exactly one remote method");
         }
 
         RemoteMethodType existingRemoteMethod = remoteMethods[0];
