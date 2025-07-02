@@ -428,6 +428,29 @@ isolated function testServiceDetach() returns error? {
 @test:Config {
     groups: ["messageListener"]
 }
+isolated function testDetachFailure() returns error? {
+    Service consumerSvc = @ServiceConfig {
+        acknowledgementMode: CLIENT_ACKNOWLEDGE,
+        subscriptionConfig: {
+            queueName: "test-svc-attach"
+        }
+    } service object {
+        remote function onMessage(Message message, Caller caller) returns error? {
+        }
+    };
+    Error? result = jmsMessageListener.detach(consumerSvc);
+    test:assertTrue(result is Error);
+    if result is Error {
+        test:assertEquals(
+            result.message(), 
+            "Failed to detach a service from the listener: Could not find the native JMS session", 
+            "Invalid error message");
+    }
+}
+
+@test:Config {
+    groups: ["messageListener"]
+}
 isolated function testListenerInitWithInvalidInitialContextFactory() returns error? {
     Listener|Error jmsListener = new (
         initialContextFactory = "io.sample.SampleMQInitialContextFactory",
