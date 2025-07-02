@@ -19,45 +19,44 @@ public type Service distinct service object {
     // remote function onMessage(jms:Message message, jms:Caller caller) returns error?;
 };
 
-# Represents configurations for a JMS queue.
+# Represents configurations for a JMS queue subscription.
 #
+# + sessionAckMode - Configuration indicating how messages received by the session will be acknowledged
 # + queueName - The name of the queue to consume messages from
 # + messageSelector - Only messages with properties matching the message selector expression are delivered. 
 #                     If this value is not set that indicates that there is no message selector for the message consumer
 #                     For example, to only receive messages with a property `priority` set to `'high'`, use:
 #                     `"priority = 'high'"`. If this value is not set, all messages in the queue will be delivered.
 public type QueueConfig record {|
-    string queueName;
-    string messageSelector?;
+  AcknowledgementMode sessionAckMode = AUTO_ACKNOWLEDGE;
+  string queueName;
+  string messageSelector?;
 |};
+
 
 # Represents configurations for JMS topic subscription.
 #
+# + sessionAckMode - Configuration indicating how messages received by the session will be acknowledged
 # + topicName - The name of the topic to subscribe to
 # + messageSelector - Only messages with properties matching the message selector expression are delivered. 
 #                     If this value is not set that indicates that there is no message selector for the message consumer
 #                     For example, to only receive messages with a property `priority` set to `'high'`, use:
 #                     `"priority = 'high'"`. If this value is not set, all messages in the queue will be delivered.
 # + noLocal - If true then any messages published to the topic using this session's connection, or any other connection 
-# with the same client identifier, will not be added to the durable subscription.
+#             with the same client identifier, will not be added to the durable subscription.
 # + consumerType - The message consumer type
 # + subscriberName - the name used to identify the subscription
 public type TopicConfig record {|
-    string topicName;
-    string messageSelector?;
-    boolean noLocal = false;
-    ConsumerType consumerType = DEFAULT;
-    string subscriberName?;
+  AcknowledgementMode sessionAckMode = AUTO_ACKNOWLEDGE;
+  string topicName;
+  string messageSelector?;
+  boolean noLocal = false;
+  ConsumerType consumerType = DEFAULT;
+  string subscriberName?;
 |};
 
 # The service configuration type for the `jms:Service`.
-#
-# + acknowledgementMode - Configuration indicating how messages received by the session will be acknowledged
-# + subscriptionConfig - The topic or queue configuration to subscribe to
-public type ServiceConfiguration record {|
-    AcknowledgementMode acknowledgementMode = AUTO_ACKNOWLEDGE;
-    QueueConfig|TopicConfig subscriptionConfig;
-|};
+public type ServiceConfiguration QueueConfig|TopicConfig;
 
 # Annotation to configure the `jms:Service`.
 public annotation ServiceConfiguration ServiceConfig on service;

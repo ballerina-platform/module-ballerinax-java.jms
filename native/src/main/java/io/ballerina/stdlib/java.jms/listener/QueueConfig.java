@@ -25,19 +25,24 @@ import io.ballerina.runtime.api.values.BString;
 /**
  * Represents configuration details for consuming messages from a JMS queue.
  *
+ * @param ackMode The acknowledgement mode for message consumption. This determines how
+ *                messages received by the session are acknowledged.
+ *                Common values include "AUTO_ACKNOWLEDGE", "CLIENT_ACKNOWLEDGE", and "DUPS_OK_ACKNOWLEDGE".
  * @param queueName       The name of the JMS queue to consume messages from.
  * @param messageSelector An optional JMS message selector expression. Only messages with properties
  *                        matching this selector will be delivered to the consumer.
  *                        If this value is {@code null}, no selector is applied.
  * @since 1.2.0
  */
-public record QueueConfig(String queueName, String messageSelector) implements SubscriptionConfig {
+public record QueueConfig(String ackMode, String queueName, String messageSelector) implements ServiceConfig {
+    private static final BString SESSION_ACK_MODE = StringUtils.fromString("sessionAckMode");
     private static final BString QUEUE_NAME = StringUtils.fromString("queueName");
     private static final BString MSG_SELECTOR = StringUtils.fromString("messageSelector");
 
     @SuppressWarnings("unchecked")
     QueueConfig(BMap<BString, Object> configurations) {
         this(
+                configurations.getStringValue(SESSION_ACK_MODE).getValue(),
                 configurations.getStringValue(QUEUE_NAME).getValue(),
                 configurations.containsKey(MSG_SELECTOR) ? configurations.getStringValue(MSG_SELECTOR).getValue() : null
         );

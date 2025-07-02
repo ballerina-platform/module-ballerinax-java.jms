@@ -26,12 +26,10 @@ isolated int durableConsumerMsgCount = 0;
 }
 isolated function testSvcWithDurableSubscription() returns error? {
     Service consumerSvc = @ServiceConfig {
-        acknowledgementMode: AUTO_ACKNOWLEDGE,
-        subscriptionConfig: {
-            topicName: "durable-topic",
-            consumerType: DURABLE,
-            subscriberName: "durable-consumer-svc"
-        }
+        sessionAckMode: AUTO_ACKNOWLEDGE,
+        topicName: "durable-topic",
+        consumerType: DURABLE,
+        subscriberName: "durable-consumer-svc"
     } service object {
         remote function onMessage(Message message, Caller caller) returns error? {
             lock {

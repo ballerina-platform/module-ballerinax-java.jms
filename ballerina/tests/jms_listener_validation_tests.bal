@@ -39,10 +39,8 @@ isolated function testAnnotationNotFound() returns error? {
 }
 isolated function testSvcWithResourceMethods() returns error? {
     Service svc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-svc-attach"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
     } service object {
 
         resource function get .() returns error? {
@@ -66,10 +64,8 @@ isolated function testSvcWithResourceMethods() returns error? {
 }
 isolated function testSvcWithNoRemoteMethods() returns error? {
     Service svc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-svc-attach"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
     } service object {};
     Error? result = jmsMessageListener.attach(svc);
     test:assertTrue(result is Error);
@@ -86,10 +82,8 @@ isolated function testSvcWithNoRemoteMethods() returns error? {
 }
 isolated function testSvcWithInvalidRemoteMethod() returns error? {
     Service svc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-svc-attach"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
     } service object {
 
         remote function onRequest(Message message, Caller caller) returns error? {
@@ -110,10 +104,8 @@ isolated function testSvcWithInvalidRemoteMethod() returns error? {
 }
 isolated function testSvcMethodWithAdditionalParameters() returns error? {
     Service svc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-svc-attach"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
     } service object {
 
         remote function onMessage(Message message, Caller caller, string requestType) returns error? {
@@ -134,10 +126,8 @@ isolated function testSvcMethodWithAdditionalParameters() returns error? {
 }
 isolated function testSvcMethodWithInvalidParams() returns error? {
     Service svc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-svc-attach"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
     } service object {
 
         remote function onMessage(Message message, string requestType) returns error? {
@@ -158,10 +148,8 @@ isolated function testSvcMethodWithInvalidParams() returns error? {
 }
 isolated function testSvcMethodMandatoryParamMissing() returns error? {
     Service svc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-svc-attach"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
     } service object {
 
         remote function onMessage(Caller caller) returns error? {

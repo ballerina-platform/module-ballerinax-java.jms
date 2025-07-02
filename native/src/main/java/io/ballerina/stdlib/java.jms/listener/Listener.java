@@ -82,7 +82,7 @@ public final class Listener {
             int sessionAckMode = getSessionAckMode(svcConfig.ackMode());
             boolean transacted = Session.SESSION_TRANSACTED == sessionAckMode;
             Session session = connection.createSession(transacted, sessionAckMode);
-            MessageConsumer consumer = getConsumer(session, svcConfig.subscriptionConfig());
+            MessageConsumer consumer = getConsumer(session, svcConfig);
             MessageDispatcher messageDispatcher = new MessageDispatcher(
                     environment.getRuntime(), nativeService, session);
             consumer.setMessageListener(messageDispatcher);
@@ -96,13 +96,13 @@ public final class Listener {
         return null;
     }
 
-    private static MessageConsumer getConsumer(Session session, SubscriptionConfig subscriptionConfig)
+    private static MessageConsumer getConsumer(Session session, ServiceConfig svcConfig)
             throws JMSException {
-        if (subscriptionConfig instanceof QueueConfig(String queueName, String messageSelector)) {
-            Queue queue = session.createQueue(queueName);
-            return session.createConsumer(queue, messageSelector);
+        if (svcConfig instanceof QueueConfig queueConfig) {
+            Queue queue = session.createQueue(queueConfig.queueName());
+            return session.createConsumer(queue, queueConfig.messageSelector());
         }
-        TopicConfig topicConfig = (TopicConfig) subscriptionConfig;
+        TopicConfig topicConfig = (TopicConfig) svcConfig;
         Topic topic = session.createTopic(topicConfig.topicName());
         switch (topicConfig.consumerType()) {
             case "DURABLE" -> {

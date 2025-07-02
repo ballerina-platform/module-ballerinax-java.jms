@@ -51,9 +51,10 @@ public class Service {
     private static final Type MSG_TYPE = ValueCreator.createRecordValue(getModule(), MESSAGE_BAL_RECORD_NAME)
             .getType();
     private static final Type CALLER_TYPE = ValueCreator.createObjectValue(getModule(), CALLER).getOriginalType();
-    private static final BString SERVICE_CONFIG_ANNOTATION  = StringUtils.fromString(
+    private static final BString SERVICE_CONFIG_ANNOTATION = StringUtils.fromString(
             getModule().getOrg() + ORG_NAME_SEPARATOR + getModule().getName() + VERSION_SEPARATOR +
                     getModule().getMajorVersion() + VERSION_SEPARATOR + "ServiceConfig");
+    private static final BString QUEUE_NAME = StringUtils.fromString("queueName");
 
     private final BObject consumerService;
     private final ServiceType serviceType;
@@ -64,8 +65,9 @@ public class Service {
         this.consumerService = consumerService;
         ServiceType svcType = (ServiceType) TypeUtils.getType(consumerService);
         this.serviceType = svcType;
-        this.serviceConfig = new ServiceConfig(
-                (BMap<BString, Object>) svcType.getAnnotation(SERVICE_CONFIG_ANNOTATION));
+        BMap<BString, Object> svcConfig = (BMap<BString, Object>) svcType.getAnnotation(SERVICE_CONFIG_ANNOTATION);
+        this.serviceConfig = svcConfig.containsKey(QUEUE_NAME) ?
+                new QueueConfig(svcConfig) : new TopicConfig(svcConfig);
         this.onMessage = svcType.getRemoteMethods()[0];
     }
 

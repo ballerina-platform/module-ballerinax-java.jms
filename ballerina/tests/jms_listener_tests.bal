@@ -41,9 +41,7 @@ isolated boolean topic3ServiceReceivedBytesMsg = false;
 }
 isolated function beforeMessageListenerTests() returns error? {
     Service queue3Service = @ServiceConfig {
-        subscriptionConfig: {
-            queueName: "test-queue-3"
-        }
+        queueName: "test-queue-3"
     } service object {
         remote function onMessage(Message message) returns error? {
             if message is TextMessage {
@@ -68,9 +66,7 @@ isolated function beforeMessageListenerTests() returns error? {
     };
 
     Service topic3Service = @ServiceConfig {
-        subscriptionConfig: {
-            topicName: "test-topic-3"
-        }
+        topicName: "test-topic-3"
     } service object {
         remote function onMessage(Message message) returns error? {
             if message is TextMessage {
@@ -186,9 +182,7 @@ int receivedMsgCount = 0;
 }
 function testNonIsolatedService() returns error? {
     Service nonIsolatedSvc = @ServiceConfig {
-        subscriptionConfig: {
-            queueName: "test-isolation"
-        }
+        queueName: "test-isolation"
     } service object {
         remote function onMessage(Message message) returns error? {
             if message is TextMessage {
@@ -244,10 +238,8 @@ isolated int serviceWithCallerReceivedMsgCount = 0;
 }
 isolated function testServiceWithCaller() returns error? {
     Service consumerSvc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-caller"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-caller"
     } service object {
         remote function onMessage(Message message, Caller caller) returns error? {
             if message is TextMessage {
@@ -313,10 +305,8 @@ isolated int ServiceWithTransactionsMsgCount = 0;
 }
 isolated function testServiceWithTransactions() returns error? {
     Service consumerSvc = @ServiceConfig {
-        acknowledgementMode: SESSION_TRANSACTED,
-        subscriptionConfig: {
-            queueName: "test-transactions"
-        }
+        sessionAckMode: SESSION_TRANSACTED,
+        queueName: "test-transactions"
     } service object {
         isolated remote function onMessage(Message message, Caller caller) returns error? {
             if message is TextMessage {
@@ -350,10 +340,8 @@ isolated function testServiceWithTransactions() returns error? {
 }
 isolated function testServiceReturningError() returns error? {
     Service consumerSvc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-onMessage-error"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-onMessage-error"
     } service object {
         remote function onMessage(Message message) returns error? {
             return error("Error occurred while processing the message");
@@ -378,10 +366,8 @@ isolated function testListenerImmediateStop() returns error? {
         providerUrl = "tcp://localhost:61616"
     );
     Service consumerSvc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-listener-stop"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-listener-stop"
     } service object {
         remote function onMessage(Message message, Caller caller) returns error? {
         }
@@ -397,10 +383,8 @@ isolated function testListenerImmediateStop() returns error? {
 }
 isolated function testServiceAttachWithoutSvcPath() returns error? {
     Service consumerSvc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-svc-attach"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
     } service object {
         remote function onMessage(Message message, Caller caller) returns error? {
         }
@@ -413,10 +397,8 @@ isolated function testServiceAttachWithoutSvcPath() returns error? {
 }
 isolated function testServiceDetach() returns error? {
     Service consumerSvc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-svc-attach"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
     } service object {
         remote function onMessage(Message message, Caller caller) returns error? {
         }
@@ -430,10 +412,8 @@ isolated function testServiceDetach() returns error? {
 }
 isolated function testDetachFailure() returns error? {
     Service consumerSvc = @ServiceConfig {
-        acknowledgementMode: CLIENT_ACKNOWLEDGE,
-        subscriptionConfig: {
-            queueName: "test-svc-attach"
-        }
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
     } service object {
         remote function onMessage(Message message, Caller caller) returns error? {
         }

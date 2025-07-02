@@ -25,6 +25,9 @@ import io.ballerina.runtime.api.values.BString;
 /**
  * Represents configuration details for consuming messages from a JMS topic subscription.
  *
+ * @param ackMode The acknowledgement mode for message consumption. This determines how
+ *                messages received by the session are acknowledged.
+ *                Common values include "AUTO_ACKNOWLEDGE", "CLIENT_ACKNOWLEDGE", and "DUPS_OK_ACKNOWLEDGE".
  * @param topicName       The name of the JMS topic to subscribe to.
  *
  * @param messageSelector An optional JMS message selector expression. Only messages with properties
@@ -42,8 +45,9 @@ import io.ballerina.runtime.api.values.BString;
  *
  * @since 1.2.0
  */
-public record TopicConfig(String topicName, String messageSelector, boolean noLocal, String consumerType,
-                          String subscriberName) implements SubscriptionConfig {
+public record TopicConfig(String ackMode, String topicName, String messageSelector, boolean noLocal,
+                          String consumerType, String subscriberName) implements ServiceConfig {
+    private static final BString SESSION_ACK_MODE = StringUtils.fromString("sessionAckMode");
     private static final BString TOPIC_NAME = StringUtils.fromString("topicName");
     private static final BString MSG_SELECTOR = StringUtils.fromString("messageSelector");
     private static final BString NO_LOCAL = StringUtils.fromString("noLocal");
@@ -53,6 +57,7 @@ public record TopicConfig(String topicName, String messageSelector, boolean noLo
     @SuppressWarnings("unchecked")
     TopicConfig(BMap<BString, Object> configurations) {
         this(
+                configurations.getStringValue(SESSION_ACK_MODE).getValue(),
                 configurations.getStringValue(TOPIC_NAME).getValue(),
                 configurations.containsKey(MSG_SELECTOR) ?
                         configurations.getStringValue(MSG_SELECTOR).getValue() : null,
