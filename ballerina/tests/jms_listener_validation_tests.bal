@@ -29,7 +29,7 @@ isolated function testAnnotationNotFound() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: Service configuration annotation is required",
+                "Failed to attach service to listener: Service configuration annotation is required.",
                 "Invalid error message received");
     }
 }
@@ -54,7 +54,7 @@ isolated function testSvcWithResourceMethods() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: JMS service cannot have resource methods",
+                "Failed to attach service to listener: JMS service cannot have resource methods.",
                 "Invalid error message received");
     }
 }
@@ -72,7 +72,7 @@ isolated function testSvcWithNoRemoteMethods() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: JMS service must have exactly one remote method",
+                "Failed to attach service to listener: JMS service must have exactly one remote method.",
                 "Invalid error message received");
     }
 }
@@ -94,7 +94,7 @@ isolated function testSvcWithInvalidRemoteMethod() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: JMS service does not contain the required `onMessage` method",
+                "Failed to attach service to listener: JMS service does not contain the required 'onMessage' method.",
                 "Invalid error message received");
     }
 }
@@ -116,7 +116,7 @@ isolated function testSvcMethodWithAdditionalParameters() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: onMessage method can have only have either one or two parameters",
+                "Failed to attach service to listener: onMessage method can have only have either one or two parameters.",
                 "Invalid error message received");
     }
 }
@@ -138,7 +138,7 @@ isolated function testSvcMethodWithInvalidParams() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: onMessage method parameters must be of type 'jms:Message' or `jms:Caller`",
+                "Failed to attach service to listener: onMessage method parameters must be of type 'jms:Message' or 'jms:Caller'.",
                 "Invalid error message received");
     }
 }
@@ -160,7 +160,7 @@ isolated function testSvcMethodMandatoryParamMissing() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: Required parameter 'jms:Message' can not be found",
+                "Failed to attach service to listener: Required parameter 'jms:Message' can not be found.",
                 "Invalid error message received");
     }
 }

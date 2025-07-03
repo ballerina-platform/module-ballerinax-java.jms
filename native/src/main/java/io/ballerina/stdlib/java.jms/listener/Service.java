@@ -75,22 +75,22 @@ public class Service {
         ServiceType service = (ServiceType) TypeUtils.getType(consumerService);
         Object svcConfig = service.getAnnotation(SERVICE_CONFIG_ANNOTATION);
         if (Objects.isNull(svcConfig)) {
-            throw CommonUtils.createError(JMS_ERROR, "Service configuration annotation is required");
+            throw CommonUtils.createError(JMS_ERROR, "Service configuration annotation is required.");
         }
 
         if (service.getResourceMethods().length > 0) {
-            throw CommonUtils.createError(JMS_ERROR, "JMS service cannot have resource methods");
+            throw CommonUtils.createError(JMS_ERROR, "JMS service cannot have resource methods.");
         }
 
         RemoteMethodType[] remoteMethods = service.getRemoteMethods();
         if (remoteMethods.length != 1) {
-            throw CommonUtils.createError(JMS_ERROR, "JMS service must have exactly one remote method");
+            throw CommonUtils.createError(JMS_ERROR, "JMS service must have exactly one remote method.");
         }
 
         RemoteMethodType existingRemoteMethod = remoteMethods[0];
         if (!existingRemoteMethod.getName().equals("onMessage")) {
             throw CommonUtils.createError(JMS_ERROR,
-                    "JMS service does not contain the required `onMessage` method");
+                    "JMS service does not contain the required 'onMessage' method.");
         }
 
         validateOnMessageMethod(existingRemoteMethod);
@@ -100,7 +100,7 @@ public class Service {
         Parameter[] parameters = onMessageMethod.getParameters();
         if (parameters.length < 1 || parameters.length > 2) {
             throw CommonUtils.createError(JMS_ERROR,
-                    "onMessage method can have only have either one or two parameters");
+                    "onMessage method can have only have either one or two parameters.");
         }
 
         Parameter message = null;
@@ -114,11 +114,11 @@ public class Service {
                 continue;
             }
             throw CommonUtils.createError(JMS_ERROR,
-                    "onMessage method parameters must be of type 'jms:Message' or `jms:Caller`");
+                    "onMessage method parameters must be of type 'jms:Message' or 'jms:Caller'.");
         }
 
         if (Objects.isNull(message)) {
-            throw CommonUtils.createError(JMS_ERROR, "Required parameter 'jms:Message' can not be found");
+            throw CommonUtils.createError(JMS_ERROR, "Required parameter 'jms:Message' can not be found.");
         }
     }
 
