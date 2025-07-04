@@ -55,8 +55,15 @@ public class CommonUtils {
     private static final String TEMPORARY_QUEUE = "TEMPORARY_QUEUE";
     private static final String TOPIC = "TOPIC";
 
+    public static BError createError(String errorType, String message) {
+        return createError(errorType, message, null);
+    }
+
     public static BError createError(String errorType, String message, Throwable throwable) {
-        BError cause = ErrorCreator.createError(throwable);
+        BError cause = null;
+        if (throwable != null) {
+            cause = ErrorCreator.createError(throwable);
+        }
         return ErrorCreator.createError(
                 ModuleUtils.getModule(), errorType, StringUtils.fromString(message), cause, null);
     }

@@ -17,11 +17,19 @@
   -->
 <FindBugsFilter>
     <Match>
-        <Class name="io.ballerina.stdlib.java.jms.listener.ListenerCallback"/>
+        <Class name="io.ballerina.stdlib.java.jms.listener.MessageDispatcher"/>
         <Bug pattern="DM_EXIT"/>
     </Match>
     <Match>
-        <Class name="io.ballerina.stdlib.java.jms.listener.ListenerImpl"/>
+        <Class name="io.ballerina.stdlib.java.jms.listener.MessageDispatcher"/>
+        <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+    </Match>
+    <Match>
+        <Class name="io.ballerina.stdlib.java.jms.listener.MessageDispatcher"/>
         <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="io.ballerina.stdlib.java.jms.listener.Service"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
     </Match>
 </FindBugsFilter>
