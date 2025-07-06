@@ -19,16 +19,11 @@ import ballerinax/java.jms;
 
 const string ORDER_CONFIRMATIONS_QUEUE = "order-confirmation";
 
-listener jms:Listener orderConfirmationListener = check new (
-    connectionConfig = activeMqConnectionConfig,
-    consumerOptions = {
-        destination: {
-            'type: jms:QUEUE,
-            name: ORDER_CONFIRMATIONS_QUEUE
-        }
-    }
-);
+listener jms:Listener orderConfirmationListener = check new (activeMqConnectionConfig);
 
+@jms:ServiceConfig {
+    queueName: ORDER_CONFIRMATIONS_QUEUE
+}
 service "order-confirmation-receiver" on orderConfirmationListener {
     remote function onMessage(jms:Message message) returns error? {
         if message !is jms:BytesMessage {
