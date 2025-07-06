@@ -72,7 +72,7 @@ isolated function testSvcWithNoRemoteMethods() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: JMS service must have exactly one remote method.",
+                "Failed to attach service to listener: JMS service must have exactly one or two remote methods.",
                 "Invalid error message received");
     }
 }
@@ -94,7 +94,7 @@ isolated function testSvcWithInvalidRemoteMethod() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: JMS service does not contain the required 'onMessage' method.",
+                "Failed to attach service to listener: Invalid remote method name: onRequest.",
                 "Invalid error message received");
     }
 }
