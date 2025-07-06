@@ -22,4 +22,3 @@ filePath = "persist/model.bal"
 groupId = "io.ballerina.stdlib"
 artifactId = "persist.inmemory-native"
 version = "1.6.0"
-

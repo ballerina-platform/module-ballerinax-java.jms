@@ -17,28 +17,10 @@ import orderprocessor.store;
 
 import ballerinax/java.jms;
 
-const string ORDERS_QUEUE = "orders";
-const string ORDER_CONFIRMATIONS_QUEUE = "order-confirmation";
-
-configurable jms:ConnectionConfiguration activeMqConnectionConfig = {
-    initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-    providerUrl: "tcp://localhost:61616"
-};
-
-final jms:MessageProducer producer = check createProducer();
-
-isolated function createProducer() returns jms:MessageProducer|error {
-    jms:Connection connection = check new (activeMqConnectionConfig);
-    jms:Session session = check connection->createSession();
-    return session.createProducer();
-}
-
-listener jms:Listener orderDetailsListener = check new (activeMqConnectionConfig);
-
 @jms:ServiceConfig {
     queueName: ORDERS_QUEUE
 }
-service "order-details-receiver" on orderDetailsListener {
+service "order-details-receiver" on activeMqListener {
     remote function onMessage(jms:Message message) returns error? {
         if message !is jms:BytesMessage {
             return;
