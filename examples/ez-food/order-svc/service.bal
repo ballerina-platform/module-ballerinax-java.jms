@@ -31,13 +31,6 @@ isolated function getNextOrderId() returns int {
     }
 }
 
-const string ORDERS_QUEUE = "orders";
-
-configurable jms:ConnectionConfiguration activeMqConnectionConfig = {
-    initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-    providerUrl: "tcp://localhost:61616"
-};
-
 final store:Client datastore = check new ();
 
 # A service representing an online food ordering system
