@@ -17,7 +17,7 @@
 import ballerina/lang.runtime;
 import ballerina/test;
 
-listener Listener jmsMessageListener = check new (
+final Listener jmsMessageListener = check new (
     initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
     providerUrl = "tcp://localhost:61616"
 );
