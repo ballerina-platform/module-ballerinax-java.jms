@@ -16,15 +16,11 @@
 import ballerinax/activemq.driver as _;
 import ballerinax/java.jms;
 
-const string ORDER_STATUS_UPDATE_TOPIC = "order-status-update";
-
-listener jms:Listener orderStatusListener = check new (activeMqConnectionConfig);
-
 @jms:ServiceConfig {
     topicName: ORDER_STATUS_UPDATE_TOPIC,
     subscriberName: "order-service-consumer"
 }
-service "order-status-update-receiver" on orderStatusListener {
+service "order-status-update-receiver" on activeMqListener {
     remote function onMessage(jms:Message message) returns error? {
         if message !is jms:BytesMessage {
             return;

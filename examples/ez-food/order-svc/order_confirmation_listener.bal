@@ -17,14 +17,10 @@ import ordersvc.store;
 
 import ballerinax/java.jms;
 
-const string ORDER_CONFIRMATIONS_QUEUE = "order-confirmation";
-
-listener jms:Listener orderConfirmationListener = check new (activeMqConnectionConfig);
-
 @jms:ServiceConfig {
     queueName: ORDER_CONFIRMATIONS_QUEUE
 }
-service "order-confirmation-receiver" on orderConfirmationListener {
+service "order-confirmation-receiver" on activeMqListener {
     remote function onMessage(jms:Message message) returns error? {
         if message !is jms:BytesMessage {
             return;
