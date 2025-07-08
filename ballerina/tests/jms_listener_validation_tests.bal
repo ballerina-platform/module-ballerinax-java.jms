@@ -164,3 +164,72 @@ isolated function testSvcMethodMandatoryParamMissing() returns error? {
                 "Invalid error message received");
     }
 }
+
+@test:Config {
+    groups: ["listenerValidations"]
+}
+isolated function testSvcOnErrorWithoutParameters() returns error? {
+    Service svc = @ServiceConfig {
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
+    } service object {
+
+        remote function onMessage(Message message, Caller caller) returns error? {}
+
+        remote function onError() returns error? {}
+    };
+    Error? result = jmsMessageListener.attach(svc);
+    test:assertTrue(result is Error);
+    if result is Error {
+        test:assertEquals(
+                result.message(),
+                "Failed to attach service to listener: onError method must have exactly one parameter.",
+                "Invalid error message received");
+    }
+}
+
+@test:Config {
+    groups: ["listenerValidations"]
+}
+isolated function testSvcOnErrorWithInvalidParameter() returns error? {
+    Service svc = @ServiceConfig {
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
+    } service object {
+
+        remote function onMessage(Message message, Caller caller) returns error? {}
+
+        remote function onError(Message message) returns error? {}
+    };
+    Error? result = jmsMessageListener.attach(svc);
+    test:assertTrue(result is Error);
+    if result is Error {
+        test:assertEquals(
+                result.message(),
+                "Failed to attach service to listener: onError method parameter must be of type 'jms:Error'.",
+                "Invalid error message received");
+    }    
+}
+
+@test:Config {
+    groups: ["listenerValidations"]
+}
+isolated function testSvcOnErrorWithAdditionalParameters() returns error? {
+    Service svc = @ServiceConfig {
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-attach"
+    } service object {
+
+        remote function onMessage(Message message, Caller caller) returns error? {}
+
+        remote function onError(Error err, Message message) returns error? {}
+    };
+    Error? result = jmsMessageListener.attach(svc);
+    test:assertTrue(result is Error);
+    if result is Error {
+        test:assertEquals(
+                result.message(),
+                "Failed to attach service to listener: onError method must have exactly one parameter.",
+                "Invalid error message received");
+    }    
+}

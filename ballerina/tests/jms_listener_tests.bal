@@ -336,6 +336,21 @@ isolated function testServiceWithTransactions() returns error? {
 }
 
 @test:Config {
+    groups: ["listenerValidations"]
+}
+isolated function testServiceWithOnError() returns error? {
+    Service consumerSvc = @ServiceConfig {
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-onerror"
+    } service object {
+        remote function onMessage(Message message) returns error? {}
+
+        remote function onError(Error err) returns error? {}
+    };
+    check jmsMessageListener.attach(consumerSvc, "test-onerror-service");
+}
+
+@test:Config {
     groups: ["messageListener"]
 }
 isolated function testServiceReturningError() returns error? {
