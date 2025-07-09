@@ -29,7 +29,6 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.utils.ValueUtils;
 import io.ballerina.runtime.api.values.BArray;
-import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 
@@ -128,8 +127,6 @@ public final class MessageConverter {
                     message.setBytes(key.getValue(), bytesValue.getBytes());
                 } else if (value instanceof Double doubleValue) {
                     message.setDouble(key.getValue(), doubleValue);
-                } else if (value instanceof BDecimal bDecimal) {
-                    message.setDouble(key.getValue(), bDecimal.value().doubleValue());
                 } else if (value instanceof BString stringValue) {
                     message.setString(key.getValue(), stringValue.getValue());
                 }
