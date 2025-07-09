@@ -25,6 +25,7 @@ import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
+import io.ballerina.stdlib.java.jms.MessageConverter;
 import io.ballerina.stdlib.java.jms.Util;
 
 import java.util.Objects;
@@ -39,7 +40,6 @@ import javax.jms.Session;
 import javax.jms.Topic;
 
 import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
-import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getDestination;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getOptionalStringProperty;
 import static io.ballerina.stdlib.java.jms.Constants.DESTINATION;
@@ -132,7 +132,7 @@ public class Actions {
                 if (Objects.isNull(message)) {
                     balFuture.complete(null);
                 } else {
-                    BMap<BString, Object> ballerinaMsg = getBallerinaMessage(message);
+                    BMap<BString, Object> ballerinaMsg = MessageConverter.convertToBMessage(message);
                     balFuture.complete(ballerinaMsg);
                 }
             } catch (JMSException exception) {
@@ -169,7 +169,7 @@ public class Actions {
                 if (Objects.isNull(message)) {
                     balFuture.complete(null);
                 } else {
-                    BMap<BString, Object> ballerinaMsg = getBallerinaMessage(message);
+                    BMap<BString, Object> ballerinaMsg = MessageConverter.convertToBMessage(message);
                     balFuture.complete(ballerinaMsg);
                 }
             } catch (JMSException exception) {
