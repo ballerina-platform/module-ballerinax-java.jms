@@ -154,10 +154,10 @@ isolated function testProducerRollbackConsumerCommitWithQueue() returns error? {
                 check transactedConsumerSession->'commit();
                 break;
             }
-        } else if response is () {
-            check transactedConsumerSession->'commit();
-            break;
+            continue;
         }
+        check transactedConsumerSession->'commit();
+        break;
     }
     test:assertEquals(receivedMessages, 0, "Invalid number of received messages");
 }

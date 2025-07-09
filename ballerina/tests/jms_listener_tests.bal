@@ -44,17 +44,18 @@ isolated function beforeMessageListenerTests() returns error? {
         queueName: "test-queue-3"
     } service object {
         remote function onMessage(Message message) returns error? {
-            if message is Message {
+            var content = message.content;
+            if content is string {
                 lock {
                     queue3ServiceReceivedTextMsg = true;
                 }
             }
-            if message is Message {
+            if content is map<ValueType> {
                 lock {
                     queue3ServiceReceivedMapMsg = true;
                 }
             }
-            if message is Message {
+            if content is byte[] {
                 lock {
                     queue3ServiceReceivedBytesMsg = true;
                 }
@@ -69,17 +70,18 @@ isolated function beforeMessageListenerTests() returns error? {
         topicName: "test-topic-3"
     } service object {
         remote function onMessage(Message message) returns error? {
-            if message is Message {
+            var content = message.content;
+            if content is string {
                 lock {
                     topic3ServiceReceivedTextMsg = true;
                 }
             }
-            if message is Message {
+            if content is map<ValueType> {
                 lock {
                     topic3ServiceReceivedMapMsg = true;
                 }
             }
-            if message is Message {
+            if content is byte[] {
                 lock {
                     topic3ServiceReceivedBytesMsg = true;
                 }
@@ -307,13 +309,11 @@ isolated function testServiceWithTransactions() returns error? {
         queueName: "test-transactions"
     } service object {
         isolated remote function onMessage(Message message, Caller caller) returns error? {
-            if message is Message {
-                lock {
-                    ServiceWithTransactionsMsgCount += 1;
-                }
-                if message.content == "End of messages" {
-                    check caller->'commit();
-                }
+            lock {
+                ServiceWithTransactionsMsgCount += 1;
+            }
+            if message.content == "End of messages" {
+                check caller->'commit();
             }
         }
     };
