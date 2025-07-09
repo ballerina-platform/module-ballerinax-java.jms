@@ -149,6 +149,7 @@ isolated function testReceiveMapMessageWithProperties() returns error? {
         byteField: 1
     };
     Message message = {
+        jmsType: "provider-specific-type-1",
         content,
         properties
     };
@@ -159,6 +160,7 @@ isolated function testReceiveMapMessageWithProperties() returns error? {
     if response is Message {
         test:assertEquals(response.content, content, "Invalid content received");
         test:assertEquals(response.properties, properties, "Invalid properties received");
+        test:assertEquals(response.jmsType, "provider-specific-type-1", "Invalid JMS type field");
     }
 }
 

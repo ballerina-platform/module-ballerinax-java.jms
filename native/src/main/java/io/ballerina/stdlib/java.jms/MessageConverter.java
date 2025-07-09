@@ -65,6 +65,15 @@ public final class MessageConverter {
     private static final BString PRIORITY = StringUtils.fromString("priority");
     private static final BString PROPERTIES = StringUtils.fromString("properties");
     private static final BString CONTENT = StringUtils.fromString("content");
+    private static final UnionType MSG_PROPERTY_TYPE = TypeCreator.createUnionType(
+            PredefinedTypes.TYPE_BOOLEAN, PredefinedTypes.TYPE_INT, PredefinedTypes.TYPE_BYTE,
+            PredefinedTypes.TYPE_FLOAT, PredefinedTypes.TYPE_STRING);
+    private static final ArrayType BYTE_ARR_TYPE = TypeCreator.createArrayType(PredefinedTypes.TYPE_BYTE);
+    private static final UnionType MSG_VALUE_TYPE = TypeCreator.createUnionType(MSG_PROPERTY_TYPE, BYTE_ARR_TYPE);
+    private static final MapType BALLERINA_MSG_PROPERTY_TYPE = TypeCreator.createMapType(
+            "PropertyType", MSG_PROPERTY_TYPE, ModuleUtils.getModule());
+    private static final MapType BALLERINA_MAP_MSG_TYPE = TypeCreator.createMapType(
+            "ValueType", MSG_VALUE_TYPE, ModuleUtils.getModule());
 
 
     private MessageConverter() {
@@ -177,11 +186,7 @@ public final class MessageConverter {
     @SuppressWarnings("unchecked")
     private static BMap<BString, Object> getMessageProperties(Message message)
             throws JMSException, BallerinaJmsException {
-        UnionType unionType = TypeCreator.createUnionType(
-                PredefinedTypes.TYPE_BOOLEAN, PredefinedTypes.TYPE_INT, PredefinedTypes.TYPE_BYTE,
-                PredefinedTypes.TYPE_FLOAT, PredefinedTypes.TYPE_STRING);
-        MapType mapType = TypeCreator.createMapType("PropertyType", unionType, ModuleUtils.getModule());
-        BMap<BString, Object> messageProperties = ValueCreator.createMapValue(mapType);
+        BMap<BString, Object> messageProperties = ValueCreator.createMapValue(BALLERINA_MSG_PROPERTY_TYPE);
         Enumeration<String> propertyNames = message.getPropertyNames();
         Iterator<String> iterator = propertyNames.asIterator();
         while (iterator.hasNext()) {
@@ -197,12 +202,7 @@ public final class MessageConverter {
         if (message instanceof TextMessage) {
             return StringUtils.fromString(((TextMessage) message).getText());
         } else if (message instanceof MapMessage mapMessage) {
-            ArrayType byteArrType = TypeCreator.createArrayType(PredefinedTypes.TYPE_BYTE);
-            UnionType unionType = TypeCreator.createUnionType(
-                    PredefinedTypes.TYPE_BOOLEAN, PredefinedTypes.TYPE_INT, PredefinedTypes.TYPE_BYTE,
-                    PredefinedTypes.TYPE_FLOAT, PredefinedTypes.TYPE_STRING, byteArrType);
-            MapType mapType = TypeCreator.createMapType("ValueType", unionType, ModuleUtils.getModule());
-            BMap<BString, Object> content = ValueCreator.createMapValue(mapType);
+            BMap<BString, Object> content = ValueCreator.createMapValue(BALLERINA_MAP_MSG_TYPE);
             Enumeration<String> mapNames = mapMessage.getMapNames();
             Iterator<String> iterator = mapNames.asIterator();
             while (iterator.hasNext()) {
