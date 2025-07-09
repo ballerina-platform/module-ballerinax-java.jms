@@ -36,17 +36,16 @@ import javax.jms.TemporaryQueue;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
 
-import static io.ballerina.stdlib.java.jms.Constants.TEMPORARY_TOPIC;
-
 /**
  * {@code CommonUtils} contains the common utility functions for the Ballerina JMS connector.
  */
 public class CommonUtils {
     private static final BString DESTINATION_TYPE = StringUtils.fromString("type");
     private static final BString DESTINATION_NAME = StringUtils.fromString("name");
-    private static final String QUEUE = "QUEUE";
-    private static final String TEMPORARY_QUEUE = "TEMPORARY_QUEUE";
-    private static final String TOPIC = "TOPIC";
+    private static final BString QUEUE = StringUtils.fromString("QUEUE");
+    private static final BString TEMPORARY_QUEUE = StringUtils.fromString("TEMPORARY_QUEUE");
+    private static final BString TOPIC = StringUtils.fromString("TOPIC");
+    private static final BString TEMPORARY_TOPIC = StringUtils.fromString("TEMPORARY_TOPIC");
 
     public static BError createError(String errorType, String message) {
         return createError(errorType, message, null);
@@ -80,7 +79,7 @@ public class CommonUtils {
 
     public static Destination getDestination(Session session, BMap<BString, Object> destinationConfig)
             throws BallerinaJmsException, JMSException {
-        String destinationType = destinationConfig.getStringValue(DESTINATION_TYPE).getValue();
+        BString destinationType = destinationConfig.getStringValue(DESTINATION_TYPE);
         Optional<String> destinationNameOpt = getOptionalStringProperty(destinationConfig, DESTINATION_NAME);
         if (QUEUE.equals(destinationType) || TOPIC.equals(destinationType)) {
             if (destinationNameOpt.isEmpty()) {
@@ -103,16 +102,16 @@ public class CommonUtils {
     public static BMap<BString, Object> getJmsDestinationField(Destination destination) throws JMSException {
         BMap<BString, Object> values = ValueCreator.createMapValue();
         if (destination instanceof TemporaryQueue) {
-            values.put(DESTINATION_TYPE, StringUtils.fromString(TEMPORARY_QUEUE));
+            values.put(DESTINATION_TYPE, TEMPORARY_QUEUE);
         } else if (destination instanceof Queue) {
             String queueName = ((Queue) destination).getQueueName();
-            values.put(DESTINATION_TYPE, StringUtils.fromString(QUEUE));
+            values.put(DESTINATION_TYPE, QUEUE);
             values.put(DESTINATION_NAME, StringUtils.fromString(queueName));
         } else if (destination instanceof TemporaryTopic) {
             values.put(DESTINATION_TYPE, TEMPORARY_TOPIC);
         } else {
             String topicName = ((Topic) destination).getTopicName();
-            values.put(DESTINATION_TYPE, StringUtils.fromString(TOPIC));
+            values.put(DESTINATION_TYPE, TOPIC);
             values.put(DESTINATION_NAME, StringUtils.fromString(topicName));
         }
         return ValueCreator.createReadonlyRecordValue(ModuleUtils.getModule(), "Destination", values);

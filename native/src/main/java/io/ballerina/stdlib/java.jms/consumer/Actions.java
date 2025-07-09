@@ -42,7 +42,6 @@ import javax.jms.Topic;
 import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getDestination;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getOptionalStringProperty;
-import static io.ballerina.stdlib.java.jms.Constants.DESTINATION;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONSUMER;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_MESSAGE;
@@ -52,13 +51,13 @@ import static io.ballerina.stdlib.java.jms.Constants.NATIVE_SESSION;
  * Represents {@link javax.jms.MessageConsumer} related utility functions.
  */
 public class Actions {
+    private static final BString DESTINATION = StringUtils.fromString("destination");
     private static final BString CONSUMER_TYPE = StringUtils.fromString("type");
     private static final BString MESSAGE_SELECTOR = StringUtils.fromString("messageSelector");
     private static final BString NO_LOCAL = StringUtils.fromString("noLocal");
     private static final BString SUBSCRIBER_NAME = StringUtils.fromString("subscriberName");
     private static final String DURABLE = "DURABLE";
     private static final String SHARED = "SHARED";
-    private static final String SHARED_DURABLE = "SHARED_DURABLE";
     private static final String DEFAULT = "DEFAULT";
 
     /**
