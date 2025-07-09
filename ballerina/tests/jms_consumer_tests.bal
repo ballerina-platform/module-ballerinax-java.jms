@@ -33,13 +33,13 @@ isolated function testReceiveNoWaitWithQueue() returns error? {
     Message? response = check queue7Consumer->receiveNoWait();
     test:assertTrue(response is (), "Received a message for non-existing scenario");
 
-    TextMessage message = {
+    Message message = {
         content: "This is a sample message"
     };
     check queue7Producer->send(message);
     response = check queue7Consumer->receiveNoWait();
-    test:assertTrue(response is TextMessage, "Received a invalid message type");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Received a invalid message type");
+    if response is Message {
         test:assertEquals(response.content, "This is a sample message", "Invalid content received");
     }
 }
@@ -48,7 +48,7 @@ isolated function testReceiveNoWaitWithQueue() returns error? {
     groups: ["consumer"]
 }
 isolated function testRequestReplyWithQueue() returns error? {
-    TextMessage requestMessage = {
+    Message requestMessage = {
         content: "This is a request message",
         correlationId: "cid-123",
         replyTo: {
@@ -59,14 +59,14 @@ isolated function testRequestReplyWithQueue() returns error? {
     check queue7Producer->send(requestMessage);
 
     Message? request = check queue7Consumer->receive(5000);
-    test:assertTrue(request is TextMessage, "Invalid message received");
-    if request is TextMessage {
+    test:assertTrue(request is Message, "Invalid message received");
+    if request is Message {
         MessageProducer replyProducer = check createProducer(AUTO_ACK_SESSION, {
             'type: QUEUE,
             name: "reply-queue"
         });
         test:assertTrue(request.correlationId is string, "Could not find the correlation Id");
-        TextMessage replyMessage = {
+        Message replyMessage = {
             content: "This is a reply message"
         };
         replyMessage.correlationId = check request.correlationId.ensureType();
@@ -79,7 +79,7 @@ isolated function testRequestReplyWithQueue() returns error? {
     groups: ["consumer"]
 }
 isolated function testRequestReplyWithTempQueue() returns error? {
-    TextMessage requestMessage = {
+    Message requestMessage = {
         content: "This is a request message",
         correlationId: "cid-123",
         replyTo: {
@@ -90,13 +90,13 @@ isolated function testRequestReplyWithTempQueue() returns error? {
     check queue7Producer->send(requestMessage);
 
     Message? request = check queue7Consumer->receive(5000);
-    test:assertTrue(request is TextMessage, "Invalid message received");
-    if request is TextMessage {
+    test:assertTrue(request is Message, "Invalid message received");
+    if request is Message {
         test:assertTrue(request.replyTo is Destination, "Could not find the replyTo destination in a request-message");
         Destination replyTo = check request.replyTo.ensureType();
         MessageProducer replyProducer = check createProducer(AUTO_ACK_SESSION, replyTo);
         test:assertTrue(request.correlationId is string, "Could not find the correlation Id");
-        TextMessage replyMessage = {
+        Message replyMessage = {
             content: "This is a reply message"
         };
         replyMessage.correlationId = check request.correlationId.ensureType();
@@ -106,26 +106,26 @@ isolated function testRequestReplyWithTempQueue() returns error? {
 }
 
 @test:Config {
-    groups: ["consumer"]
+    groups: ["consumer", "mappayload"]
 }
 isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
-    map<anydata> content = {
+    map<ValueType> content = {
         intPayload: 1,
         floatPayload: 1.0,
         strPayload: "This is a sample message",
         bytePayload: "This is a sample message".toBytes(),
         boolPayload: true,
-        decimalField: 12.22,
+        // decimalField: 12.22d,
         byteField: 1
     };
-    MapMessage message = {
+    Message message = {
         content: content
     };
     check queue7Producer->send(message);
     runtime:sleep(2);
     Message? response = check queue7Consumer->receiveNoWait();
-    test:assertTrue(response is MapMessage, "Received a invalid message type");
-    if response is MapMessage {
+    test:assertTrue(response is Message, "Received a invalid message type");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid content received");
     }
 }
@@ -146,14 +146,14 @@ isolated function testReceiveNoWaitWithTopic() returns error? {
     Message? response = check topic7Consumer->receiveNoWait();
     test:assertTrue(response is (), "Received a message for non-existing scenario");
 
-    TextMessage message = {
+    Message message = {
         content: "This is a sample message"
     };
     check topic7Producer->send(message);
     runtime:sleep(2);
     response = check topic7Consumer->receiveNoWait();
-    test:assertTrue(response is TextMessage, "Received a invalid message type");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Received a invalid message type");
+    if response is Message {
         test:assertEquals(response.content, "This is a sample message", "Invalid content received");
     }
 }
