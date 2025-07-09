@@ -14,7 +14,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
+# Represent the valid value types allowed in JMS message properties.
 public type PropertyType boolean|int|byte|float|string;
+
+# Represents the allowed value types for entries in the map content of a JMS MapMessage.
 public type ValueType PropertyType|byte[];
 
 # Represent the JMS Message used to send and receive content from the a JMS provider.
