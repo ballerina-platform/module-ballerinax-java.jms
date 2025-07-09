@@ -106,7 +106,7 @@ isolated function testRequestReplyWithTempQueue() returns error? {
 }
 
 @test:Config {
-    groups: ["consumer", "mappayload"]
+    groups: ["consumer"]
 }
 isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
     map<ValueType> content = {
@@ -115,7 +115,6 @@ isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
         strPayload: "This is a sample message",
         bytePayload: "This is a sample message".toBytes(),
         boolPayload: true,
-        // decimalField: 12.22d,
         byteField: 1
     };
     Message message = {
@@ -127,6 +126,39 @@ isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
     test:assertTrue(response is Message, "Received a invalid message type");
     if response is Message {
         test:assertEquals(response.content, content, "Invalid content received");
+    }
+}
+
+@test:Config {
+    groups: ["consumer"]
+}
+isolated function testReceiveMapMessageWithProperties() returns error? {
+    map<PropertyType> properties = {
+        intProperty: 1,
+        floatProperty: 1.0,
+        strProperty: "This is a sample message",
+        boolProperty: true,
+        byteProperty: 1        
+    };
+    map<ValueType> content = {
+        intPayload: 1,
+        floatPayload: 1.0,
+        strPayload: "This is a sample message",
+        bytePayload: "This is a sample message".toBytes(),
+        boolPayload: true,
+        byteField: 1
+    };
+    Message message = {
+        content,
+        properties
+    };
+    check queue7Producer->send(message);
+    runtime:sleep(2);
+    Message? response = check queue7Consumer->receiveNoWait();
+    test:assertTrue(response is Message, "Received a invalid message type");
+    if response is Message {
+        test:assertEquals(response.content, content, "Invalid content received");
+        test:assertEquals(response.properties, properties, "Invalid properties received");
     }
 }
 
