@@ -30,13 +30,13 @@ final MessageConsumer queue1Consumer = check createConsumer(AUTO_ACK_SESSION, de
 }
 isolated function testQueueWithTextMessage() returns error? {
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check queue1Producer->send(message);
     Message? response = check queue1Consumer->receive(5000);
-    test:assertTrue(response is TextMessage, "Invalid message type received");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -45,17 +45,17 @@ isolated function testQueueWithTextMessage() returns error? {
     groups: ["queue"]
 }
 isolated function testQueueWithMapMessage() returns error? {
-    map<anydata> content = {
+    map<ValueType> content = {
         user: "John Doe",
         message: "This is a sample message"
     };
-    MapMessage message = {
+    Message message = {
         content: content
     };
     check queue1Producer->send(message);
     Message? response = check queue1Consumer->receive(5000);
-    test:assertTrue(response is MapMessage, "Invalid message type received");
-    if response is MapMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -65,13 +65,13 @@ isolated function testQueueWithMapMessage() returns error? {
 }
 isolated function testQueueWithBytesMessage() returns error? {
     byte[] content = "This is a sample message".toBytes();
-    BytesMessage message = {
+    Message message = {
         content: content
     };
     check queue1Producer->send(message);
     Message? response = check queue1Consumer->receive(5000);
-    test:assertTrue(response is BytesMessage, "Invalid message type received");
-    if response is BytesMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -84,7 +84,7 @@ isolated function testTempQueue() returns error? {
         'type: TEMPORARY_QUEUE
     });
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check tempQueueProducer->send(message);
@@ -95,7 +95,7 @@ isolated function testTempQueue() returns error? {
     groups: ["queue"]
 }
 isolated function testQueueProducerSendToError() returns error? {
-    TextMessage message = {
+    Message message = {
         content: "This is a sample message"
     };
     Error? result = queue1Producer->sendTo({
@@ -117,7 +117,7 @@ final MessageConsumer queue2Consumer = check createConsumer(AUTO_ACK_SESSION, de
 }
 isolated function testQueueWithTextMessageUsingSendTo() returns error? {
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check queueProducerWithoutDestination->sendTo({
@@ -125,8 +125,8 @@ isolated function testQueueWithTextMessageUsingSendTo() returns error? {
         name: "test-queue-2"
     }, message);
     Message? response = check queue2Consumer->receive(5000);
-    test:assertTrue(response is TextMessage, "Invalid message type received");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -135,11 +135,11 @@ isolated function testQueueWithTextMessageUsingSendTo() returns error? {
     groups: ["queue"]
 }
 isolated function testQueueWithMapMessageUsingSendTo() returns error? {
-    map<anydata> content = {
+    map<ValueType> content = {
         user: "John Doe",
         message: "This is a sample message"
     };
-    MapMessage message = {
+    Message message = {
         content: content
     };
     check queueProducerWithoutDestination->sendTo({
@@ -147,8 +147,8 @@ isolated function testQueueWithMapMessageUsingSendTo() returns error? {
         name: "test-queue-2"
     }, message);
     Message? response = check queue2Consumer->receive(5000);
-    test:assertTrue(response is MapMessage, "Invalid message type received");
-    if response is MapMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -158,7 +158,7 @@ isolated function testQueueWithMapMessageUsingSendTo() returns error? {
 }
 isolated function testQueueWithBytesMessageUsingSendTo() returns error? {
     byte[] content = "This is a sample message".toBytes();
-    BytesMessage message = {
+    Message message = {
         content: content
     };
     check queueProducerWithoutDestination->sendTo({
@@ -166,8 +166,8 @@ isolated function testQueueWithBytesMessageUsingSendTo() returns error? {
         name: "test-queue-2"
     }, message);
     Message? response = check queue2Consumer->receive(5000);
-    test:assertTrue(response is BytesMessage, "Invalid message type received");
-    if response is BytesMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -178,7 +178,7 @@ isolated function testQueueWithBytesMessageUsingSendTo() returns error? {
 isolated function testTempQueueUsingSendTo() returns error? {
     MessageProducer tempQueueProducer = check createProducerWithoutDestination(AUTO_ACK_SESSION);
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check tempQueueProducer->sendTo({
@@ -191,7 +191,7 @@ isolated function testTempQueueUsingSendTo() returns error? {
     groups: ["queue"]
 }
 isolated function testQueueProducerSendError() returns error? {
-    TextMessage message = {
+    Message message = {
         content: "This is a sample message"
     };
     Error? result = queueProducerWithoutDestination->send(message);

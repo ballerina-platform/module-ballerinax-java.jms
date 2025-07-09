@@ -25,6 +25,7 @@ import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
+import io.ballerina.stdlib.java.jms.MessageConverter;
 import io.ballerina.stdlib.java.jms.Util;
 
 import java.util.Objects;
@@ -39,10 +40,8 @@ import javax.jms.Session;
 import javax.jms.Topic;
 
 import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
-import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getDestination;
 import static io.ballerina.stdlib.java.jms.CommonUtils.getOptionalStringProperty;
-import static io.ballerina.stdlib.java.jms.Constants.DESTINATION;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONSUMER;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_MESSAGE;
@@ -52,13 +51,13 @@ import static io.ballerina.stdlib.java.jms.Constants.NATIVE_SESSION;
  * Represents {@link javax.jms.MessageConsumer} related utility functions.
  */
 public class Actions {
+    private static final BString DESTINATION = StringUtils.fromString("destination");
     private static final BString CONSUMER_TYPE = StringUtils.fromString("type");
     private static final BString MESSAGE_SELECTOR = StringUtils.fromString("messageSelector");
     private static final BString NO_LOCAL = StringUtils.fromString("noLocal");
     private static final BString SUBSCRIBER_NAME = StringUtils.fromString("subscriberName");
     private static final String DURABLE = "DURABLE";
     private static final String SHARED = "SHARED";
-    private static final String SHARED_DURABLE = "SHARED_DURABLE";
     private static final String DEFAULT = "DEFAULT";
 
     /**
@@ -132,7 +131,7 @@ public class Actions {
                 if (Objects.isNull(message)) {
                     balFuture.complete(null);
                 } else {
-                    BMap<BString, Object> ballerinaMsg = getBallerinaMessage(message);
+                    BMap<BString, Object> ballerinaMsg = MessageConverter.convertToBMessage(message);
                     balFuture.complete(ballerinaMsg);
                 }
             } catch (JMSException exception) {
@@ -169,7 +168,7 @@ public class Actions {
                 if (Objects.isNull(message)) {
                     balFuture.complete(null);
                 } else {
-                    BMap<BString, Object> ballerinaMsg = getBallerinaMessage(message);
+                    BMap<BString, Object> ballerinaMsg = MessageConverter.convertToBMessage(message);
                     balFuture.complete(ballerinaMsg);
                 }
             } catch (JMSException exception) {

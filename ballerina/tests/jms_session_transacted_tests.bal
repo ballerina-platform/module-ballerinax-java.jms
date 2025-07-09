@@ -32,16 +32,16 @@ final MessageConsumer queue5Consumer = check createConsumer(transactedConsumerSe
     groups: ["sessionTransacted"]
 }
 isolated function testTransactionsCommitWithQueue() returns error? {
-    TextMessage msg1 = {
+    Message msg1 = {
         content: "This is the first message"
     };
-    TextMessage msg2 = {
+    Message msg2 = {
         content: "This is the second message"
     };
-    TextMessage msg3 = {
+    Message msg3 = {
         content: "This is the third message"
     };
-    TextMessage msg4 = {
+    Message msg4 = {
         content: "End of messages"
     };
     check queue5Producer->send(msg1);
@@ -53,7 +53,7 @@ isolated function testTransactionsCommitWithQueue() returns error? {
     int receivedMessages = 0;
     while true {
         Message? response = check queue5Consumer->receive(5000);
-        if response is TextMessage {
+        if response is Message {
             receivedMessages += 1;
             if response.content == "End of messages" {
                 check transactedConsumerSession->'commit();
@@ -68,16 +68,16 @@ isolated function testTransactionsCommitWithQueue() returns error? {
     groups: ["sessionTransacted"]
 }
 isolated function testTransactionsProducerRollbackWithQueue() returns error? {
-    TextMessage msg1 = {
+    Message msg1 = {
         content: "This is the first message"
     };
-    TextMessage msg2 = {
+    Message msg2 = {
         content: "This is the second message"
     };
-    TextMessage msg3 = {
+    Message msg3 = {
         content: "This is the third message"
     };
-    TextMessage msg4 = {
+    Message msg4 = {
         content: "End of messages"
     };
     check queue5Producer->send(msg1);
@@ -91,16 +91,16 @@ isolated function testTransactionsProducerRollbackWithQueue() returns error? {
     groups: ["sessionTransacted"]
 }
 isolated function testTransactionsConsumerRollbackWithQueue() returns error? {
-    TextMessage msg1 = {
+    Message msg1 = {
         content: "This is the first message"
     };
-    TextMessage msg2 = {
+    Message msg2 = {
         content: "This is the second message"
     };
-    TextMessage msg3 = {
+    Message msg3 = {
         content: "This is the third message"
     };
-    TextMessage msg4 = {
+    Message msg4 = {
         content: "End of messages"
     };
     check queue5Producer->send(msg1);
@@ -112,7 +112,7 @@ isolated function testTransactionsConsumerRollbackWithQueue() returns error? {
     int receivedMessages = 0;
     while true {
         Message? response = check queue5Consumer->receive(5000);
-        if response is TextMessage {
+        if response is Message {
             receivedMessages += 1;
             if response.content == "This is the third message" {
                 check transactedConsumerSession->'rollback();
@@ -127,16 +127,16 @@ isolated function testTransactionsConsumerRollbackWithQueue() returns error? {
     groups: ["sessionTransacted"]
 }
 isolated function testProducerRollbackConsumerCommitWithQueue() returns error? {
-    TextMessage msg1 = {
+    Message msg1 = {
         content: "This is the first message"
     };
-    TextMessage msg2 = {
+    Message msg2 = {
         content: "This is the second message"
     };
-    TextMessage msg3 = {
+    Message msg3 = {
         content: "This is the third message"
     };
-    TextMessage msg4 = {
+    Message msg4 = {
         content: "End of messages"
     };
     check queue5Producer->send(msg1);
@@ -148,16 +148,16 @@ isolated function testProducerRollbackConsumerCommitWithQueue() returns error? {
     int receivedMessages = 0;
     while true {
         Message? response = check queue5Consumer->receive(5000);
-        if response is TextMessage {
+        if response is Message {
             receivedMessages += 1;
             if response.content == "End of messages" {
                 check transactedConsumerSession->'commit();
                 break;
             }
-        } else if response is () {
-            check transactedConsumerSession->'commit();
-            break;
+            continue;
         }
+        check transactedConsumerSession->'commit();
+        break;
     }
     test:assertEquals(receivedMessages, 0, "Invalid number of received messages");
 }
@@ -166,16 +166,16 @@ isolated function testProducerRollbackConsumerCommitWithQueue() returns error? {
     groups: ["sessionTransacted"]
 }
 isolated function testProducerCommitConsumerRollbackWithQueue() returns error? {
-    TextMessage msg1 = {
+    Message msg1 = {
         content: "This is the first message"
     };
-    TextMessage msg2 = {
+    Message msg2 = {
         content: "This is the second message"
     };
-    TextMessage msg3 = {
+    Message msg3 = {
         content: "This is the third message"
     };
-    TextMessage msg4 = {
+    Message msg4 = {
         content: "End of messages"
     };
     check queue5Producer->send(msg1);
@@ -188,7 +188,7 @@ isolated function testProducerCommitConsumerRollbackWithQueue() returns error? {
     int numberOfAttempts = 0;
     while true {
         Message? response = check queue5Consumer->receive(5000);
-        if response is TextMessage {
+        if response is Message {
             receivedMessages += 1;
             if response.content == "End of messages" {
                 if numberOfAttempts == 0 {
@@ -218,16 +218,16 @@ final MessageConsumer topic5Consumer = check createConsumer(transactedConsumerSe
     groups: ["sessionTransacted"]
 }
 isolated function testTransactionsCommitWithTopic() returns error? {
-    TextMessage msg1 = {
+    Message msg1 = {
         content: "This is the first message"
     };
-    TextMessage msg2 = {
+    Message msg2 = {
         content: "This is the second message"
     };
-    TextMessage msg3 = {
+    Message msg3 = {
         content: "This is the third message"
     };
-    TextMessage msg4 = {
+    Message msg4 = {
         content: "End of messages"
     };
     check topic5Producer->send(msg1);
@@ -239,7 +239,7 @@ isolated function testTransactionsCommitWithTopic() returns error? {
     int receivedMessages = 0;
     while true {
         Message? response = check topic5Consumer->receive(5000);
-        if response is TextMessage {
+        if response is Message {
             receivedMessages += 1;
             if response.content == "End of messages" {
                 check transactedConsumerSession->'commit();
@@ -254,16 +254,16 @@ isolated function testTransactionsCommitWithTopic() returns error? {
     groups: ["sessionTransacted"]
 }
 isolated function testTransactionsProducerRollbackWithTopic() returns error? {
-    TextMessage msg1 = {
+    Message msg1 = {
         content: "This is the first message"
     };
-    TextMessage msg2 = {
+    Message msg2 = {
         content: "This is the second message"
     };
-    TextMessage msg3 = {
+    Message msg3 = {
         content: "This is the third message"
     };
-    TextMessage msg4 = {
+    Message msg4 = {
         content: "End of messages"
     };
     check topic5Producer->send(msg1);
@@ -277,16 +277,16 @@ isolated function testTransactionsProducerRollbackWithTopic() returns error? {
     groups: ["sessionTransacted"]
 }
 isolated function testTransactionsConsumerRollbackWithTopic() returns error? {
-    TextMessage msg1 = {
+    Message msg1 = {
         content: "This is the first message"
     };
-    TextMessage msg2 = {
+    Message msg2 = {
         content: "This is the second message"
     };
-    TextMessage msg3 = {
+    Message msg3 = {
         content: "This is the third message"
     };
-    TextMessage msg4 = {
+    Message msg4 = {
         content: "End of messages"
     };
     check topic5Producer->send(msg1);
@@ -298,7 +298,7 @@ isolated function testTransactionsConsumerRollbackWithTopic() returns error? {
     int receivedMessages = 0;
     while true {
         Message? response = check topic5Consumer->receive(5000);
-        if response is TextMessage {
+        if response is Message {
             receivedMessages += 1;
             if response.content == "This is the third message" {
                 check transactedConsumerSession->'rollback();
@@ -323,16 +323,16 @@ isolated function testTransactionCommitWithoutTransactedSession() returns error?
         'type: TOPIC,
         name: "test-transaction-topic"
     });
-    TextMessage msg1 = {
+    Message msg1 = {
         content: "This is the first message"
     };
-    TextMessage msg2 = {
+    Message msg2 = {
         content: "This is the second message"
     };
-    TextMessage msg3 = {
+    Message msg3 = {
         content: "This is the third message"
     };
-    TextMessage msg4 = {
+    Message msg4 = {
         content: "End of messages"
     };
     check producer->send(msg1);
@@ -349,7 +349,7 @@ isolated function testTransactionCommitWithoutTransactedSession() returns error?
 
     while true {
         Message? response = check consumer->receive(5000);
-        if response is TextMessage {
+        if response is Message {
             if response.content == "End of messages" {
                 Error? consumerCommit = consumerSession->'commit();
                 test:assertTrue(consumerCommit is Error, "Commit enabled for non-transacted session");
@@ -382,16 +382,16 @@ isolated function testTransactionRollbackWithoutTransactedSession() returns erro
         'type: TOPIC,
         name: "test-transaction-topic"
     });
-    TextMessage msg1 = {
+    Message msg1 = {
         content: "This is the first message"
     };
-    TextMessage msg2 = {
+    Message msg2 = {
         content: "This is the second message"
     };
-    TextMessage msg3 = {
+    Message msg3 = {
         content: "This is the third message"
     };
-    TextMessage msg4 = {
+    Message msg4 = {
         content: "End of messages"
     };
     check producer->send(msg1);
@@ -408,7 +408,7 @@ isolated function testTransactionRollbackWithoutTransactedSession() returns erro
 
     while true {
         Message? response = check consumer->receive(5000);
-        if response is TextMessage {
+        if response is Message {
             if response.content == "End of messages" {
                 Error? consumerRollback = consumerSession->'rollback();
                 test:assertTrue(consumerRollback is Error, "Commit enabled for non-transacted session");

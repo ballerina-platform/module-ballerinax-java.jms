@@ -41,13 +41,13 @@ isolated function testQueueWithTextMessageWithFailover() returns error? {
     });
 
     string content = "This is a sample message";
-    TextMessage message = {
-        content: content
+    Message message = {
+        content
     };
     check failoverQueueProducer->send(message);
     Message? response = check failoverQueueConsumer->receive(5000);
-    test:assertTrue(response is TextMessage, "Invalid message type received");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 
@@ -69,13 +69,13 @@ isolated function testTopicWithTextMessageWithFailover() returns error? {
     });
 
     string content = "This is a sample message";
-    TextMessage message = {
-        content: content
+    Message message = {
+        content
     };
     check failoverTopicProducer->send(message);
     Message? response = check failoverTopicConsumer->receive(5000);
-    test:assertTrue(response is TextMessage, "Invalid message type received");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 

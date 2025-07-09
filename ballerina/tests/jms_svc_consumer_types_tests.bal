@@ -58,6 +58,6 @@ isolated function testSvcWithDurableSubscription() returns error? {
 isolated function sendMessages(MessageProducer producer, int numberOfMessages) returns error? {
     foreach int i in 0 ..< numberOfMessages {
         string content = string `This is the message number: ${i}`;
-        check producer->send(<TextMessage>{content});
+        check producer->send({ content });
     }
 }

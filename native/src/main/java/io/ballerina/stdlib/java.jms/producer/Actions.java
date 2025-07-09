@@ -18,12 +18,12 @@
 
 package io.ballerina.stdlib.java.jms.producer;
 
-import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
+import io.ballerina.stdlib.java.jms.MessageConverter;
 import io.ballerina.stdlib.java.jms.Util;
 
 import java.util.concurrent.CompletableFuture;
@@ -60,6 +60,7 @@ public class Actions {
             Destination jmsDestination = getDestinationOrNull(nativeSession, destination);
             MessageProducer jmsProducer = nativeSession.createProducer(jmsDestination);
             producer.addNativeData(NATIVE_PRODUCER, jmsProducer);
+            producer.addNativeData(NATIVE_SESSION, nativeSession);
         } catch (BallerinaJmsException exception) {
             return createError(JMS_ERROR, exception.getMessage(), exception);
         } catch (JMSException exception) {
@@ -73,19 +74,20 @@ public class Actions {
     /**
      * Sends a message using the {@code MessageProducer}'s default delivery mode, priority, and time to live.
      *
-     * @param env Ballerina runtime environment
      * @param producer Ballerina producer object
-     * @param message  The JMS message
+     * @param bMessage  The Ballerina JMS message representation
      * @return A Ballerina `jms:Error` if the JMS MessageProducer fails to send the message due to some error
      */
-    public static Object send(Environment env, BObject producer, Message message) {
+    public static Object send(BObject producer, BMap<BString, Object> bMessage) {
         MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
+        Session nativeSession = (Session) producer.getNativeData(NATIVE_SESSION);
         CompletableFuture<Object> balFuture = new CompletableFuture<>();
         Thread.startVirtualThread(() -> {
             try {
+                Message message = MessageConverter.convertFromBMessage(nativeSession, bMessage);
                 nativeProducer.send(message);
                 balFuture.complete(null);
-            } catch (UnsupportedOperationException | JMSException exception) {
+            } catch (BallerinaJmsException | JMSException | UnsupportedOperationException exception) {
                 BError bError = createError(JMS_ERROR,
                         String.format("Error occurred while sending a message to the JMS provider: %s",
                                 exception.getMessage()), exception);
@@ -99,21 +101,19 @@ public class Actions {
      * Sends a message to a destination for an unidentified message producer using the {@code MessageProducer}'s
      * default delivery mode, priority, and time to live.
      *
-     * @param env Ballerina runtime environment
      * @param producer    Ballerina producer object
-     * @param session     Ballerina session object
      * @param destination Relevant JMS destination
-     * @param message     The JMS message
+     * @param bMessage  The Ballerina JMS message representation
      * @return A Ballerina `jms:Error` if the JMS MessageProducer fails to send the message due to some error
      */
-    public static Object sendTo(Environment env, BObject producer, BObject session, BMap<BString, Object> destination,
-                                Message message) {
+    public static Object sendTo(BObject producer, BMap<BString, Object> destination, BMap<BString, Object> bMessage) {
         MessageProducer nativeProducer = (MessageProducer) producer.getNativeData(NATIVE_PRODUCER);
-        Session nativeSession = (Session) session.getNativeData(NATIVE_SESSION);
+        Session nativeSession = (Session) producer.getNativeData(NATIVE_SESSION);
         CompletableFuture<Object> balFuture = new CompletableFuture<>();
         Thread.startVirtualThread(() -> {
             try {
                 Destination jmsDestination = getDestination(nativeSession, destination);
+                Message message = MessageConverter.convertFromBMessage(nativeSession, bMessage);
                 nativeProducer.send(jmsDestination, message);
                 balFuture.complete(null);
             } catch (BallerinaJmsException exception) {
@@ -126,7 +126,7 @@ public class Actions {
                 balFuture.complete(bError);
             }
         });
-            return Util.getResult(balFuture);
+        return Util.getResult(balFuture);
     }
 
     /**

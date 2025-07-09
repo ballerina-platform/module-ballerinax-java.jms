@@ -30,13 +30,13 @@ final MessageConsumer topic1Consumer = check createConsumer(AUTO_ACK_SESSION, de
 }
 isolated function testTopicWithTextMessage() returns error? {
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check topic1Producer->send(message);
     Message? response = check topic1Consumer->receive(5000);
-    test:assertTrue(response is TextMessage, "Invalid message type received");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -45,17 +45,17 @@ isolated function testTopicWithTextMessage() returns error? {
     groups: ["topic"]
 }
 isolated function testTopicWithMapMessage() returns error? {
-    map<anydata> content = {
+    map<ValueType> content = {
         user: "John Doe",
         message: "This is a sample message"
     };
-    MapMessage message = {
+    Message message = {
         content: content
     };
     check topic1Producer->send(message);
     Message? response = check topic1Consumer->receive(5000);
-    test:assertTrue(response is MapMessage, "Invalid message type received");
-    if response is MapMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -65,13 +65,13 @@ isolated function testTopicWithMapMessage() returns error? {
 }
 isolated function testTopicWithBytesMessage() returns error? {
     byte[] content = "This is a sample message".toBytes();
-    BytesMessage message = {
+    Message message = {
         content: content
     };
     check topic1Producer->send(message);
     Message? response = check topic1Consumer->receive(5000);
-    test:assertTrue(response is BytesMessage, "Invalid message type received");
-    if response is BytesMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -84,7 +84,7 @@ isolated function testTempTopic() returns error? {
         'type: TEMPORARY_TOPIC
     });
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check tempTopicProducer->send(message);
@@ -102,7 +102,7 @@ final MessageConsumer topic2Consumer = check createConsumer(AUTO_ACK_SESSION, de
 }
 isolated function testTopicWithTextMessageUsingSendTo() returns error? {
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check topicProducerWithoutDestination->sendTo({
@@ -110,8 +110,8 @@ isolated function testTopicWithTextMessageUsingSendTo() returns error? {
         name: "test-topic-2"
     }, message);
     Message? response = check topic2Consumer->receive(5000);
-    test:assertTrue(response is TextMessage, "Invalid message type received");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -120,11 +120,11 @@ isolated function testTopicWithTextMessageUsingSendTo() returns error? {
     groups: ["topic"]
 }
 isolated function testTopicWithMapMessageUsingSendTo() returns error? {
-    map<anydata> content = {
+    map<ValueType> content = {
         user: "John Doe",
         message: "This is a sample message"
     };
-    MapMessage message = {
+    Message message = {
         content: content
     };
     check topicProducerWithoutDestination->sendTo({
@@ -132,8 +132,8 @@ isolated function testTopicWithMapMessageUsingSendTo() returns error? {
         name: "test-topic-2"
     }, message);
     Message? response = check topic2Consumer->receive(5000);
-    test:assertTrue(response is MapMessage, "Invalid message type received");
-    if response is MapMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -143,7 +143,7 @@ isolated function testTopicWithMapMessageUsingSendTo() returns error? {
 }
 isolated function testTopicProducerSendToBytesMessage() returns error? {
     byte[] content = "This is a sample message".toBytes();
-    BytesMessage message = {
+    Message message = {
         content: content
     };
     check topicProducerWithoutDestination->sendTo({
@@ -151,8 +151,8 @@ isolated function testTopicProducerSendToBytesMessage() returns error? {
         name: "test-topic-2"
     }, message);
     Message? response = check topic2Consumer->receive(5000);
-    test:assertTrue(response is BytesMessage, "Invalid message type received");
-    if response is BytesMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
     }
 }
@@ -163,7 +163,7 @@ isolated function testTopicProducerSendToBytesMessage() returns error? {
 isolated function testTempTopicUsingSendTo() returns error? {
     MessageProducer tempTopicProducer = check createProducerWithoutDestination(AUTO_ACK_SESSION);
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check tempTopicProducer->sendTo({
