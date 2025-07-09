@@ -18,9 +18,6 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.values.BString;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
