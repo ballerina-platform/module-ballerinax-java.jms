@@ -329,59 +329,44 @@ isolated remote function close() returns jms:Error?;
 A JMS message is a unit of data representing information that is exchanged between components using the Java Message 
 Service (JMS) API. Messages can contain various types of data, such as text, binary data, maps, and objects. 
 Ballerina `java.jms` library supports messages of type text, binary data, and maps.
+
 ```ballerina
+# Represent the valid value types allowed in JMS message properties.
+public type PropertyType boolean|int|byte|float|string;
+
+# Represents the allowed value types for entries in the map content of a JMS MapMessage.
+public type ValueType PropertyType|byte[];
+
 # Represent the JMS Message used to send and receive content from the a JMS provider.
 #
-# + messageId - Unique identifier for a JMS message  
-# + timestamp - Time a message was handed off to a provider to be sent 
-# + correlationId - Id which can be used to correlate multiple messages 
+# + messageId - Unique identifier for a JMS message (Only set by the JMS provider)
+# + timestamp - Time a message was handed off to a provider to be sent (Only set by the JMS provider)
+# + correlationId - Id which can be use to correlate multiple messages 
 # + replyTo - JMS destination to which a reply to this message should be sent
-# + destination - JMS destination of this message 
-# + deliveryMode - Delivery mode of this message  
-# + redelivered - Indication of whether this message is being redelivered
+# + destination - JMS destination of this message (Only set by the JMS provider)
+# + deliveryMode - Delivery mode of this message (Only set by the JMS provider)
+# + redelivered - Indication of whether this message is being redelivered (Only set by the JMS provider)
 # + jmsType - Message type identifier supplied by the client when the message was sent  
-# + expiration - Message expiration time  
-# + deliveredTime - The earliest time when a JMS provider may deliver the message to a consumer  
-# + priority - Message priority level  
+# + expiration - Message expiration time (Only set by the JMS provider)
+# + deliveredTime - The earliest time when a JMS provider may deliver the message to a consumer (Only set by the JMS provider)
+# + priority - Message priority level (Only set by the JMS provider)
 # + properties - Additional message properties
+# + content - Message content
 public type Message record {
     string messageId?;
     int timestamp?;
     string correlationId?;
-    jms:Destination replyTo?;
-    jms:Destination destination?;
+    Destination replyTo?;
+    Destination destination?;
     int deliveryMode?;
     boolean redelivered?;
     string jmsType?;
     int expiration?;
     int deliveredTime?;
     int priority?;
-    map<anydata> properties?;
+    map<PropertyType> properties?;
+    string|map<ValueType>|byte[] content;
 };
-
-# Represent the JMS Text Message.
-# 
-# + content - Message content  
-public type TextMessage record {|
-    *jms:Message;
-    string content;
-|};
-
-# Represent the JMS Map Message.
-# 
-# + content - Message content 
-public type MapMessage record {|
-    *jms:Message;
-    map<anydata> content;
-|};
-
-# Represent the JMS Bytes Message.
-# 
-# + content - Message content 
-public type BytesMessage record {|
-    *jms:Message;
-    byte[] content;
-|};
 ```
 
 ## 5. Message producer
