@@ -45,7 +45,7 @@ isolated function testTopicWithTextMessage() returns error? {
     groups: ["topic"]
 }
 isolated function testTopicWithMapMessage() returns error? {
-    map<ValueType> content = {
+    map<Value> content = {
         user: "John Doe",
         message: "This is a sample message"
     };
@@ -120,7 +120,7 @@ isolated function testTopicWithTextMessageUsingSendTo() returns error? {
     groups: ["topic"]
 }
 isolated function testTopicWithMapMessageUsingSendTo() returns error? {
-    map<ValueType> content = {
+    map<Value> content = {
         user: "John Doe",
         message: "This is a sample message"
     };

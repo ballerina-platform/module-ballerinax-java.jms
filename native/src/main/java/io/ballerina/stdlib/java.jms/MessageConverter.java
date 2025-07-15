@@ -71,9 +71,9 @@ public final class MessageConverter {
     private static final ArrayType BYTE_ARR_TYPE = TypeCreator.createArrayType(PredefinedTypes.TYPE_BYTE);
     private static final UnionType MSG_VALUE_TYPE = TypeCreator.createUnionType(MSG_PROPERTY_TYPE, BYTE_ARR_TYPE);
     private static final MapType BALLERINA_MSG_PROPERTY_TYPE = TypeCreator.createMapType(
-            "PropertyType", MSG_PROPERTY_TYPE, ModuleUtils.getModule());
+            "Property", MSG_PROPERTY_TYPE, ModuleUtils.getModule());
     private static final MapType BALLERINA_MAP_MSG_TYPE = TypeCreator.createMapType(
-            "ValueType", MSG_VALUE_TYPE, ModuleUtils.getModule());
+            "Value", MSG_VALUE_TYPE, ModuleUtils.getModule());
 
 
     private MessageConverter() {

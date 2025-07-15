@@ -50,7 +50,7 @@ isolated function beforeMessageListenerTests() returns error? {
                     queue3ServiceReceivedTextMsg = true;
                 }
             }
-            if content is map<ValueType> {
+            if content is map<Value> {
                 lock {
                     queue3ServiceReceivedMapMsg = true;
                 }
@@ -76,7 +76,7 @@ isolated function beforeMessageListenerTests() returns error? {
                     topic3ServiceReceivedTextMsg = true;
                 }
             }
-            if content is map<ValueType> {
+            if content is map<Value> {
                 lock {
                     topic3ServiceReceivedMapMsg = true;
                 }

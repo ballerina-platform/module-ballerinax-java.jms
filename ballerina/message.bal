@@ -15,10 +15,10 @@
 // under the License.
 
 # Represent the valid value types allowed in JMS message properties.
-public type PropertyType boolean|int|byte|float|string;
+public type Property boolean|int|byte|float|string;
 
 # Represents the allowed value types for entries in the map content of a JMS MapMessage.
-public type ValueType PropertyType|byte[];
+public type Value Property|byte[];
 
 # Represent the JMS Message used to send and receive content from the a JMS provider.
 #
@@ -47,6 +47,6 @@ public type Message record {
     int expiration?;
     int deliveredTime?;
     int priority?;
-    map<PropertyType> properties?;
-    string|map<ValueType>|byte[] content;
+    map<Property> properties?;
+    string|map<Value>|byte[] content;
 };

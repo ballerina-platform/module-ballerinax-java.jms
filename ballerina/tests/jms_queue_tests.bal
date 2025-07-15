@@ -45,7 +45,7 @@ isolated function testQueueWithTextMessage() returns error? {
     groups: ["queue"]
 }
 isolated function testQueueWithMapMessage() returns error? {
-    map<ValueType> content = {
+    map<Value> content = {
         user: "John Doe",
         message: "This is a sample message"
     };
@@ -135,7 +135,7 @@ isolated function testQueueWithTextMessageUsingSendTo() returns error? {
     groups: ["queue"]
 }
 isolated function testQueueWithMapMessageUsingSendTo() returns error? {
-    map<ValueType> content = {
+    map<Value> content = {
         user: "John Doe",
         message: "This is a sample message"
     };

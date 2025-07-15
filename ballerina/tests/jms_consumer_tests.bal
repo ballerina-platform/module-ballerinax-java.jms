@@ -109,7 +109,7 @@ isolated function testRequestReplyWithTempQueue() returns error? {
     groups: ["consumer"]
 }
 isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
-    map<ValueType> content = {
+    map<Value> content = {
         intPayload: 1,
         floatPayload: 1.0,
         strPayload: "This is a sample message",
@@ -133,14 +133,14 @@ isolated function testReceiveMapMessageWithMultipleTypes() returns error? {
     groups: ["consumer"]
 }
 isolated function testReceiveMapMessageWithProperties() returns error? {
-    map<PropertyType> properties = {
+    map<Property> properties = {
         intProperty: 1,
         floatProperty: 1.0,
         strProperty: "This is a sample message",
         boolProperty: true,
         byteProperty: 1        
     };
-    map<ValueType> content = {
+    map<Value> content = {
         intPayload: 1,
         floatPayload: 1.0,
         strPayload: "This is a sample message",
