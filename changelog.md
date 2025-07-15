@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- [Introduce `onError` method to handle message dispatching errors](https://github.com/ballerina-platform/ballerina-library/issues/8078)
+
 ### Changed
 - [Support `jms:Service` per Queue/Topic in JMS listener-service based message consumption](https://github.com/ballerina-platform/ballerina-library/issues/8063)
 - [Improve `jms:Message` record to be fully compliant with JMS specification](https://github.com/ballerina-platform/ballerina-library/issues/8079)
