@@ -24,7 +24,7 @@ public type ValueType PropertyType|byte[];
 #
 # + messageId - Unique identifier for a JMS message (Only set by the JMS provider)
 # + timestamp - Time a message was handed off to a provider to be sent (Only set by the JMS provider)
-# + correlationId - Id which can be use to correlate multiple messages 
+# + correlationId - Id which can be used to correlate multiple messages 
 # + replyTo - JMS destination to which a reply to this message should be sent
 # + destination - JMS destination of this message (Only set by the JMS provider)
 # + deliveryMode - Delivery mode of this message (Only set by the JMS provider)
