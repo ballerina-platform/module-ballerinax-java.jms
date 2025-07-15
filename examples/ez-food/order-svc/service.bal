@@ -116,7 +116,7 @@ service /orders on new http:Listener(9091) {
     isolated function produceMessage(string destinationName, jms:DestinationType destinationType,
             ProducerPayload payload) returns error? {
         string jsonStr = payload.toJsonString();
-        jms:BytesMessage message = {
+        jms:Message message = {
             content: jsonStr.toBytes()
         };
         check self.producer->sendTo({

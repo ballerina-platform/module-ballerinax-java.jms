@@ -22,10 +22,8 @@ import ballerinax/java.jms;
 }
 service "order-details-receiver" on activeMqListener {
     remote function onMessage(jms:Message message) returns error? {
-        if message !is jms:BytesMessage {
-            return;
-        }
-        string jsonStr = check string:fromBytes(message.content);
+        byte[] content = check message.content.ensureType();
+        string jsonStr = check string:fromBytes(content);
         OrderProcessingRequest orderProcessingRequest = check jsonStr.fromJsonStringWithType();
         check processRequest(orderProcessingRequest);
     }
@@ -64,7 +62,7 @@ isolated function mapToStoreItems(OrderProcessingRequest request) returns store:
 isolated function produceMessage(string destinationName, jms:DestinationType destinationType,
         ProducerPayload payload) returns error? {
     string jsonStr = payload.toJsonString();
-    jms:BytesMessage message = {
+    jms:Message message = {
         content: jsonStr.toBytes()
     };
     check producer->sendTo(

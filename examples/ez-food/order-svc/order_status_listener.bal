@@ -22,10 +22,8 @@ import ballerinax/java.jms;
 }
 service "order-status-update-receiver" on activeMqListener {
     remote function onMessage(jms:Message message) returns error? {
-        if message !is jms:BytesMessage {
-            return;
-        }
-        string jsonStr = check string:fromBytes(message.content);
+        byte[] content = check message.content.ensureType();
+        string jsonStr = check string:fromBytes(content);
         OrderStatusUpdate orderStatusUpdate = check jsonStr.fromJsonStringWithType();
         _ = check datastore->/foodorders/[orderStatusUpdate.orderId].put({
             status: orderStatusUpdate.status
