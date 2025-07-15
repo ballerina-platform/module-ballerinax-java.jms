@@ -36,7 +36,7 @@ isolated function testCreateProducerWithoutQueueName() returns error? {
 }
 isolated function testProducerSendToWithoutQueueName() returns error? {
     MessageProducer producer = check AUTO_ACK_SESSION.createProducer();
-    TextMessage message = {
+    Message message = {
         content: "This is a sample message"
     };
     Error? result = producer->sendTo({ 'type: QUEUE }, message);
@@ -53,7 +53,7 @@ isolated function testProducerSendToWithoutQueueName() returns error? {
 }
 isolated function testReplyToErrorForQueue() returns error? {
     MessageProducer producer = check AUTO_ACK_SESSION.createProducer();
-    TextMessage message = {
+    Message message = {
         content: "This is a request message",
         correlationId: "cid-123",
         replyTo: {
@@ -77,7 +77,7 @@ isolated function testReplyToErrorForQueue() returns error? {
 }
 isolated function testReplyToErrorForTopic() returns error? {
     MessageProducer producer = check AUTO_ACK_SESSION.createProducer();
-    TextMessage message = {
+    Message message = {
         content: "This is a request message",
         correlationId: "cid-123",
         replyTo: {

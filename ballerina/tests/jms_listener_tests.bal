@@ -44,17 +44,18 @@ isolated function beforeMessageListenerTests() returns error? {
         queueName: "test-queue-3"
     } service object {
         remote function onMessage(Message message) returns error? {
-            if message is TextMessage {
+            var content = message.content;
+            if content is string {
                 lock {
                     queue3ServiceReceivedTextMsg = true;
                 }
             }
-            if message is MapMessage {
+            if content is map<Value> {
                 lock {
                     queue3ServiceReceivedMapMsg = true;
                 }
             }
-            if message is BytesMessage {
+            if content is byte[] {
                 lock {
                     queue3ServiceReceivedBytesMsg = true;
                 }
@@ -69,17 +70,18 @@ isolated function beforeMessageListenerTests() returns error? {
         topicName: "test-topic-3"
     } service object {
         remote function onMessage(Message message) returns error? {
-            if message is TextMessage {
+            var content = message.content;
+            if content is string {
                 lock {
                     topic3ServiceReceivedTextMsg = true;
                 }
             }
-            if message is MapMessage {
+            if content is map<Value> {
                 lock {
                     topic3ServiceReceivedMapMsg = true;
                 }
             }
-            if message is BytesMessage {
+            if content is byte[] {
                 lock {
                     topic3ServiceReceivedBytesMsg = true;
                 }
@@ -98,7 +100,7 @@ isolated function beforeMessageListenerTests() returns error? {
     groups: ["messageListener"]
 }
 isolated function testQueueService() returns error? {
-    TextMessage textMsg = {
+    Message textMsg = {
         content: "This is a sample message"
     };
     check queue3Producer->send(textMsg);
@@ -107,7 +109,7 @@ isolated function testQueueService() returns error? {
         test:assertTrue(queue3ServiceReceivedTextMsg, "'test-queue-3' did not received the text message");
     }
 
-    MapMessage mapMessage = {
+    Message mapMessage = {
         content: {
             user: "John Doe",
             message: "This is a sample message"
@@ -119,7 +121,7 @@ isolated function testQueueService() returns error? {
         test:assertTrue(queue3ServiceReceivedMapMsg, "'test-queue-3' did not received the map message");
     }
 
-    BytesMessage bytesMessage = {
+    Message bytesMessage = {
         content: "This is a sample message".toBytes()
     };
     check queue3Producer->send(bytesMessage);
@@ -137,7 +139,7 @@ isolated function testQueueService() returns error? {
     groups: ["messageListener"]
 }
 isolated function testTopicService() returns error? {
-    TextMessage textMsg = {
+    Message textMsg = {
         content: "This is a sample message"
     };
     check topic3Producer->send(textMsg);
@@ -146,7 +148,7 @@ isolated function testTopicService() returns error? {
         test:assertTrue(topic3ServiceReceivedTextMsg, "'test-topic-3' did not received the text message");
     }
 
-    MapMessage mapMessage = {
+    Message mapMessage = {
         content: {
             user: "John Doe",
             message: "This is a sample message"
@@ -158,7 +160,7 @@ isolated function testTopicService() returns error? {
         test:assertTrue(topic3ServiceReceivedMapMsg, "'test-topic-3' did not received the map message");
     }
 
-    BytesMessage bytesMessage = {
+    Message bytesMessage = {
         content: "This is a sample message".toBytes()
     };
     check topic3Producer->send(bytesMessage);
@@ -185,14 +187,13 @@ function testNonIsolatedService() returns error? {
         queueName: "test-isolation"
     } service object {
         remote function onMessage(Message message) returns error? {
-            if message is TextMessage {
+            var content = message.content;
+            if content is string {
                 textMsgReceived = true;
-            }
-            if message is MapMessage {
-                mapMsgReceived = true;
-            }
-            if message is BytesMessage {
+            } else if content is byte[] {
                 bytesMsgReceived = true;
+            } else {
+                mapMsgReceived = true;
             }
             receivedMsgCount += 1;
         }
@@ -200,14 +201,14 @@ function testNonIsolatedService() returns error? {
     check jmsMessageListener.attach(nonIsolatedSvc, "non-isolated-service");
 
     MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {'type: QUEUE, name: "test-isolation"});
-    TextMessage textMsg = {
+    Message textMsg = {
         content: "This is a sample message"
     };
     check producer->send(textMsg);
     runtime:sleep(2);
     test:assertTrue(textMsgReceived, "'test-isolation' queue did not received the text message");
 
-    MapMessage mapMessage = {
+    Message mapMessage = {
         content: {
             user: "John Doe",
             message: "This is a sample message"
@@ -217,7 +218,7 @@ function testNonIsolatedService() returns error? {
     runtime:sleep(2);
     test:assertTrue(mapMsgReceived, "'test-isolation' queue did not received the map message");
 
-    BytesMessage bytesMessage = {
+    Message bytesMessage = {
         content: "This is a sample message".toBytes()
     };
     check producer->send(bytesMessage);
@@ -242,19 +243,18 @@ isolated function testServiceWithCaller() returns error? {
         queueName: "test-caller"
     } service object {
         remote function onMessage(Message message, Caller caller) returns error? {
-            if message is TextMessage {
+            var content = message.content;
+            if content is string {
                 lock {
                     serviceWithCallerTextMsgReceived = true;
                 }
-            }
-            if message is MapMessage {
-                lock {
-                    serviceWithCallerMapMsgReceived = true;
-                }
-            }
-            if message is BytesMessage {
+            } else if content is byte[] {
                 lock {
                     serviceWithCallerBytesMsgReceived = true;
+                }
+            } else {
+                lock {
+                    serviceWithCallerMapMsgReceived = true;
                 }
             }
             lock {
@@ -266,18 +266,18 @@ isolated function testServiceWithCaller() returns error? {
     check jmsMessageListener.attach(consumerSvc, "test-caller-service");
 
     MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {'type: QUEUE, name: "test-caller"});
-    TextMessage textMsg = {
+    Message textMsg = {
         content: "This is a sample message"
     };
     check producer->send(textMsg);
-    MapMessage mapMessage = {
+    Message mapMessage = {
         content: {
             user: "John Doe",
             message: "This is a sample message"
         }
     };
     check producer->send(mapMessage);
-    BytesMessage bytesMessage = {
+    Message bytesMessage = {
         content: "This is a sample message".toBytes()
     };
     check producer->send(bytesMessage);
@@ -309,13 +309,11 @@ isolated function testServiceWithTransactions() returns error? {
         queueName: "test-transactions"
     } service object {
         isolated remote function onMessage(Message message, Caller caller) returns error? {
-            if message is TextMessage {
-                lock {
-                    ServiceWithTransactionsMsgCount += 1;
-                }
-                if message.content == "End of messages" {
-                    check caller->'commit();
-                }
+            lock {
+                ServiceWithTransactionsMsgCount += 1;
+            }
+            if message.content == "End of messages" {
+                check caller->'commit();
             }
         }
     };
@@ -323,10 +321,10 @@ isolated function testServiceWithTransactions() returns error? {
 
     Session transactedSession = check createSession(SESSION_TRANSACTED);
     MessageProducer producer = check createProducer(transactedSession, {'type: QUEUE, name: "test-transactions"});
-    check producer->send(<TextMessage>{content: "This is the first message"});
-    check producer->send(<TextMessage>{content: "This is the second message"});
-    check producer->send(<TextMessage>{content: "This is the third message"});
-    check producer->send(<TextMessage>{content: "End of messages"});
+    check producer->send({content: "This is the first message"});
+    check producer->send({content: "This is the second message"});
+    check producer->send({content: "This is the third message"});
+    check producer->send({content: "End of messages"});
     check transactedSession->'commit();
 
     runtime:sleep(5);
@@ -365,7 +363,7 @@ isolated function testServiceReturningError() returns error? {
     check jmsMessageListener.attach(consumerSvc, "test-onMessage-error-service");
 
     MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {'type: QUEUE, name: "test-onMessage-error"});
-    TextMessage textMsg = {
+    Message textMsg = {
         content: "This is a sample message"
     };
     check producer->send(textMsg);

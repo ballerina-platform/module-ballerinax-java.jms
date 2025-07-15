@@ -31,25 +31,25 @@ final MessageConsumer queue6Consumer = check createConsumer(dupsOkAckSession, de
     groups: ["sessionDupsOkAck"]
 }
 isolated function testDupsOkAckWithQueue() returns error? {
-    MapMessage msg1 = {
+    Message msg1 = {
         content: {
             messageId: 1,
             payload: "This is the first message"
         }
     };
-    MapMessage msg2 = {
+    Message msg2 = {
         content: {
             messageId: 2,
             payload: "This is the second message"
         }
     };
-    MapMessage msg3 = {
+    Message msg3 = {
         content: {
             messageId: 3,
             payload: "This is the third message"
         }
     };
-    MapMessage msg4 = {
+    Message msg4 = {
         content: {
             messageId: 4,
             payload: "This is the fourth message"
@@ -63,8 +63,9 @@ isolated function testDupsOkAckWithQueue() returns error? {
     int[] messageIds = [];
     while true {
         Message? response = check queue6Consumer->receive(5000);
-        if response is MapMessage {
-            int messageId = check response.content["messageId"].ensureType();
+        if response is Message {
+            map<anydata> content = check response.content.ensureType();
+            int messageId = check content["messageId"].ensureType();
             if messageIds.indexOf(messageId) is () {
                 messageIds.push(messageId);
             }
@@ -88,25 +89,25 @@ final MessageConsumer topic6Consumer = check createConsumer(dupsOkAckSession, de
     groups: ["sessionDupsOkAck"]
 }
 isolated function testDupsOkAckWithTopic() returns error? {
-    MapMessage msg1 = {
+    Message msg1 = {
         content: {
             messageId: 1,
             payload: "This is the first message"
         }
     };
-    MapMessage msg2 = {
+    Message msg2 = {
         content: {
             messageId: 2,
             payload: "This is the second message"
         }
     };
-    MapMessage msg3 = {
+    Message msg3 = {
         content: {
             messageId: 3,
             payload: "This is the third message"
         }
     };
-    MapMessage msg4 = {
+    Message msg4 = {
         content: {
             messageId: 4,
             payload: "This is the fourth message"
@@ -120,8 +121,9 @@ isolated function testDupsOkAckWithTopic() returns error? {
     int[] messageIds = [];
     while true {
         Message? response = check topic6Consumer->receive(5000);
-        if response is MapMessage {
-            int messageId = check response.content["messageId"].ensureType();
+        if response is Message {
+            map<anydata> content = check response.content.ensureType();
+            int messageId = check content["messageId"].ensureType();
             if messageIds.indexOf(messageId) is () {
                 messageIds.push(messageId);
             }

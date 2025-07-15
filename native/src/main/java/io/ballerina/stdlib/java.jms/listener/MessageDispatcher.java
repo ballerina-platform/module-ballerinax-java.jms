@@ -30,6 +30,7 @@ import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
 import io.ballerina.stdlib.java.jms.Constants;
+import io.ballerina.stdlib.java.jms.MessageConverter;
 
 import java.io.PrintStream;
 import java.util.Optional;
@@ -40,7 +41,6 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 
 import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
-import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.ModuleUtils.getModule;
 import static io.ballerina.stdlib.java.jms.listener.Listener.NATIVE_SESSION;
@@ -102,7 +102,7 @@ public class MessageDispatcher implements MessageListener {
                     args[idx++] = getCaller();
                     break;
                 case TypeTags.RECORD_TYPE_TAG:
-                    args[idx++] = getBallerinaMessage(message);
+                    args[idx++] = MessageConverter.convertToBMessage(message);
                     break;
             }
         }

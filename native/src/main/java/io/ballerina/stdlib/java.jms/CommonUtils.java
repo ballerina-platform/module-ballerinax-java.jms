@@ -20,29 +20,20 @@ package io.ballerina.stdlib.java.jms;
 
 import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
-import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.utils.TypeUtils;
-import io.ballerina.runtime.api.utils.ValueUtils;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.jms.BytesMessage;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TemporaryQueue;
 import javax.jms.TemporaryTopic;
-import javax.jms.TextMessage;
 import javax.jms.Topic;
 
 /**
@@ -51,9 +42,10 @@ import javax.jms.Topic;
 public class CommonUtils {
     private static final BString DESTINATION_TYPE = StringUtils.fromString("type");
     private static final BString DESTINATION_NAME = StringUtils.fromString("name");
-    private static final String QUEUE = "QUEUE";
-    private static final String TEMPORARY_QUEUE = "TEMPORARY_QUEUE";
-    private static final String TOPIC = "TOPIC";
+    private static final BString QUEUE = StringUtils.fromString("QUEUE");
+    private static final BString TEMPORARY_QUEUE = StringUtils.fromString("TEMPORARY_QUEUE");
+    private static final BString TOPIC = StringUtils.fromString("TOPIC");
+    private static final BString TEMPORARY_TOPIC = StringUtils.fromString("TEMPORARY_TOPIC");
 
     public static BError createError(String errorType, String message) {
         return createError(errorType, message, null);
@@ -87,7 +79,7 @@ public class CommonUtils {
 
     public static Destination getDestination(Session session, BMap<BString, Object> destinationConfig)
             throws BallerinaJmsException, JMSException {
-        String destinationType = destinationConfig.getStringValue(DESTINATION_TYPE).getValue();
+        BString destinationType = destinationConfig.getStringValue(DESTINATION_TYPE);
         Optional<String> destinationNameOpt = getOptionalStringProperty(destinationConfig, DESTINATION_NAME);
         if (QUEUE.equals(destinationType) || TOPIC.equals(destinationType)) {
             if (destinationNameOpt.isEmpty()) {
@@ -107,126 +99,21 @@ public class CommonUtils {
         }
     }
 
-    public static BMap<BString, Object> getBallerinaMessage(Message message)
-            throws JMSException, BallerinaJmsException {
-        String messageType = getMessageType(message);
-        BMap<BString, Object> ballerinaMessage = ValueCreator.createRecordValue(ModuleUtils.getModule(), messageType);
-        ballerinaMessage.put(Constants.MESSAGE_ID, StringUtils.fromString(message.getJMSMessageID()));
-        ballerinaMessage.put(Constants.TIMESTAMP, message.getJMSTimestamp());
-        if (Objects.nonNull(message.getJMSCorrelationID())) {
-            ballerinaMessage.put(Constants.CORRELATION_ID, StringUtils.fromString(message.getJMSCorrelationID()));
-        }
-        if (Objects.nonNull(message.getJMSReplyTo())) {
-            ballerinaMessage.put(Constants.REPLY_TO, getJmsDestinationField(message.getJMSReplyTo()));
-        }
-        if (Objects.nonNull(message.getJMSDestination())) {
-            ballerinaMessage.put(Constants.DESTINATION, getJmsDestinationField(message.getJMSDestination()));
-        }
-        ballerinaMessage.put(Constants.DELIVERY_MODE, message.getJMSDeliveryMode());
-        ballerinaMessage.put(Constants.REDELIVERED, message.getJMSRedelivered());
-        if (Objects.nonNull(message.getJMSType())) {
-            ballerinaMessage.put(Constants.JMS_TYPE, StringUtils.fromString(message.getJMSType()));
-        }
-        ballerinaMessage.put(Constants.EXPIRATION, message.getJMSExpiration());
-        try {
-            ballerinaMessage.put(Constants.DELIVERED_TIME, message.getJMSDeliveryTime());
-        } catch (UnsupportedOperationException e) {
-            // This exception occurs when the client connect to a JMS provider who supports JMS 1.x.
-            // Hence, ignoring this exception.
-        }
-        ballerinaMessage.put(Constants.PRIORITY, message.getJMSPriority());
-        ballerinaMessage.put(Constants.PROPERTIES, getMessageProperties(message));
-        Object content = getMessageContent(message);
-        ballerinaMessage.put(Constants.CONTENT, content);
-        ballerinaMessage.addNativeData(Constants.NATIVE_MESSAGE, message);
-        return ballerinaMessage;
-    }
-
-    private static String getMessageType(Message message) {
-        if (message instanceof TextMessage) {
-            return Constants.TEXT_MESSAGE_BAL_RECORD_NAME;
-        } else if (message instanceof MapMessage) {
-            return Constants.MAP_MESSAGE_BAL_RECORD_NAME;
-        } else if (message instanceof BytesMessage) {
-            return Constants.BYTE_MESSAGE_BAL_RECORD_NAME;
-        } else {
-            return Constants.MESSAGE_BAL_RECORD_NAME;
-        }
-    }
-
-    private static BMap<BString, Object> getJmsDestinationField(Destination destination) throws JMSException {
+    public static BMap<BString, Object> getJmsDestinationField(Destination destination) throws JMSException {
         BMap<BString, Object> values = ValueCreator.createMapValue();
         if (destination instanceof TemporaryQueue) {
-            values.put(DESTINATION_TYPE, Constants.TEMPORARY_QUEUE);
+            values.put(DESTINATION_TYPE, TEMPORARY_QUEUE);
         } else if (destination instanceof Queue) {
             String queueName = ((Queue) destination).getQueueName();
-            values.put(DESTINATION_TYPE, Constants.QUEUE);
+            values.put(DESTINATION_TYPE, QUEUE);
             values.put(DESTINATION_NAME, StringUtils.fromString(queueName));
         } else if (destination instanceof TemporaryTopic) {
-            values.put(DESTINATION_TYPE, Constants.TEMPORARY_TOPIC);
+            values.put(DESTINATION_TYPE, TEMPORARY_TOPIC);
         } else {
             String topicName = ((Topic) destination).getTopicName();
-            values.put(DESTINATION_TYPE, Constants.TOPIC);
+            values.put(DESTINATION_TYPE, TOPIC);
             values.put(DESTINATION_NAME, StringUtils.fromString(topicName));
         }
         return ValueCreator.createReadonlyRecordValue(ModuleUtils.getModule(), "Destination", values);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static BMap<BString, Object> getMessageProperties(Message message)
-            throws JMSException, BallerinaJmsException {
-        BMap<BString, Object> messageProperties = ValueCreator.createMapValue();
-        Enumeration<String> propertyNames = message.getPropertyNames();
-        Iterator<String> iterator = propertyNames.asIterator();
-        while (iterator.hasNext()) {
-            String key = iterator.next();
-            Object value = message.getObjectProperty(key);
-            messageProperties.put(StringUtils.fromString(key), getMapValue(value));
-        }
-        return messageProperties;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Object getMessageContent(Message message) throws JMSException, BallerinaJmsException {
-        if (message instanceof TextMessage) {
-            return StringUtils.fromString(((TextMessage) message).getText());
-        } else if (message instanceof MapMessage) {
-            BMap<BString, Object> content = ValueCreator.createMapValue();
-            Enumeration<String> mapNames = (((MapMessage) message)).getMapNames();
-            Iterator<String> iterator = mapNames.asIterator();
-            while (iterator.hasNext()) {
-                String key = iterator.next();
-                Object value = ((MapMessage) message).getObject(key);
-                content.put(StringUtils.fromString(key), getMapValue(value));
-            }
-            return content;
-        } else if (message instanceof BytesMessage) {
-            long bodyLength = ((BytesMessage) message).getBodyLength();
-            byte[] payload = new byte[(int) bodyLength];
-            ((BytesMessage) message).readBytes(payload);
-            return ValueCreator.createArrayValue(payload);
-        }
-        throw new BallerinaJmsException(
-                String.format("Unsupported message type: %s", message.getClass().getTypeName()));
-    }
-
-    private static Object getMapValue(Object value) throws BallerinaJmsException {
-        if (isPrimitive(value)) {
-            Type type = TypeUtils.getType(value);
-            return ValueUtils.convert(value, type);
-        }
-        if (value instanceof String) {
-            return StringUtils.fromString((String) value);
-        }
-        if (value instanceof byte[]) {
-            return ValueCreator.createArrayValue((byte[]) value);
-        }
-        throw new BallerinaJmsException(
-                String.format("Unidentified map value type: %s", value.getClass().getTypeName()));
-    }
-
-    private static boolean isPrimitive(Object value) {
-        return value instanceof Boolean || value instanceof Byte || value instanceof Character ||
-                value instanceof Integer || value instanceof Long || value instanceof Float || value instanceof Double;
     }
 }

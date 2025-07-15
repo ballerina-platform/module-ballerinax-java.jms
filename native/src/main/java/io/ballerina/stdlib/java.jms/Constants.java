@@ -18,9 +18,6 @@
 
 package io.ballerina.stdlib.java.jms;
 
-import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.values.BString;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,29 +112,6 @@ public class Constants {
 
     // Ballerina JMS message types
     public static final String MESSAGE_BAL_RECORD_NAME = "Message";
-    static final String TEXT_MESSAGE_BAL_RECORD_NAME = "TextMessage";
-    static final String MAP_MESSAGE_BAL_RECORD_NAME = "MapMessage";
-    static final String BYTE_MESSAGE_BAL_RECORD_NAME = "BytesMessage";
-
-    // JMS message parameters
-    static final BString MESSAGE_ID = StringUtils.fromString("messageId");
-    static final BString TIMESTAMP = StringUtils.fromString("timestamp");
-    static final BString CORRELATION_ID = StringUtils.fromString("correlationId");
-    static final BString REPLY_TO = StringUtils.fromString("replyTo");
-    public static final BString DESTINATION = StringUtils.fromString("destination");
-    static final BString DELIVERY_MODE = StringUtils.fromString("deliveryMode");
-    static final BString REDELIVERED = StringUtils.fromString("redelivered");
-    static final BString JMS_TYPE = StringUtils.fromString("jmsType");
-    static final BString EXPIRATION = StringUtils.fromString("expiration");
-    static final BString DELIVERED_TIME = StringUtils.fromString("deliveredTime");
-    static final BString PRIORITY = StringUtils.fromString("priority");
-    static final BString PROPERTIES = StringUtils.fromString("properties");
-    static final BString CONTENT = StringUtils.fromString("content");
-
-    static final BString QUEUE = StringUtils.fromString("QUEUE");
-    static final BString TEMPORARY_QUEUE = StringUtils.fromString("TEMPORARY_QUEUE");
-    static final BString TOPIC = StringUtils.fromString("TOPIC");
-    static final BString TEMPORARY_TOPIC = StringUtils.fromString("TEMPORARY_TOPIC");
 
     public static final String CALLER = "Caller";
 
