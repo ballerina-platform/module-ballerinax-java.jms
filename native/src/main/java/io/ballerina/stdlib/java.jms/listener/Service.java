@@ -141,7 +141,8 @@ public class Service {
 
     private static void validateOnErrorMethod(RemoteMethodType onErrorMethod) {
         if (onErrorMethod.getParameters().length != 1) {
-            throw CommonUtils.createError(JMS_ERROR, "onError method must have exactly one parameter of type 'jms:Error'.");
+            throw CommonUtils.createError(JMS_ERROR,
+                    "onError method must have exactly one parameter of type 'jms:Error'.");
         }
 
         Parameter parameter = onErrorMethod.getParameters()[0];

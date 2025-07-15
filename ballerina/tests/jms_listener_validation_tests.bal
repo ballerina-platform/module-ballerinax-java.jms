@@ -183,7 +183,7 @@ isolated function testSvcOnErrorWithoutParameters() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: onError method must have exactly one parameter.",
+                "Failed to attach service to listener: onError method must have exactly one parameter of type 'jms:Error'.",
                 "Invalid error message received");
     }
 }
@@ -229,7 +229,7 @@ isolated function testSvcOnErrorWithAdditionalParameters() returns error? {
     if result is Error {
         test:assertEquals(
                 result.message(),
-                "Failed to attach service to listener: onError method must have exactly one parameter.",
+                "Failed to attach service to listener: onError method must have exactly one parameter of type 'jms:Error'.",
                 "Invalid error message received");
     }    
 }
