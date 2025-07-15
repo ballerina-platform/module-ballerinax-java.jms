@@ -18,10 +18,8 @@ import ballerina/jballerina.java;
 
 # JMS Message Producer client object to send messages to both queues and topics.
 public isolated client class MessageProducer {
-    private final Session session;
-
+    
     isolated function init(Session session, Destination? destination = ()) returns Error? {
-        self.session = session;
         return self.externInit(session, destination);
     }
 
@@ -37,12 +35,7 @@ public isolated client class MessageProducer {
     #
     # + message - Message to be sent to the JMS provider
     # + return - A `jms:Error` if there is an error or else `()`
-    isolated remote function send(Message message) returns Error? {
-        handle jmsMessage = check getJmsMessage(self.session, message);
-        return self.externSend(jmsMessage);
-    }
-
-    isolated function externSend(handle message) returns Error? = @java:Method {
+    isolated remote function send(Message message) returns Error? = @java:Method {
         name: "send",
         'class: "io.ballerina.stdlib.java.jms.producer.Actions"
     } external;
@@ -55,13 +48,7 @@ public isolated client class MessageProducer {
     # + destination - Destination used for the message sender
     # + message - Message to be sent to the JMS provider
     # + return - A `jms:Error` if there is an error or else `()`
-    isolated remote function sendTo(Destination destination, Message message) returns Error? {
-        handle jmsMessage = check getJmsMessage(self.session, message);
-        return self.externSendTo(self.session, destination, jmsMessage);
-    }
-
-    isolated function externSendTo(Session session, Destination destination, handle message) 
-        returns Error? = @java:Method {
+    isolated remote function sendTo(Destination destination, Message message) returns Error? = @java:Method {
         name: "sendTo",
         'class: "io.ballerina.stdlib.java.jms.producer.Actions"
     } external;
@@ -75,72 +62,3 @@ public isolated client class MessageProducer {
         'class: "io.ballerina.stdlib.java.jms.producer.Actions"
     } external;
 };
-
-isolated function getJmsMessage(Session session, Message message) returns handle|Error {
-    handle jmsMessage = check constructJmsMessage(session, message);
-    check updateReplyToMessageField(session, jmsMessage, message.replyTo);
-    check updateCorrelationIdField(jmsMessage, message.correlationId);
-    return jmsMessage;
-}
-
-const string TEXT = "TEXT";
-const string BYTES = "BYTES";
-const string MAP = "MAP";
-
-isolated function constructJmsMessage(Session session, Message message) returns handle|Error {
-    if message is TextMessage {
-        handle jmsMessage = check session.createJmsMessage(TEXT);
-        error? result = trap externWriteText(jmsMessage, java:fromString(message.content));
-        if result is error {
-            return error Error(result.message());
-        }
-        return jmsMessage;
-    } else if message is BytesMessage {
-        handle jmsMessage = check session.createJmsMessage(BYTES);
-        error? result = trap externWriteBytes(jmsMessage, message.content);
-        if result is error {
-            return error Error(result.message());
-        }
-        return jmsMessage;
-    } else if message is MapMessage {
-        handle jmsMessage = check session.createJmsMessage(MAP);
-        error? result = trap populateMapMessage(jmsMessage, message.content);
-        if result is error {
-            return error Error(result.message());
-        }
-        return jmsMessage;
-    }
-    return error Error("Unidentified message type");
-}
-
-isolated function updateReplyToMessageField(Session session, handle jmsMessage,
-        Destination? replyTo = ()) returns Error? {
-    if replyTo is () {
-        return;
-    }
-    check externSetReplyTo(session, jmsMessage, replyTo);
-}
-
-isolated function updateCorrelationIdField(handle jmsMessage, string? correlationId = ()) returns Error? {
-    if correlationId is () {
-        return;
-    }
-    check externSetCorrelationId(jmsMessage, correlationId);
-}
-
-isolated function populateMapMessage(handle mapMessage, map<anydata> keyValues) returns error? {
-    foreach string 'key in keyValues.keys() {
-        var value = keyValues.get('key);
-        if value is int {
-            check externSetLong(mapMessage, java:fromString('key), value);
-        } else if value is float {
-            check externSetDouble(mapMessage, java:fromString('key), value);
-        } else if value is boolean {
-            check externSetBoolean(mapMessage, java:fromString('key), value);
-        } else if value is string {
-            check externSetString(mapMessage, java:fromString('key), java:fromString(value));
-        } else if value is byte[] {
-            check externSetBytes(mapMessage, java:fromString('key), value);
-        }
-    }
-}

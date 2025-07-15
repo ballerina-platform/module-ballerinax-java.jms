@@ -22,6 +22,7 @@ import io.ballerina.runtime.api.Runtime;
 import io.ballerina.runtime.api.concurrent.StrandMetadata;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.Parameter;
+import io.ballerina.runtime.api.types.RemoteMethodType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.types.TypeTags;
 import io.ballerina.runtime.api.utils.TypeUtils;
@@ -29,10 +30,10 @@ import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.java.jms.BallerinaJmsException;
 import io.ballerina.stdlib.java.jms.Constants;
+import io.ballerina.stdlib.java.jms.MessageConverter;
 
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -40,7 +41,6 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 
 import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
-import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.ModuleUtils.getModule;
 import static io.ballerina.stdlib.java.jms.listener.Listener.NATIVE_SESSION;
@@ -51,8 +51,9 @@ import static io.ballerina.stdlib.java.jms.listener.Listener.NATIVE_SESSION;
  * @since 1.2.0.
  */
 public class MessageDispatcher implements MessageListener {
-    private static final String ON_MESSAGE_METHOD = "onMessage";
     private static final PrintStream ERR_OUT = System.err;
+    private static final String ON_ERROR_METHOD = "onError";
+    private static final String ON_MESSAGE_METHOD = "onMessage";
 
     private final Runtime ballerinaRuntime;
     private final Service nativeService;
@@ -67,28 +68,26 @@ public class MessageDispatcher implements MessageListener {
     @Override
     public void onMessage(Message message) {
         Thread.startVirtualThread(() -> {
+            Service nativeJmsSvc = this.nativeService;
             try {
-                boolean isConcurrentSafe = this.nativeService.isOnMessageMethodIsolated();
-                StrandMetadata metadata = new StrandMetadata(isConcurrentSafe, getPropertiesForOnMsgMethod());
+                boolean isConcurrentSafe = nativeJmsSvc.isOnMessageMethodIsolated();
+                StrandMetadata metadata = new StrandMetadata(isConcurrentSafe, null);
                 Object[] params = getOnMessageParams(message);
                 Object result = ballerinaRuntime.callMethod(
-                        this.nativeService.getConsumerService(), ON_MESSAGE_METHOD, metadata, params);
+                        nativeJmsSvc.getConsumerService(), ON_MESSAGE_METHOD, metadata, params);
                 notifySuccess(result);
             } catch (Throwable e) {
                 ERR_OUT.println("Unexpected error occurred while async message processing: " + e.getMessage());
                 BError error = createError(JMS_ERROR, "Failed to fetch the message", e);
-                throw error;
+                Optional<RemoteMethodType> onError = nativeJmsSvc.getOnError();
+                if (onError.isEmpty()) {
+                    throw error;
+                }
+                boolean isConcurrentSafe = nativeJmsSvc.isOnErrorMethodIsolated();
+                StrandMetadata metadata = new StrandMetadata(isConcurrentSafe, null);
+                ballerinaRuntime.callMethod(nativeJmsSvc.getConsumerService(), ON_ERROR_METHOD, metadata, error);
             }
         });
-    }
-
-    private Map<String, Object> getPropertiesForOnMsgMethod() {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("moduleOrg", getModule().getOrg());
-        properties.put("moduleName", getModule().getName());
-        properties.put("moduleVersion", getModule().getMajorVersion());
-        properties.put("parentFunctionName", ON_MESSAGE_METHOD);
-        return properties;
     }
 
     private Object[] getOnMessageParams(Message message)
@@ -103,7 +102,7 @@ public class MessageDispatcher implements MessageListener {
                     args[idx++] = getCaller();
                     break;
                 case TypeTags.RECORD_TYPE_TAG:
-                    args[idx++] = getBallerinaMessage(message);
+                    args[idx++] = MessageConverter.convertToBMessage(message);
                     break;
             }
         }

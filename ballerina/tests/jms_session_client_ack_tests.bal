@@ -28,17 +28,17 @@ final MessageConsumer queue4Consumer = check createConsumer(clientAckSession, de
 });
 
 @test:Config {
-    groups: ["sessionClientAck"]
+    groups: ["sessionClientAck", "errorTst"]
 }
 isolated function testClientAckWithQueue() returns error? {
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check queue4Producer->send(message);
     Message? response = check queue4Consumer->receive(5000);
-    test:assertTrue(response is TextMessage, "Invalid message type received");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
         check queue4Consumer->acknowledge(response);
     }
@@ -58,13 +58,13 @@ final MessageConsumer topic4Consumer = check createConsumer(clientAckSession, de
 }
 isolated function testClientAckWithTopic() returns error? {
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check topic4Producer->send(message);
     Message? response = check topic4Consumer->receive(5000);
-    test:assertTrue(response is TextMessage, "Invalid message type received");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
         check topic4Consumer->acknowledge(response);
     }
@@ -84,13 +84,13 @@ isolated function testInvalidClientAck() returns error? {
         name: "session-ack-queue"
     });
     string content = "This is a sample message";
-    TextMessage message = {
+    Message message = {
         content: content
     };
     check producer->send(message);
     Message? response = check consumer->receive(5000);
-    test:assertTrue(response is TextMessage, "Invalid message type received");
-    if response is TextMessage {
+    test:assertTrue(response is Message, "Invalid message type received");
+    if response is Message {
         test:assertEquals(response.content, content, "Invalid payload");
         check session->close();
         Error? result = consumer->acknowledge(response);
