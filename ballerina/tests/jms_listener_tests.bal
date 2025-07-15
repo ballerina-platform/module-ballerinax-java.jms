@@ -17,7 +17,7 @@
 import ballerina/lang.runtime;
 import ballerina/test;
 
-listener Listener jmsMessageListener = check new (
+final Listener jmsMessageListener = check new (
     initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
     providerUrl = "tcp://localhost:61616"
 );
@@ -333,6 +333,21 @@ isolated function testServiceWithTransactions() returns error? {
     lock {
         test:assertEquals(ServiceWithTransactionsMsgCount, 4, "Invalid number of received messages");
     }
+}
+
+@test:Config {
+    groups: ["listenerValidations"]
+}
+isolated function testServiceWithOnError() returns error? {
+    Service consumerSvc = @ServiceConfig {
+        sessionAckMode: CLIENT_ACKNOWLEDGE,
+        queueName: "test-svc-onerror"
+    } service object {
+        remote function onMessage(Message message) returns error? {}
+
+        remote function onError(Error err) returns error? {}
+    };
+    check jmsMessageListener.attach(consumerSvc, "test-onerror-service");
 }
 
 @test:Config {
