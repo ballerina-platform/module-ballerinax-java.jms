@@ -16,25 +16,14 @@
 import ballerinax/activemq.driver as _;
 import ballerinax/java.jms;
 
-const string ORDER_STATUS_UPDATE_TOPIC = "order-status-update";
-
-listener jms:Listener orderStatusListener = check new (
-    connectionConfig = activeMqConnectionConfig,
-    consumerOptions = {
-        destination: {
-            'type: jms:TOPIC,
-            name: ORDER_STATUS_UPDATE_TOPIC
-        },
-        subscriberName: "order-service-consumer"
-    }
-);
-
-service "order-status-update-receiver" on orderStatusListener {
+@jms:ServiceConfig {
+    topicName: ORDER_STATUS_UPDATE_TOPIC,
+    subscriberName: "order-service-consumer"
+}
+service "order-status-update-receiver" on activeMqListener {
     remote function onMessage(jms:Message message) returns error? {
-        if message !is jms:BytesMessage {
-            return;
-        }
-        string jsonStr = check string:fromBytes(message.content);
+        byte[] content = check message.content.ensureType();
+        string jsonStr = check string:fromBytes(content);
         OrderStatusUpdate orderStatusUpdate = check jsonStr.fromJsonStringWithType();
         _ = check datastore->/foodorders/[orderStatusUpdate.orderId].put({
             status: orderStatusUpdate.status

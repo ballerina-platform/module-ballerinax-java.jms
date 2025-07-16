@@ -31,13 +31,6 @@ isolated function getNextOrderId() returns int {
     }
 }
 
-const string ORDERS_QUEUE = "orders";
-
-configurable jms:ConnectionConfiguration activeMqConnectionConfig = {
-    initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-    providerUrl: "tcp://localhost:61616"
-};
-
 final store:Client datastore = check new ();
 
 # A service representing an online food ordering system
@@ -123,7 +116,7 @@ service /orders on new http:Listener(9091) {
     isolated function produceMessage(string destinationName, jms:DestinationType destinationType,
             ProducerPayload payload) returns error? {
         string jsonStr = payload.toJsonString();
-        jms:BytesMessage message = {
+        jms:Message message = {
             content: jsonStr.toBytes()
         };
         check self.producer->sendTo({

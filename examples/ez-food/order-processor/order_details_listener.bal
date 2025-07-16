@@ -17,38 +17,13 @@ import orderprocessor.store;
 
 import ballerinax/java.jms;
 
-const string ORDERS_QUEUE = "orders";
-const string ORDER_CONFIRMATIONS_QUEUE = "order-confirmation";
-
-configurable jms:ConnectionConfiguration activeMqConnectionConfig = {
-    initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-    providerUrl: "tcp://localhost:61616"
-};
-
-final jms:MessageProducer producer = check createProducer();
-
-isolated function createProducer() returns jms:MessageProducer|error {
-    jms:Connection connection = check new (activeMqConnectionConfig);
-    jms:Session session = check connection->createSession();
-    return session.createProducer();
+@jms:ServiceConfig {
+    queueName: ORDERS_QUEUE
 }
-
-listener jms:Listener orderDetailsListener = check new (
-    connectionConfig = activeMqConnectionConfig,
-    consumerOptions = {
-        destination: {
-            'type: jms:QUEUE,
-            name: ORDERS_QUEUE
-        }
-    }
-);
-
-service "order-details-receiver" on orderDetailsListener {
+service "order-details-receiver" on activeMqListener {
     remote function onMessage(jms:Message message) returns error? {
-        if message !is jms:BytesMessage {
-            return;
-        }
-        string jsonStr = check string:fromBytes(message.content);
+        byte[] content = check message.content.ensureType();
+        string jsonStr = check string:fromBytes(content);
         OrderProcessingRequest orderProcessingRequest = check jsonStr.fromJsonStringWithType();
         check processRequest(orderProcessingRequest);
     }
@@ -87,7 +62,7 @@ isolated function mapToStoreItems(OrderProcessingRequest request) returns store:
 isolated function produceMessage(string destinationName, jms:DestinationType destinationType,
         ProducerPayload payload) returns error? {
     string jsonStr = payload.toJsonString();
-    jms:BytesMessage message = {
+    jms:Message message = {
         content: jsonStr.toBytes()
     };
     check producer->sendTo(
