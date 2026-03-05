@@ -24,10 +24,12 @@ import io.ballerina.runtime.api.values.BObject;
 
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
+import javax.jms.Session;
 
 import static io.ballerina.stdlib.java.jms.CommonUtils.createError;
 import static io.ballerina.stdlib.java.jms.Constants.JMS_ERROR;
 import static io.ballerina.stdlib.java.jms.Constants.NATIVE_CONSUMER;
+import static io.ballerina.stdlib.java.jms.Constants.NATIVE_SESSION;
 
 /**
  * Provides utility functionalities related to setting up a {@link javax.jms.MessageListener} for a given
@@ -38,12 +40,36 @@ public class Utils {
     public static Object setMessageListener(Environment environment, BObject consumer,
                                             BObject serviceObject) {
         MessageConsumer nativeConsumer = (MessageConsumer) consumer.getNativeData(NATIVE_CONSUMER);
+        Session nativeSession = (Session) consumer.getNativeData(NATIVE_SESSION);
         Runtime bRuntime = environment.getRuntime();
         try {
-            nativeConsumer.setMessageListener(new ListenerImpl(serviceObject, bRuntime));
+            nativeConsumer.setMessageListener(new ListenerImpl(serviceObject, bRuntime, nativeSession));
         } catch (JMSException e) {
             return createError(JMS_ERROR,
                     String.format("Error occurred while setting the message listener: %s", e.getMessage()), e);
+        }
+        return null;
+    }
+
+    public static Object commit(BObject caller) {
+        Session nativeSession = (Session) caller.getNativeData(NATIVE_SESSION);
+        try {
+            nativeSession.commit();
+        } catch (JMSException exception) {
+            return createError(JMS_ERROR,
+                    String.format("Error while committing the JMS transaction: %s", exception.getMessage()), exception);
+        }
+        return null;
+    }
+
+    public static Object rollback(BObject caller) {
+        Session nativeSession = (Session) caller.getNativeData(NATIVE_SESSION);
+        try {
+            nativeSession.rollback();
+        } catch (JMSException exception) {
+            return createError(JMS_ERROR,
+                    String.format("Error while rolling back the JMS transaction: %s", exception.getMessage()),
+                    exception);
         }
         return null;
     }

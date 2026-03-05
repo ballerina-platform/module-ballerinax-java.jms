@@ -42,8 +42,10 @@ import java.util.stream.Stream;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.Session;
 
 import static io.ballerina.stdlib.java.jms.CommonUtils.getBallerinaMessage;
+import static io.ballerina.stdlib.java.jms.Constants.NATIVE_SESSION;
 import static io.ballerina.stdlib.java.jms.Constants.SERVICE_RESOURCE_ON_MESSAGE;
 import static io.ballerina.stdlib.java.jms.ModuleUtils.getProperties;
 
@@ -55,10 +57,12 @@ public class ListenerImpl implements MessageListener {
 
     private final BObject consumerService;
     private final Runtime ballerinaRuntime;
+    private final Session session;
 
-    public ListenerImpl(BObject consumerService, Runtime ballerinaRuntime) {
+    public ListenerImpl(BObject consumerService, Runtime ballerinaRuntime, Session session) {
         this.consumerService = consumerService;
         this.ballerinaRuntime = ballerinaRuntime;
+        this.session = session;
     }
 
     @Override
@@ -96,7 +100,7 @@ public class ListenerImpl implements MessageListener {
                 Type referredType = TypeUtils.getReferredType(param.type);
                 switch (referredType.getTag()) {
                     case TypeTags.OBJECT_TYPE_TAG:
-                        args[idx++] = ValueCreator.createObjectValue(ModuleUtils.getModule(), Constants.CALLER);
+                        args[idx++] = getCaller();
                         break;
                     case TypeTags.RECORD_TYPE_TAG:
                         args[idx++] = getBallerinaMessage(message);
@@ -109,5 +113,11 @@ public class ListenerImpl implements MessageListener {
             return args;
         }
         throw new BallerinaJmsException("Required method `onMessage` not found in the service");
+    }
+
+    private BObject getCaller() {
+        BObject caller = ValueCreator.createObjectValue(ModuleUtils.getModule(), Constants.CALLER);
+        caller.addNativeData(NATIVE_SESSION, session);
+        return caller;
     }
 }

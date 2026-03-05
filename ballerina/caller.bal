@@ -26,4 +26,24 @@ public isolated client class Caller {
     isolated remote function acknowledge(Message message) returns Error? = @java:Method {
         'class: "io.ballerina.stdlib.java.jms.consumer.Actions"
     } external;
+
+    # Commits all messages received in this transaction and releases any locks currently held.
+    # ```ballerina
+    # check session->'commit();
+    # ```
+    #
+    # + return - A `jms:Error` if there is an error or else `()`
+    isolated remote function 'commit() returns Error? = @java:Method {
+        'class: "io.ballerina.stdlib.java.jms.listener.Utils"
+    } external;
+
+    # Rolls back any messages received in this transaction and releases any locks currently held.
+    # ```ballerina
+    # check session->'rollback();
+    # ```
+    #
+    # + return - A `jms:Error` if there is an error or else `()`
+    isolated remote function 'rollback() returns Error? = @java:Method {
+        'class: "io.ballerina.stdlib.java.jms.listener.Utils"
+    } external;
 }
