@@ -75,6 +75,7 @@ public class Actions {
         try {
             MessageConsumer jmsConsumer = createConsumer(nativeSession, consumerOptions);
             consumer.addNativeData(NATIVE_CONSUMER, jmsConsumer);
+            consumer.addNativeData(NATIVE_SESSION, nativeSession);
         } catch (BallerinaJmsException exception) {
             return createError(JMS_ERROR, exception.getMessage(), exception);
         } catch (JMSException exception) {

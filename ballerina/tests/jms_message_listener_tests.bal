@@ -404,6 +404,73 @@ isolated function testMessageListenerReturningError() returns error? {
     runtime:sleep(2);
 }
 
+isolated boolean trxCommitted = false;
+isolated boolean trxRolledback = false;
+
+public isolated function isTrxCommitted() returns boolean {
+    lock {
+        return trxCommitted;
+    }
+}
+
+public isolated function isTrxRolledback() returns boolean {
+    lock {
+        return trxRolledback;
+    }
+}
+
+@test:Config {
+    groups: ["messageListener"]
+}
+isolated function testMessageListenerWithJMSTransactions() returns error? {
+    Listener msgListener = check new (
+        connectionConfig = {
+            initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+            providerUrl: "tcp://localhost:61616"
+        },
+        acknowledgementMode = SESSION_TRANSACTED,
+        consumerOptions = {
+            destination: {
+                'type: QUEUE,
+                name: "test-session-trx"
+            }
+        }
+    );
+    Service consumerSvc = service object {
+        private int msgCount = 0;
+        
+        remote function onMessage(Message message, Caller caller) returns error? {
+            self.msgCount += 1;
+            if self.msgCount == 2 {
+                lock {
+                    trxCommitted = true;
+                }
+                check caller->'commit();
+            } else {
+                lock {
+                    trxRolledback = true;
+                }
+                check caller->'rollback();
+            }
+        }
+    };
+    check msgListener.attach(consumerSvc, "test-session-trx-service");
+    check msgListener.'start();
+
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {
+        'type: QUEUE,
+        name: "test-session-trx"
+    });
+    TextMessage textMsg = {
+        content: "This is a sample message"
+    };
+    check producer->send(textMsg);
+    runtime:sleep(2);
+
+    test:assertTrue(isTrxCommitted(), "Transaction is not committed");
+    test:assertTrue(isTrxRolledback(), "Transaction is not rolled back");
+}
+
 @test:Config {
     groups: ["messageListener"]
 }
