@@ -407,6 +407,56 @@ isolated function testMessageListenerReturningError() returns error? {
 @test:Config {
     groups: ["messageListener"]
 }
+isolated function testMessageListenerWithJMSTransactions() returns error? {
+    int msgCount = 0;
+    boolean trxCommitted = false;
+    boolean trxRolledback = false;
+
+    Listener msgListener = check new (
+        connectionConfig = {
+            initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+            providerUrl: "tcp://localhost:61616"
+        },
+        acknowledgementMode = SESSION_TRANSACTED,
+        consumerOptions = {
+            destination: {
+                'type: QUEUE,
+                name: "test-session-trx"
+            }
+        }
+    );
+    Service consumerSvc = service object {
+        remote function onMessage(Message message, Caller caller) returns error? {
+            msgCount += 1;
+            if msgCount == 2 {
+                trxCommitted = true;
+                check caller->'commit();
+            } else {
+                trxRolledback = true;
+                check caller->'rollback();
+            }
+        }
+    };
+    check msgListener.attach(consumerSvc, "test-onMessage-error-service");
+    check msgListener.'start();
+
+    MessageProducer producer = check createProducer(AUTO_ACK_SESSION, {
+        'type: QUEUE,
+        name: "test-session-trx"
+    });
+    TextMessage textMsg = {
+        content: "This is a sample message"
+    };
+    check producer->send(textMsg);
+    runtime:sleep(2);
+
+    test:assertTrue(trxCommitted, "Transaction is not committed");
+    test:assertTrue(trxRolledback, "Transaction is not rolled back");
+}
+
+@test:Config {
+    groups: ["messageListener"]
+}
 isolated function testMessageListenerImmediateStop() returns error? { 
     Listener msgListener = check new (
         connectionConfig = {
