@@ -604,6 +604,28 @@ To mark a JMS message as received, `acknowledge` function can be used.
 isolated remote function acknowledge(jms:Message message) returns jms:Error?;
 ```
 
+To commit a JMS transaction, `commit` function can be used.
+```ballerina
+# Commits all messages received in this transaction and releases any locks currently held.
+# ```
+# check caller->'commit();
+# ```
+#
+# + return - A `jms:Error` if there is an error or else `()`
+isolated remote function 'commit() returns Error?;
+```
+
+To rollback a JMS transaction, `rollback` function can be used.
+```ballerina
+# Rolls back any messages received in this transaction and releases any locks currently held.
+# ```
+# check caller->'rollback();
+# ```
+#
+# + return - A `jms:Error` if there is an error or else `()`
+isolated remote function 'rollback() returns Error?;
+```
+
 ### 7.5. Usage
 
 After initializing the `jms:Listener` a `jms:Service` must be attached to it.
