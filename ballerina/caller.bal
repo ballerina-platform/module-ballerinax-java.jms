@@ -29,7 +29,7 @@ public isolated client class Caller {
 
     # Commits all messages received in this transaction and releases any locks currently held.
     # ```ballerina
-    # check session->'commit();
+    # check caller->'commit();
     # ```
     #
     # + return - A `jms:Error` if there is an error or else `()`
@@ -39,7 +39,7 @@ public isolated client class Caller {
 
     # Rolls back any messages received in this transaction and releases any locks currently held.
     # ```ballerina
-    # check session->'rollback();
+    # check caller->'rollback();
     # ```
     #
     # + return - A `jms:Error` if there is an error or else `()`
