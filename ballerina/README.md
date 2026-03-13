@@ -4,7 +4,12 @@ Java Message Service (JMS) is a standard API for sending messages between two or
 
 ### Key Features
 
-- Support for both queue and topic-based messaging\n- Comprehensive support for JMS 1.1 and 2.0\n- Reliable message delivery with persistent and non-persistent modes\n- Support for various message types including Text, Map, and Bytes\n- Secure communication with connection-level authentication\n- GraalVM compatible for native image builds
+- Support for both queue and topic-based messaging
+- Comprehensive support for JMS 1.1 and 2.0
+- Reliable message delivery with persistent and non-persistent modes
+- Support for various message types including Text, Map, and Bytes
+- Secure communication with connection-level authentication
+- GraalVM compatible for native image builds
 
 ## Package overview
 
