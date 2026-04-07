@@ -1,21 +1,15 @@
-## Package overview
+## Overview
 
-The `ballerinax/java.jms` package provides an API to connect to an external JMS provider like ActiveMQ from Ballerina.
+Java Message Service (JMS) is a standard API for sending messages between two or more clients. It provides a common way for programs to create, send, receive, and read distributed enterprise messages. The JMS connector enables seamless integration with JMS providers, supporting various messaging patterns such as publish-subscribe and point-to-point.
 
-This package is created with minimal deviation from the JMS API to make it easy for the developers who are used to working with the JMS API. This package is written to support both JMS 2.0 and JMS 1.0 API. 
- 
-Currently, the following JMS API Classes are supported through this package.
- 
- - Connection
- - Session
- - Destination (Queue, Topic, TemporaryQueue, TemporaryTopic)
- - Message (TextMessage, MapMessage, BytesMessage)
- - MessageConsumer
- - MessageProducer
- 
- The following sections provide details on how to use the JMS connector.
- 
- - [Samples](#samples)
+### Key Features
+
+- Support for both queue and topic-based messaging
+- Comprehensive support for JMS 1.1 and 2.0
+- Reliable message delivery with persistent and non-persistent modes
+- Support for various message types including Text, Map, and Bytes
+- Secure communication with connection-level authentication
+- GraalVM compatible for native image builds
 
 ## Samples
 
