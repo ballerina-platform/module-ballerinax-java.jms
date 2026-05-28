@@ -7,27 +7,27 @@ keywords = ["jms", "Area/Messaging", "Type/Connector", "Type/Trigger"]
 repository = "https://github.com/ballerina-platform/module-ballerina-java.jms"
 icon = "icon.png"
 license = ["Apache-2.0"]
-distribution = "2201.11.0"
+distribution = "2201.14.0-20260527-050400-74f7e6bf"
 
 [build-options]
 observabilityIncluded = true
 
-[platform.java21]
+[platform.java25]
 graalvmCompatible = true
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "java.jms-native"
 version = "1.2.0"
 path = "../native/build/libs/java.jms-native-1.2.0-SNAPSHOT.jar"
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "org.slf4j"
 artifactId = "slf4j-api"
 version = "2.0.7"
 path = "./lib/slf4j-api-2.0.7.jar"
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "javax.jms"
 artifactId = "javax.jms-api"
 version = "2.0.1"
