@@ -12,7 +12,7 @@ targetModule = "orderprocessor.store"
 options.datastore = "inmemory"
 filePath = "persist/model.bal"
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "persist.inmemory-native"
 version = "1.6.0"
