@@ -8,6 +8,7 @@ repository = "https://github.com/ballerina-platform/module-ballerina-java.jms"
 icon = "icon.png"
 license = ["Apache-2.0"]
 distribution = "2201.11.0"
+include = ["metadata/**"]
 
 [build-options]
 observabilityIncluded = true
