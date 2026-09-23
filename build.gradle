@@ -16,7 +16,7 @@
 
 plugins {
     id "com.github.spotbugs-base"
-    id "com.github.johnrengelman.shadow"
+    id "com.gradleup.shadow"
     id "de.undercouch.download"
     id "net.researchgate.release"
 }
@@ -30,6 +30,9 @@ allprojects {
     version = project.version
 
     apply plugin: 'jacoco'
+    jacoco {
+        toolVersion = jacocoVersion
+    }
     apply plugin: 'maven-publish'
 
     repositories {
@@ -103,7 +106,14 @@ release {
     }
 }
 
-task build {
-    dependsOn(':java.jms-ballerina:build')
-    dependsOn(':java.jms-native:build')
+if (tasks.names.contains('build')) {
+    tasks.named('build') {
+        dependsOn(':java.jms-ballerina:build')
+        dependsOn(':java.jms-native:build')
+    }
+} else {
+    tasks.register('build') {
+        dependsOn(':java.jms-ballerina:build')
+        dependsOn(':java.jms-native:build')
+    }
 }
